@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-blue: #2E9FC4;
+  --color-brand-blue-hover: #2689AA;
+  --color-brand-blue-light: #E6F5FA;
+  --color-brand-blue-muted: rgba(46, 159, 196, 0.18);
+  --color-deep-blue: #0F2A3D;
+  --color-deep-blue-dark: #0A1C2A;
+  --color-deep-blue-card: #15354D;
+  --color-deep-blue-border: #1E4663;
+  --color-gold: #D4A54A;
+  --color-gold-hover: #E2B963;
+  --color-gold-light: rgba(212, 165, 74, 0.15);
+  --color-pearl-gray: #E8ECEF;
+  --color-pearl-card: #F1F5F8;
+  --color-offwhite: #F8FAFC;
+  --color-slate-body: #334155;
+  --color-slate-muted: #64748B;
+  --color-slate-light: #94A3B8;
+}
+
+@layer base {
+  body {
+    background-color: var(--color-deep-blue);
+    color: #F8FAFC;
+    font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-manrope), var(--font-inter), sans-serif;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Lenis Smooth Scroll CSS */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* Subtle Architectural Grid Lines */
+.bg-grid-deep {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(46, 159, 196, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(46, 159, 196, 0.05) 1px, transparent 1px);
+}
+
+.bg-grid-light {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(15, 42, 61, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 42, 61, 0.04) 1px, transparent 1px);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0A1C2A;
+}
+::-webkit-scrollbar-thumb {
+  background: #15354D;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #2E9FC4;
+}
