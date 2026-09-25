@@ -96,20 +96,20 @@ export default function ProductCategories({ onSelectCategory }: ProductCategorie
     <section
       id="products"
       ref={sectionRef}
-      className="bg-deep-blue text-white py-16 sm:py-20 lg:py-24 relative"
+      className="bg-white text-deep-blue py-16 sm:py-20 lg:py-24 relative border-t border-pearl-gray"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 pb-6 border-b border-deep-blue-border">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 pb-6 border-b border-pearl-gray">
           <div>
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-sm bg-deep-blue-card border border-deep-blue-border text-[11px] font-semibold uppercase tracking-widest text-brand-blue mb-2.5">
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-sm bg-pearl-gray border border-pearl-gray text-[11px] font-semibold uppercase tracking-widest text-deep-blue mb-2.5">
               Export Portfolios
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white font-display">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-deep-blue font-display">
               Maya Fashion Product Categories.
             </h2>
           </div>
-          <p className="text-slate-light max-w-md text-xs sm:text-sm leading-relaxed">
+          <p className="text-slate-body max-w-md text-xs sm:text-sm leading-relaxed">
             Manufactured to rigorous European, British, and North American retail tolerances. Fully certified
             fabrics, OEKO-TEX Standard 100 compliance, and bespoke private-label packaging.
           </p>
@@ -123,7 +123,21 @@ export default function ProductCategories({ onSelectCategory }: ProductCategorie
               ref={(el) => {
                 cardsRef.current[idx] = el;
               }}
-              onClick={() => onSelectCategory?.(cat.title)}
+              onClick={() => {
+                if (cat.id === "home-textiles") {
+                  window.location.href = "/products/home-textiles";
+                } else if (cat.id === "fabrics") {
+                  window.location.href = "/products/fabrics";
+                } else if (cat.id === "electronics") {
+                  window.location.href = "/products/electronics-and-appliances";
+                } else if (cat.id === "footwear") {
+                  window.location.href = "/products/mens-sports-and-casual";
+                } else if (cat.id === "garments") {
+                  window.location.href = "/products/mens-jackets";
+                } else {
+                  onSelectCategory?.(cat.title);
+                }
+              }}
               className="group cursor-pointer relative bg-deep-blue-card rounded-sm overflow-hidden border border-deep-blue-border hover:border-brand-blue/60 transition-all duration-500 flex flex-col justify-end min-h-[440px]"
             >
               {/* Full-bleed background image with subtle zoom */}

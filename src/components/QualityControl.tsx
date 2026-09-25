@@ -82,20 +82,20 @@ export default function QualityControl() {
     <section
       id="qc"
       ref={sectionRef}
-      className="bg-deep-blue text-white py-16 sm:py-20 lg:py-24 relative overflow-hidden"
+      className="bg-white text-deep-blue py-16 sm:py-20 lg:py-24 relative overflow-hidden border-t border-pearl-gray"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Left Column: Description & Checkpoints */}
           <div ref={contentRef} className="lg:col-span-7 space-y-6">
             <div>
-              <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-sm bg-deep-blue-card border border-deep-blue-border text-[11px] font-semibold uppercase tracking-widest text-brand-blue mb-2.5">
+              <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-sm bg-pearl-gray border border-pearl-gray text-[11px] font-semibold uppercase tracking-widest text-deep-blue mb-2.5">
                 Zero-Defect Protocol
               </div>
-              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white font-display">
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-deep-blue font-display">
                 Four-Tier Quality Governance Architecture.
               </h2>
-              <p className="text-slate-light mt-3 text-xs sm:text-sm leading-relaxed">
+              <p className="text-slate-body mt-3 text-xs sm:text-sm leading-relaxed">
                 At Maya Exports, quality is not tested into apparel at the packing dock — it is
                 engineered into every stitch tension, pattern seam margin, and wash formula.
               </p>
@@ -108,17 +108,17 @@ export default function QualityControl() {
                 return (
                   <div
                     key={idx}
-                    className="p-5 rounded-sm bg-deep-blue-card border border-deep-blue-border hover:border-brand-blue/50 transition-colors"
+                    className="p-5 rounded-sm bg-offwhite border border-pearl-gray hover:border-brand-blue transition-colors shadow-xs"
                   >
                     <div className="flex items-center gap-3 mb-2.5">
-                      <div className="w-8 h-8 rounded-sm bg-deep-blue-dark border border-deep-blue-border text-brand-blue flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-sm bg-white border border-pearl-gray text-brand-blue flex items-center justify-center shadow-xs">
                         <Icon className="w-4 h-4" />
                       </div>
-                      <h4 className="text-sm font-bold text-white font-display">
+                      <h4 className="text-sm font-bold text-deep-blue font-display">
                         {cp.title}
                       </h4>
                     </div>
-                    <p className="text-xs text-slate-light leading-relaxed font-light">
+                    <p className="text-xs text-slate-body leading-relaxed">
                       {cp.desc}
                     </p>
                   </div>
@@ -127,17 +127,17 @@ export default function QualityControl() {
             </div>
 
             {/* In-House Testing Laboratory Stats */}
-            <div className="p-5 rounded-sm bg-gradient-to-r from-deep-blue-card to-deep-blue-dark border-l-4 border-brand-blue border-y border-r border-deep-blue-border">
+            <div className="p-5 rounded-sm bg-pearl-gray/60 border-l-4 border-brand-blue border-y border-r border-pearl-gray">
               <div className="flex items-center justify-between flex-wrap gap-4">
                 <div>
                   <span className="text-[11px] uppercase tracking-wider text-brand-blue font-semibold block">
                     Accredited In-House Laboratory
                   </span>
-                  <p className="text-xs text-slate-light mt-0.5">
+                  <p className="text-xs text-slate-body mt-0.5">
                     Certified to conduct ISO, AATCC, ASTM, and DIN test regimes on-site within 6 hours.
                   </p>
                 </div>
-                <span className="text-xs font-mono font-bold text-gold px-3 py-1 bg-deep-blue-dark rounded border border-deep-blue-border">
+                <span className="text-xs font-mono font-bold text-deep-blue px-3 py-1 bg-white rounded border border-pearl-gray shadow-xs">
                   AQL 1.0 Tolerances
                 </span>
               </div>
@@ -148,7 +148,7 @@ export default function QualityControl() {
           <div className="lg:col-span-5 relative">
             <div
               ref={imageRef}
-              className="relative aspect-[4/5] rounded-sm overflow-hidden border border-deep-blue-border shadow-2xl bg-deep-blue-dark"
+              className="relative aspect-[4/5] rounded-sm overflow-hidden border border-pearl-gray shadow-xl bg-pearl-gray"
             >
               <Image
                 src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=85"

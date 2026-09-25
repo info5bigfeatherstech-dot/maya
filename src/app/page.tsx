@@ -36,7 +36,7 @@ export default function Home() {
 
   return (
     <SmoothScroll>
-      <main className="relative min-h-screen bg-deep-blue text-slate-100 overflow-x-hidden selection:bg-brand-blue/30 selection:text-white">
+      <main className="relative min-h-screen bg-white text-slate-900 overflow-x-hidden selection:bg-brand-blue/30 selection:text-deep-blue">
         {/* 1. Fixed Navigation Bar with exact requested links: Home | About Us | Products ▾ | Event | Career | Contact Us */}
         <Navbar
           onOpenQuoteModal={(cat) => handleOpenQuote(cat)}
@@ -68,13 +68,13 @@ export default function Home() {
         <ExportMarkets />
 
         {/* 10. Certifications (ISO 9001, BSCI, Sedex, Oeko-Tex, WRAP, GOTS) */}
-        <Certifications />
+        {/* <Certifications /> */}
 
         {/* 11. Sustainability & ESG (Clean solar, closed-loop water, ZDHC, circularity) */}
         <Sustainability />
 
         {/* 12. Contact & RFQ Call to Action (Direct inquiry, response guarantee, global desks) */}
-        <ContactCTA onOpenQuoteModal={() => handleOpenQuote()} />
+        {/* <ContactCTA onOpenQuoteModal={() => handleOpenQuote()} /> */}
 
         {/* 13. Multinational Industrial Footer */}
         <Footer />

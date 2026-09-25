@@ -96,18 +96,28 @@ export default function InfoModal({
 
               <div className="pt-4 border-t border-deep-blue-border flex flex-col sm:flex-row items-center justify-between gap-4">
                 <span className="text-xs text-slate-light">
-                  Require an VIP booth meeting invitation?
+                  Require a VIP booth meeting invitation?
                 </span>
-                <button
-                  onClick={() => {
-                    onClose();
-                    onOpenQuote?.();
-                  }}
-                  className="bg-brand-blue hover:bg-brand-blue-hover text-white text-xs font-semibold uppercase tracking-wider px-6 py-2.5 rounded-sm flex items-center gap-2"
-                >
-                  <span>Book Meeting</span>
-                  <ArrowUpRight className="w-4 h-4" />
-                </button>
+                <div className="flex items-center gap-3">
+                  <a
+                    href="/events"
+                    onClick={onClose}
+                    className="text-xs font-semibold text-gold hover:text-white flex items-center gap-1 transition-colors"
+                  >
+                    <span>Full Events Page</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </a>
+                  <button
+                    onClick={() => {
+                      onClose();
+                      onOpenQuote?.();
+                    }}
+                    className="bg-brand-blue hover:bg-brand-blue-hover text-white text-xs font-semibold uppercase tracking-wider px-5 py-2.5 rounded-sm flex items-center gap-2"
+                  >
+                    <span>Book Meeting</span>
+                    <ArrowUpRight className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>

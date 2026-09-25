@@ -5,7 +5,7 @@ import * as THREE from "three";
 import * as d3 from "d3-geo";
 import * as topojson from "topojson-client";
 import worldData from "world-atlas/countries-110m.json";
-import { RotateCcw, ZoomIn, ZoomOut, Check } from "lucide-react";
+import { Check } from "lucide-react";
 
 export interface PresenceCategory {
   id: string;
@@ -20,7 +20,6 @@ export interface PresenceCategory {
 interface Interactive3DGlobeProps {
   categories: PresenceCategory[];
   onToggleCategory: (id: string) => void;
-  hoveredCategory?: string | null;
 }
 
 // Map ISO 3166-1 numeric IDs to readable country names
@@ -57,7 +56,6 @@ export const COUNTRY_NAMES: Record<string, string> = {
 export default function Interactive3DGlobe({
   categories,
   onToggleCategory,
-  hoveredCategory,
 }: Interactive3DGlobeProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -66,15 +64,14 @@ export default function Interactive3DGlobe({
   const globeGroupRef = useRef<THREE.Group | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
 
-  // Initial rotation: Orient Europe, Africa, Middle East and Atlantic front & center matching reference screenshot
-  // In our coordinates: targetRotationRef.y = -1.2 places Europe/UK top-center, Africa center, USA left, Turkey/China right!
+  // Initial rotation: Orient Europe, Africa, Middle East and Atlantic front & center
   const targetRotationRef = useRef<{ x: number; y: number }>({ x: 0.28, y: -1.25 });
   const currentRotationRef = useRef<{ x: number; y: number }>({ x: 0.28, y: -1.25 });
   const isDraggingRef = useRef(false);
   const previousMousePositionRef = useRef({ x: 0, y: 0 });
   const autoRotateRef = useRef(true);
   const lastInteractionTimeRef = useRef(Date.now());
-  const cameraDistanceRef = useRef(230);
+  const cameraDistanceRef = useRef(260); // Sized to fit comfortably with breathing room
 
   // Extract TopoJSON country features
   const countryFeatures = useMemo(() => {
@@ -85,13 +82,13 @@ export default function Interactive3DGlobe({
     return countries.features || [];
   }, []);
 
-  // Redraw the 2D Equirectangular Map Canvas when categories change
+  // Redraw the 2D Equirectangular Map Canvas efficiently when categories change
   const renderMapCanvas = useCallback(() => {
     let mapCanvas = mapCanvasRef.current;
     if (!mapCanvas) {
       mapCanvas = document.createElement("canvas");
-      mapCanvas.width = 2048;
-      mapCanvas.height = 1024;
+      mapCanvas.width = 1024;
+      mapCanvas.height = 512;
       mapCanvasRef.current = mapCanvas;
     }
 
@@ -112,7 +109,6 @@ export default function Interactive3DGlobe({
     // 2. Build active country-to-color lookup
     const countryColorMap: Record<string, string> = {};
 
-    // Apply categories in sequence so active ones paint
     categories.forEach((cat) => {
       if (cat.active) {
         cat.countryIds.forEach((cId) => {
@@ -120,16 +116,6 @@ export default function Interactive3DGlobe({
         });
       }
     });
-
-    // If a category is temporarily hovered, give it visual priority
-    if (hoveredCategory) {
-      const hCat = categories.find((c) => c.id === hoveredCategory);
-      if (hCat) {
-        hCat.countryIds.forEach((cId) => {
-          countryColorMap[cId] = hCat.color;
-        });
-      }
-    }
 
     // 3. Draw All Countries
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -142,29 +128,27 @@ export default function Interactive3DGlobe({
       pathGenerator(feature);
 
       if (highlightColor) {
-        // Highlighted country in solid color matching user's reference image
         ctx.fillStyle = highlightColor;
         ctx.fill();
         ctx.strokeStyle = "#FFFFFF";
-        ctx.lineWidth = 1.0;
+        ctx.lineWidth = 0.8;
         ctx.stroke();
       } else {
-        // Inactive continent landmass in clean neutral light gray
         ctx.fillStyle = "#D2D8DF";
         ctx.fill();
         ctx.strokeStyle = "#FFFFFF";
-        ctx.lineWidth = 0.65;
+        ctx.lineWidth = 0.5;
         ctx.stroke();
       }
     });
 
-    // Update Three.js Texture
+    // Mark texture for update
     if (textureRef.current) {
       textureRef.current.needsUpdate = true;
     }
-  }, [categories, countryFeatures, hoveredCategory]);
+  }, [categories, countryFeatures]);
 
-  // Trigger texture redraw when categories or hover change
+  // Trigger texture redraw only when categories change
   useEffect(() => {
     renderMapCanvas();
   }, [renderMapCanvas]);
@@ -199,7 +183,7 @@ export default function Interactive3DGlobe({
     scene.add(globeGroup);
     globeGroupRef.current = globeGroup;
 
-    const globeRadius = 78;
+    const globeRadius = 66; // Slightly smaller for perfect framing
 
     // 3. Create Canvas Texture for 3D Sphere
     renderMapCanvas();
@@ -375,65 +359,17 @@ export default function Interactive3DGlobe({
       renderer.dispose();
       texture.dispose();
     };
-  }, [renderMapCanvas]);
-
-  // Zoom controls
-  const handleZoom = (delta: number) => {
-    const newDist = Math.max(170, Math.min(320, cameraDistanceRef.current + delta));
-    cameraDistanceRef.current = newDist;
-    if (cameraRef.current) {
-      cameraRef.current.position.z = newDist;
-    }
-  };
-
-  const handleResetView = () => {
-    targetRotationRef.current = { x: 0.28, y: -1.25 };
-    cameraDistanceRef.current = 230;
-    if (cameraRef.current) {
-      cameraRef.current.position.z = 230;
-    }
-    autoRotateRef.current = true;
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
-    <div className="relative w-full h-[520px] sm:h-[620px] lg:h-[680px] flex items-center justify-center select-none overflow-visible">
+    <div className="relative w-full h-[420px] sm:h-[480px] lg:h-[520px] max-w-[520px] mx-auto flex items-center justify-center select-none overflow-hidden rounded-xl">
       {/* 3D WebGL Canvas */}
       <div
         ref={containerRef}
         className="absolute inset-0 cursor-grab active:cursor-grabbing flex items-center justify-center"
       >
         <canvas ref={canvasRef} className="w-full h-full block" />
-      </div>
-
-      {/* Floating Interactive Controls */}
-      <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
-        <button
-          onClick={handleResetView}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded bg-white/90 hover:bg-white text-slate-700 hover:text-slate-900 shadow-sm border border-slate-200 text-xs font-medium transition-all"
-          title="Reset globe view to Europe/Atlantic"
-        >
-          <RotateCcw className="w-3.5 h-3.5 text-brand-blue" />
-          <span className="hidden sm:inline">Reset</span>
-        </button>
-        <button
-          onClick={() => handleZoom(-30)}
-          className="p-1.5 rounded bg-white/90 hover:bg-white text-slate-700 hover:text-slate-900 shadow-sm border border-slate-200 text-xs transition-all"
-          title="Zoom in"
-        >
-          <ZoomIn className="w-3.5 h-3.5 text-slate-600" />
-        </button>
-        <button
-          onClick={() => handleZoom(30)}
-          className="p-1.5 rounded bg-white/90 hover:bg-white text-slate-700 hover:text-slate-900 shadow-sm border border-slate-200 text-xs transition-all"
-          title="Zoom out"
-        >
-          <ZoomOut className="w-3.5 h-3.5 text-slate-600" />
-        </button>
-      </div>
-
-      {/* Drag Hint */}
-      <div className="absolute bottom-4 right-4 z-20 pointer-events-none px-3 py-1 rounded bg-white/80 backdrop-blur-sm border border-slate-200/80 text-[11px] text-slate-500 shadow-xs">
-        <span>Click & drag to rotate globe</span>
       </div>
     </div>
   );

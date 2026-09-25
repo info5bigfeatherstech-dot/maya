@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import { Globe2, Clock } from "lucide-react";
 import MayaLogo from "./MayaLogo";
 
@@ -57,9 +58,9 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2">
               <li>
-                <a href="/about" className="hover:text-brand-blue transition-colors">
+                <Link href="/about" className="hover:text-brand-blue transition-colors">
                   About Maya Exports (Since 2003)
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="#manufacturing" className="hover:text-brand-blue transition-colors">
@@ -80,6 +81,16 @@ export default function Footer() {
                 <a href="#sustainability" className="hover:text-brand-blue transition-colors">
                   ESG & CSDDD Readiness
                 </a>
+              </li>
+              <li>
+                <Link href="/events" className="hover:text-brand-blue transition-colors text-gold">
+                  Trade Shows & Global Expos
+                </Link>
+              </li>
+              <li>
+                <Link href="/careers" className="hover:text-brand-blue transition-colors text-[#5ecba1]">
+                  Careers & Talent Portal
+                </Link>
               </li>
             </ul>
           </div>

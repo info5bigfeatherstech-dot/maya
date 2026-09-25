@@ -102,7 +102,7 @@ export default function Sustainability() {
     <section
       id="sustainability"
       ref={sectionRef}
-      className="bg-deep-blue text-white py-16 sm:py-20 lg:py-24 relative overflow-hidden"
+      className="bg-offwhite text-deep-blue py-16 sm:py-20 lg:py-24 relative overflow-hidden border-t border-pearl-gray"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
@@ -110,7 +110,7 @@ export default function Sustainability() {
           <div className="lg:col-span-5 order-2 lg:order-1 relative">
             <div
               ref={imageRef}
-              className="relative aspect-[4/5] rounded-sm overflow-hidden border border-deep-blue-border shadow-2xl bg-deep-blue-dark"
+              className="relative aspect-[4/5] rounded-sm overflow-hidden border border-pearl-gray shadow-xl bg-pearl-gray"
             >
               <Image
                 src="https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?auto=format&fit=crop&w=1200&q=85"
@@ -119,19 +119,19 @@ export default function Sustainability() {
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 className="object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-deep-blue via-transparent to-transparent opacity-80" />
+              <div className="absolute inset-0 bg-gradient-to-t from-deep-blue/80 via-transparent to-transparent opacity-80" />
 
               {/* Floating Environmental Commitment Badge */}
-              <div className="absolute bottom-4 left-4 right-4 p-3.5 rounded-sm bg-deep-blue-card/95 backdrop-blur-md border border-deep-blue-border">
+              <div className="absolute bottom-4 left-4 right-4 p-3.5 rounded-sm bg-white/95 backdrop-blur-md border border-pearl-gray shadow-md">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-sm bg-deep-blue-dark border border-brand-blue flex items-center justify-center text-brand-blue">
+                  <div className="w-8 h-8 rounded-sm bg-pearl-gray border border-pearl-gray flex items-center justify-center text-brand-blue">
                     <Leaf className="w-4 h-4 text-brand-blue" />
                   </div>
                   <div>
-                    <h4 className="text-xs uppercase font-semibold text-white tracking-wider">
+                    <h4 className="text-xs uppercase font-semibold text-deep-blue tracking-wider">
                       Zero Coal · Clean Energy Transition
                     </h4>
-                    <p className="text-[11px] text-slate-light">
+                    <p className="text-[11px] text-slate-body">
                       Rooftop photovoltaic array powers 42% of total daytime spinning & sewing demand.
                     </p>
                   </div>
@@ -142,16 +142,16 @@ export default function Sustainability() {
 
           {/* Right Column: Editorial ESG Copy & Stats */}
           <div ref={contentRef} className="lg:col-span-7 order-1 lg:order-2 space-y-5">
-            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-sm bg-deep-blue-card border border-deep-blue-border text-[11px] font-semibold uppercase tracking-widest text-brand-blue">
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-sm bg-pearl-gray border border-pearl-gray text-[11px] font-semibold uppercase tracking-widest text-deep-blue">
               <Recycle className="w-3.5 h-3.5 text-brand-blue" />
               <span>Decarbonization & Circularity</span>
             </div>
 
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white font-display">
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-deep-blue font-display">
               Transparent ESG Stewardship Across Every Thread.
             </h2>
 
-            <div className="space-y-3 text-slate-light text-xs sm:text-sm leading-relaxed">
+            <div className="space-y-3 text-slate-body text-xs sm:text-sm leading-relaxed">
               <p>
                 International enterprise retailers face heightened legislative and consumer mandates regarding
                 supply chain transparency. Maya Exports Ltd — Fashion has invested systematically in
@@ -164,16 +164,16 @@ export default function Sustainability() {
               </p>
             </div>
 
-            {/* Sustainability Metrics Grid: Soft gold & Brand Blue on dark sections */}
-            <div className="pt-6 border-t border-deep-blue-border grid grid-cols-2 sm:grid-cols-4 gap-6">
+            {/* Sustainability Metrics Grid: High contrast slate & brand colors on light background */}
+            <div className="pt-6 border-t border-pearl-gray grid grid-cols-2 sm:grid-cols-4 gap-6">
               <div>
                 <span
                   ref={stat1Ref}
-                  className="block text-3xl sm:text-4xl font-bold text-white font-display"
+                  className="block text-3xl sm:text-4xl font-bold text-deep-blue font-display"
                 >
                   0%
                 </span>
-                <span className="text-xs uppercase tracking-wider text-slate-light font-semibold mt-1 block">
+                <span className="text-xs uppercase tracking-wider text-slate-body font-semibold mt-1 block">
                   Water Recycled
                 </span>
                 <span className="text-[11px] text-slate-muted mt-1 block">
@@ -188,7 +188,7 @@ export default function Sustainability() {
                 >
                   0 MW
                 </span>
-                <span className="text-xs uppercase tracking-wider text-slate-light font-semibold mt-1 block">
+                <span className="text-xs uppercase tracking-wider text-slate-body font-semibold mt-1 block">
                   Solar Rooftop
                 </span>
                 <span className="text-[11px] text-slate-muted mt-1 block">
@@ -203,7 +203,7 @@ export default function Sustainability() {
                 >
                   0%
                 </span>
-                <span className="text-xs uppercase tracking-wider text-slate-light font-semibold mt-1 block">
+                <span className="text-xs uppercase tracking-wider text-slate-body font-semibold mt-1 block">
                   ZDHC Level 3
                 </span>
                 <span className="text-[11px] text-slate-muted mt-1 block">
@@ -214,11 +214,11 @@ export default function Sustainability() {
               <div>
                 <span
                   ref={stat4Ref}
-                  className="block text-3xl sm:text-4xl font-bold text-white font-display"
+                  className="block text-3xl sm:text-4xl font-bold text-deep-blue font-display"
                 >
                   0 T
                 </span>
-                <span className="text-xs uppercase tracking-wider text-slate-light font-semibold mt-1 block">
+                <span className="text-xs uppercase tracking-wider text-slate-body font-semibold mt-1 block">
                   Recycled Fibers
                 </span>
                 <span className="text-[11px] text-slate-muted mt-1 block">

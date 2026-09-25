@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import QuoteModal from "@/components/QuoteModal";
@@ -22,14 +23,15 @@ import {
   CheckCircle2,
   ExternalLink,
   ArrowUpRight,
+  PackageCheck,
+  Tag,
 } from "lucide-react";
 
-export default function ContactPage() {
-  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
-  const [infoModalType, setInfoModalType] = useState<"event" | "career" | null>(null);
-  const [selectedCategory, setSelectedCategory] = useState("Garments");
+function ContactFormSection() {
+  const searchParams = useSearchParams();
+  const productParam = searchParams.get("product");
+  const categoryParam = searchParams.get("category");
 
-  // Form State
   const [formData, setFormData] = useState({
     name: "",
     company: "",
@@ -41,10 +43,209 @@ export default function ContactPage() {
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  useEffect(() => {
+    if (productParam) {
+      const isFootwear =
+        categoryParam?.toLowerCase().includes("shoe") ||
+        categoryParam?.toLowerCase().includes("footwear") ||
+        categoryParam?.toLowerCase().includes("sandals") ||
+        productParam.toLowerCase().includes("mf-");
+
+      setFormData((prev) => ({
+        ...prev,
+        productInterest: isFootwear ? "Footwear" : "Garments",
+        message: prev.message
+          ? prev.message
+          : `Inquiry regarding ${productParam} (${categoryParam || "Export Catalog"}) for OEM/ODM bulk manufacturing. Please provide FOB export quotations, sample PPS timelines, and MOQ details.`,
+      }));
+    }
+  }, [productParam, categoryParam]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitted(true);
   };
+
+  return (
+    <div className="lg:col-span-7 bg-white border border-pearl-gray rounded-sm p-6 sm:p-10 shadow-sm">
+      <div className="mb-6 pb-4 border-b border-pearl-gray">
+        <h3 className="text-xl font-bold text-deep-blue font-display">
+          Send an Inquiry to Our Export Desks
+        </h3>
+        <p className="text-xs text-slate-body mt-1">
+          Your inquiry is routed directly to the designated regional director. NDA executed prior to tech pack review.
+        </p>
+
+        {productParam && (
+          <div className="mt-4 p-3 rounded bg-emerald-50 border border-emerald-200 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-xs">
+              <PackageCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+              <div>
+                <span className="font-semibold text-emerald-900">Inquiry Target: </span>
+                <span className="font-mono font-bold text-emerald-800">{productParam}</span>
+                {categoryParam && <span className="text-emerald-700"> &bull; {categoryParam}</span>}
+              </div>
+            </div>
+            <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-white px-2 py-0.5 rounded border border-emerald-200">
+              Attached to RFQ
+            </span>
+          </div>
+        )}
+      </div>
+
+      {isSubmitted ? (
+        <div className="text-center py-12 space-y-4">
+          <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto">
+            <CheckCircle2 className="w-7 h-7" />
+          </div>
+          <h4 className="text-lg font-bold text-deep-blue font-display">
+            Inquiry Dispatched Successfully
+          </h4>
+          <p className="text-xs text-slate-body max-w-md mx-auto">
+            Thank you. Your message has been routed to Mr. Mike and Ms. Jenny. You will receive an email confirmation and direct response within 24 hours.
+          </p>
+          <button
+            onClick={() => setIsSubmitted(false)}
+            className="px-5 py-2 text-xs font-semibold uppercase tracking-wider text-brand-blue border border-brand-blue rounded-sm hover:bg-brand-blue hover:text-white transition-colors cursor-pointer"
+          >
+            Send Another Message
+          </button>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block font-semibold text-deep-blue mb-1">
+                Full Name *
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="e.g. David Harrison"
+                className="w-full px-3 py-2.5 rounded-sm border border-pearl-gray bg-offwhite text-deep-blue focus:outline-none focus:border-brand-blue"
+              />
+            </div>
+            <div>
+              <label className="block font-semibold text-deep-blue mb-1">
+                Company / Brand *
+              </label>
+              <input
+                type="text"
+                required
+                value={formData.company}
+                onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                placeholder="e.g. Global Apparel Ltd"
+                className="w-full px-3 py-2.5 rounded-sm border border-pearl-gray bg-offwhite text-deep-blue focus:outline-none focus:border-brand-blue"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block font-semibold text-deep-blue mb-1">
+                Business Email *
+              </label>
+              <input
+                type="email"
+                required
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                placeholder="buyer@brand.com"
+                className="w-full px-3 py-2.5 rounded-sm border border-pearl-gray bg-offwhite text-deep-blue focus:outline-none focus:border-brand-blue font-mono"
+              />
+            </div>
+            <div>
+              <label className="block font-semibold text-deep-blue mb-1">
+                WhatsApp / Telephone *
+              </label>
+              <input
+                type="tel"
+                required
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                placeholder="+44 7911 123456"
+                className="w-full px-3 py-2.5 rounded-sm border border-pearl-gray bg-offwhite text-deep-blue focus:outline-none focus:border-brand-blue font-mono"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block font-semibold text-deep-blue mb-1">
+                Target Export Destination
+              </label>
+              <select
+                value={formData.destination}
+                onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
+                className="w-full px-3 py-2.5 rounded-sm border border-pearl-gray bg-offwhite text-deep-blue focus:outline-none focus:border-brand-blue"
+              >
+                <option value="United Kingdom">United Kingdom (Felixstowe / Southampton)</option>
+                <option value="European Union">European Union (Rotterdam / Hamburg)</option>
+                <option value="United States">United States (LA / NY / Savannah)</option>
+                <option value="Canada">Canada (Vancouver / Montreal)</option>
+                <option value="Middle East">Middle East & GCC (Jebel Ali)</option>
+                <option value="Australia">Australia & NZ (Sydney / Melbourne)</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block font-semibold text-deep-blue mb-1">
+                Primary Product Division
+              </label>
+              <select
+                value={formData.productInterest}
+                onChange={(e) => setFormData({ ...formData, productInterest: e.target.value })}
+                className="w-full px-3 py-2.5 rounded-sm border border-pearl-gray bg-offwhite text-deep-blue focus:outline-none focus:border-brand-blue"
+              >
+                <option value="Garments">Garments</option>
+                <option value="Footwear">Footwear</option>
+                <option value="Home Textiles">Home Textiles</option>
+                <option value="Fabrics">Fabrics</option>
+                <option value="Electronics & Appliances">Electronics & Appliances</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className="block font-semibold text-deep-blue mb-1">
+              Inquiry Details / Project Specifications *
+            </label>
+            <textarea
+              rows={4}
+              required
+              value={formData.message}
+              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+              placeholder="Please include target quantities, fabrication requirements, delivery season, or store layout requirements..."
+              className="w-full px-3 py-2.5 rounded-sm border border-pearl-gray bg-offwhite text-deep-blue focus:outline-none focus:border-brand-blue resize-none"
+            />
+          </div>
+
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2 text-[11px] text-slate-muted">
+              <ShieldCheck className="w-4 h-4 text-brand-blue shrink-0" />
+              <span>Confidential Enterprise NDA executed prior to sample review</span>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full sm:w-auto px-6 py-3 rounded-sm bg-brand-blue hover:bg-brand-blue-hover text-white font-semibold text-xs tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-2 shadow-md hover:shadow-brand-blue/30 cursor-pointer"
+            >
+              <Send className="w-3.5 h-3.5" />
+              <span>Submit Inquiry Direct</span>
+            </button>
+          </div>
+        </form>
+      )}
+    </div>
+  );
+}
+
+export default function ContactPage() {
+  const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
+  const [infoModalType, setInfoModalType] = useState<"event" | "career" | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState("Garments");
 
   const directContacts = [
     {
@@ -100,11 +301,6 @@ export default function ContactPage() {
 
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl">
-              {/* <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-sm bg-deep-blue-card border border-deep-blue-border text-[11px] font-semibold uppercase tracking-widest text-brand-blue mb-3.5">
-                <Globe2 className="w-3.5 h-3.5 text-brand-blue" />
-                <span>International Trade Desks · 24/7 Enterprise Response</span>
-              </div> */}
-
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white leading-tight font-display mb-4">
                 Connect With Maya Exports Limited.
               </h1>
@@ -289,182 +485,18 @@ export default function ContactPage() {
                     <p><strong className="text-deep-blue">Direct Line:</strong> +852-68580690</p>
                   </div>
                 </div>
-
-                {/* Official Web Link */}
-                {/* <div className="p-4 rounded-sm bg-pearl-card border border-pearl-gray flex items-center justify-between">
-                  <div>
-                    <span className="text-[11px] font-semibold text-deep-blue block">Official Portal Contact</span>
-                    <span className="text-[10px] text-slate-muted">Direct online inquiry platform</span>
-                  </div>
-                  <a
-                    href="https://mayaexportsltd.com/contact"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm bg-brand-blue text-white text-xs font-semibold hover:bg-brand-blue-hover transition-colors"
-                  >
-                    <span>mayaexportsltd.com</span>
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                </div> */}
               </div>
 
-              {/* Right Column: Direct Message / RFQ Form */}
-              <div className="lg:col-span-7 bg-white border border-pearl-gray rounded-sm p-6 sm:p-10 shadow-sm">
-                <div className="mb-6 pb-4 border-b border-pearl-gray">
-                  <h3 className="text-xl font-bold text-deep-blue font-display">
-                    Send an Inquiry to Our Export Desks
-                  </h3>
-                  <p className="text-xs text-slate-body mt-1">
-                    Your inquiry is routed directly to the designated regional director. NDA executed prior to tech pack review.
-                  </p>
-                </div>
-
-                {isSubmitted ? (
-                  <div className="text-center py-12 space-y-4">
-                    <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center mx-auto">
-                      <CheckCircle2 className="w-7 h-7" />
-                    </div>
-                    <h4 className="text-lg font-bold text-deep-blue font-display">
-                      Inquiry Dispatched Successfully
-                    </h4>
-                    <p className="text-xs text-slate-body max-w-md mx-auto">
-                      Thank you. Your message has been routed to Mr. Mike and Ms. Jenny. You will receive an email confirmation and direct response within 24 hours.
-                    </p>
-                    <button
-                      onClick={() => setIsSubmitted(false)}
-                      className="px-5 py-2 text-xs font-semibold uppercase tracking-wider text-brand-blue border border-brand-blue rounded-sm hover:bg-brand-blue hover:text-white transition-colors"
-                    >
-                      Send Another Message
-                    </button>
+              {/* Right Column: Direct Message / RFQ Form with Suspense for SearchParams */}
+              <Suspense
+                fallback={
+                  <div className="lg:col-span-7 bg-white border border-pearl-gray rounded-sm p-10 flex items-center justify-center text-slate-400">
+                    Loading inquiry desk...
                   </div>
-                ) : (
-                  <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block font-semibold text-deep-blue mb-1">
-                          Full Name *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={formData.name}
-                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                          placeholder="e.g. David Harrison"
-                          className="w-full px-3 py-2.5 rounded-sm border border-pearl-gray bg-offwhite text-deep-blue focus:outline-none focus:border-brand-blue"
-                        />
-                      </div>
-                      <div>
-                        <label className="block font-semibold text-deep-blue mb-1">
-                          Company / Brand *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          value={formData.company}
-                          onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                          placeholder="e.g. Global Apparel Ltd"
-                          className="w-full px-3 py-2.5 rounded-sm border border-pearl-gray bg-offwhite text-deep-blue focus:outline-none focus:border-brand-blue"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block font-semibold text-deep-blue mb-1">
-                          Business Email *
-                        </label>
-                        <input
-                          type="email"
-                          required
-                          value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          placeholder="buyer@brand.com"
-                          className="w-full px-3 py-2.5 rounded-sm border border-pearl-gray bg-offwhite text-deep-blue focus:outline-none focus:border-brand-blue font-mono"
-                        />
-                      </div>
-                      <div>
-                        <label className="block font-semibold text-deep-blue mb-1">
-                          WhatsApp / Telephone *
-                        </label>
-                        <input
-                          type="tel"
-                          required
-                          value={formData.phone}
-                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                          placeholder="+44 7911 123456"
-                          className="w-full px-3 py-2.5 rounded-sm border border-pearl-gray bg-offwhite text-deep-blue focus:outline-none focus:border-brand-blue font-mono"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block font-semibold text-deep-blue mb-1">
-                          Target Export Destination
-                        </label>
-                        <select
-                          value={formData.destination}
-                          onChange={(e) => setFormData({ ...formData, destination: e.target.value })}
-                          className="w-full px-3 py-2.5 rounded-sm border border-pearl-gray bg-offwhite text-deep-blue focus:outline-none focus:border-brand-blue"
-                        >
-                          <option value="United Kingdom">United Kingdom (Felixstowe / Southampton)</option>
-                          <option value="European Union">European Union (Rotterdam / Hamburg)</option>
-                          <option value="United States">United States (LA / NY / Savannah)</option>
-                          <option value="Canada">Canada (Vancouver / Montreal)</option>
-                          <option value="Middle East">Middle East & GCC (Jebel Ali)</option>
-                          <option value="Australia">Australia & NZ (Sydney / Melbourne)</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="block font-semibold text-deep-blue mb-1">
-                          Primary Product Division
-                        </label>
-                        <select
-                          value={formData.productInterest}
-                          onChange={(e) => setFormData({ ...formData, productInterest: e.target.value })}
-                          className="w-full px-3 py-2.5 rounded-sm border border-pearl-gray bg-offwhite text-deep-blue focus:outline-none focus:border-brand-blue"
-                        >
-                          <option value="Garments">Garments</option>
-                          <option value="Footwear">Footwear</option>
-                          <option value="Home Textiles">Home Textiles</option>
-                          <option value="Fabrics">Fabrics</option>
-                          <option value="Electronics & Appliances">Electronics & Appliances</option>
-                        </select>
-                      </div>
-                    </div>
-
-                    <div>
-                      <label className="block font-semibold text-deep-blue mb-1">
-                        Inquiry Details / Project Specifications *
-                      </label>
-                      <textarea
-                        rows={4}
-                        required
-                        value={formData.message}
-                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        placeholder="Please include target quantities, fabrication requirements, delivery season, or store layout requirements..."
-                        className="w-full px-3 py-2.5 rounded-sm border border-pearl-gray bg-offwhite text-deep-blue focus:outline-none focus:border-brand-blue resize-none"
-                      />
-                    </div>
-
-                    <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4">
-                      <div className="flex items-center gap-2 text-[11px] text-slate-muted">
-                        <ShieldCheck className="w-4 h-4 text-brand-blue shrink-0" />
-                        <span>Confidential Enterprise NDA executed prior to sample review</span>
-                      </div>
-
-                      <button
-                        type="submit"
-                        className="w-full sm:w-auto px-6 py-3 rounded-sm bg-brand-blue hover:bg-brand-blue-hover text-white font-semibold text-xs tracking-wider uppercase transition-all duration-300 flex items-center justify-center gap-2 shadow-md hover:shadow-brand-blue/30 cursor-pointer"
-                      >
-                        <Send className="w-3.5 h-3.5" />
-                        <span>Submit Inquiry Direct</span>
-                      </button>
-                    </div>
-                  </form>
-                )}
-              </div>
+                }
+              >
+                <ContactFormSection />
+              </Suspense>
             </div>
           </div>
         </section>

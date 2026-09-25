@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { ArrowUpRight, Menu, X, ShieldCheck, ChevronDown, ChevronRight, Globe } from "lucide-react";
 import MayaLogo from "./MayaLogo";
 import {
@@ -241,10 +242,13 @@ export default function Navbar({
                 >
                   <div className="bg-deep-blue-card border border-deep-blue-border rounded-sm shadow-2xl backdrop-blur-md flex overflow-hidden transition-all duration-200">
                     {/* Column 1: Main Export Divisions */}
-                    <div className="w-[205px] p-2 bg-deep-blue-dark/60 border-r border-deep-blue-border/70 shrink-0">
-                      <div className="px-2.5 py-1.5 text-[10px] uppercase font-bold tracking-widest text-brand-blue border-b border-deep-blue-border/60 mb-1">
-                        Export Divisions
-                      </div>
+                    <div
+                      className={`w-[205px] p-2 bg-deep-blue-dark/60 shrink-0 ${
+                        activeMainCategory === "Garments" || activeMainCategory === "Footwear"
+                          ? "border-r border-deep-blue-border/70"
+                          : ""
+                      }`}
+                    >
                       {productCategories.map((prod) => {
                         const isSelected = activeMainCategory === prod.name;
                         return (
@@ -257,8 +261,7 @@ export default function Navbar({
                             onClick={() => {
                               if (!prod.hasSubmenu) {
                                 setProductsOpen(false);
-                                window.location.href = "/#products";
-                                onOpenQuoteModal?.(prod.name);
+                                window.location.href = `/products/${categoryToSlug(prod.name)}`;
                               }
                             }}
                             className={`w-full text-left flex items-center justify-between py-2 px-2.5 rounded-xs transition-colors cursor-pointer group ${
@@ -292,9 +295,6 @@ export default function Navbar({
                         <div className="flex animate-in fade-in duration-150">
                           {/* Column 2: Demographic Categories */}
                           <div className="w-[140px] p-2 bg-deep-blue-card border-r border-deep-blue-border/70 shrink-0">
-                            <div className="px-2 py-1.5 text-[10px] uppercase font-bold tracking-widest text-gold border-b border-deep-blue-border/60 mb-1">
-                              {activeMainCategory}
-                            </div>
                             {Object.keys(currentDemographics).map((demo) => {
                               const isDemoActive = activeDemographic === demo;
                               return (
@@ -328,10 +328,6 @@ export default function Navbar({
                           {/* Column 3: The Drawer / Dropdown that appears whenever hovering Men (or any demographic) */}
                           {activeDemographic ? (
                             <div className="w-[240px] p-2 bg-deep-blue-dark/50 overflow-y-auto max-h-[300px] shrink-0 animate-in fade-in slide-in-from-left-2 duration-150">
-                              <div className="px-2 py-1.5 text-[10px] uppercase font-bold tracking-widest text-brand-blue border-b border-deep-blue-border/60 mb-1 flex items-center justify-between">
-                                <span>{activeDemographic}&apos;s {activeMainCategory}</span>
-                                <span className="text-[9px] text-gold font-mono font-medium">OEM / ODM</span>
-                              </div>
                               <div className="space-y-0.5">
                                 {currentDemographics[activeDemographic]?.map((item) => (
                                   <button
@@ -363,19 +359,19 @@ export default function Navbar({
                 </div>
               </div>
 
-              <button
-                onClick={() => onOpenInfoModal?.("event")}
+              <Link
+                href="/events"
                 className="transition-colors hover:text-brand-blue relative py-1 text-[14px] font-semibold after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-brand-blue hover:after:w-full after:transition-all after:duration-300"
               >
-                Event
-              </button>
+                Events
+              </Link>
 
-              <button
-                onClick={() => onOpenInfoModal?.("career")}
+              <Link
+                href="/careers"
                 className="transition-colors hover:text-brand-blue relative py-1 text-[14px] font-semibold after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-brand-blue hover:after:w-full after:transition-all after:duration-300"
               >
-                Career
-              </button>
+                Careers
+              </Link>
 
               <a
                 href="/contact"
@@ -653,8 +649,7 @@ export default function Navbar({
                     type="button"
                     onClick={() => {
                       setMobileMenuOpen(false);
-                      window.location.href = "/#products";
-                      onOpenQuoteModal?.(cat);
+                      window.location.href = `/products/${categoryToSlug(cat)}`;
                     }}
                     className="w-full text-left py-1.5 text-slate-300 hover:text-white flex items-center justify-between text-xs"
                   >
@@ -665,24 +660,20 @@ export default function Navbar({
               </div>
             )}
           </div>
-          <button
-            onClick={() => {
-              setMobileMenuOpen(false);
-              onOpenInfoModal?.("event");
-            }}
+          <Link
+            href="/events"
+            onClick={() => setMobileMenuOpen(false)}
             className="w-full text-left block text-xl font-medium text-slate-100 hover:text-brand-blue transition-colors py-2 border-b border-deep-blue-border"
           >
-            Event
-          </button>
-          <button
-            onClick={() => {
-              setMobileMenuOpen(false);
-              onOpenInfoModal?.("career");
-            }}
+            Events
+          </Link>
+          <Link
+            href="/careers"
+            onClick={() => setMobileMenuOpen(false)}
             className="w-full text-left block text-xl font-medium text-slate-100 hover:text-brand-blue transition-colors py-2 border-b border-deep-blue-border"
           >
-            Career
-          </button>
+            Careers
+          </Link>
           <a
             href="/contact"
             onClick={() => setMobileMenuOpen(false)}

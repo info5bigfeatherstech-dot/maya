@@ -103,19 +103,19 @@ export default function ExportMarkets() {
     },
   ]);
 
-  const [hoveredCategory, setHoveredCategory] = useState<string | null>(null);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("offices");
 
-  // Toggle category on/off
+  // Toggle category on/off and select for details card (strictly on click, never on hover)
   const toggleCategory = (id: string) => {
     setCategories((prev) =>
       prev.map((cat) => (cat.id === id ? { ...cat, active: !cat.active } : cat))
     );
+    setSelectedCategoryId(id);
   };
 
-  // Find currently active categories
-  const activeCount = categories.filter((c) => c.active).length;
+  // Find inspected category (stable: does NOT change on hover)
   const primaryActiveCat =
-    categories.find((c) => c.id === hoveredCategory) ||
+    categories.find((c) => c.id === selectedCategoryId) ||
     categories.find((c) => c.active) ||
     categories[0];
 
@@ -187,9 +187,7 @@ export default function ExportMarkets() {
                   <div
                     key={cat.id}
                     onClick={() => toggleCategory(cat.id)}
-                    onMouseEnter={() => setHoveredCategory(cat.id)}
-                    onMouseLeave={() => setHoveredCategory(null)}
-                    className="flex items-center gap-3 cursor-pointer group select-none py-0.5"
+                    className="flex items-center gap-3 cursor-pointer group select-none py-1 px-1.5 -mx-1.5 rounded hover:bg-slate-100/70 transition-colors"
                   >
                     {/* Custom colored square checkbox */}
                     <div
@@ -265,7 +263,6 @@ export default function ExportMarkets() {
             <Interactive3DGlobe
               categories={categories}
               onToggleCategory={toggleCategory}
-              hoveredCategory={hoveredCategory}
             />
           </div>
         </div>

@@ -130,6 +130,7 @@ export default function ProductDetailView({ product, catalog }: ProductDetailVie
                             src={img}
                             alt={`Thumbnail ${idx + 1}`}
                             fill
+                            sizes="96px"
                             className="object-contain p-1"
                           />
                         </button>
@@ -245,39 +246,15 @@ export default function ProductDetailView({ product, catalog }: ProductDetailVie
                   )}
                 </div>
 
-                {/* Primary CTA Deck: Contact Us + WhatsApp + Quote Modal */}
-                <div className="pt-4 border-t border-slate-200 space-y-3">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {/* Primary Button: Navigate directly to Contact Us with this product pre-filled */}
-                    <Link
-                      href={contactUrl}
-                      className="py-3 px-5 rounded-md font-semibold text-xs uppercase tracking-wider text-slate-900 bg-[#5ecba1] hover:bg-[#52be95] active:scale-[0.98] transition-all shadow-sm flex items-center justify-center gap-2 text-center"
-                    >
-                      <Send className="w-4 h-4" />
-                      <span>Contact Us for This Product</span>
-                    </Link>
-
-                    {/* Secondary WhatsApp Button: Direct executive line to Mr. Mike */}
-                    <a
-                      href={whatsappUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="py-3 px-5 rounded-md font-semibold text-xs uppercase tracking-wider text-white bg-slate-900 hover:bg-slate-800 active:scale-[0.98] transition-all shadow-sm flex items-center justify-center gap-2 text-center"
-                    >
-                      <MessageSquare className="w-4 h-4 text-[#5ecba1]" />
-                      <span>Direct WhatsApp Inquiry</span>
-                    </a>
-                  </div>
-
-                  {/* Quick RFQ Modal trigger */}
-                  <button
-                    type="button"
-                    onClick={() => setIsQuoteModalOpen(true)}
-                    className="w-full py-2.5 px-4 rounded-md border border-slate-300 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors flex items-center justify-center gap-2"
+                {/* Primary CTA Deck: Contact Us */}
+                <div className="pt-4 border-t border-slate-200">
+                  <Link
+                    href={contactUrl}
+                    className="w-full py-3.5 px-6 rounded-md font-semibold text-xs uppercase tracking-wider text-slate-900 bg-[#5ecba1] hover:bg-[#52be95] active:scale-[0.98] transition-all shadow-sm flex items-center justify-center gap-2 text-center"
                   >
-                    <FileText className="w-3.5 h-3.5 text-brand-blue" />
-                    <span>Instant Online RFQ & Sample Form</span>
-                  </button>
+                    <Send className="w-4 h-4" />
+                    <span>Contact Us for This Product</span>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -451,6 +428,7 @@ export default function ProductDetailView({ product, catalog }: ProductDetailVie
                           src={item.image}
                           alt={item.title}
                           fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           className="object-contain p-2 group-hover:scale-102 transition-transform duration-300"
                         />
                       </div>
