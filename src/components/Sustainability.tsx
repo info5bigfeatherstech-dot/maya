@@ -169,7 +169,7 @@ export default function Sustainability() {
               <div>
                 <span
                   ref={stat1Ref}
-                  className="block text-3xl sm:text-4xl font-bold text-deep-blue font-display"
+                  className="block text-2xl sm:text-3xl font-medium text-deep-blue font-display"
                 >
                   0%
                 </span>
@@ -184,7 +184,7 @@ export default function Sustainability() {
               <div>
                 <span
                   ref={stat2Ref}
-                  className="block text-3xl sm:text-4xl font-bold text-brand-blue font-display"
+                  className="block text-2xl sm:text-3xl font-medium text-brand-blue font-display"
                 >
                   0 MW
                 </span>
@@ -199,7 +199,7 @@ export default function Sustainability() {
               <div>
                 <span
                   ref={stat3Ref}
-                  className="block text-3xl sm:text-4xl font-bold text-gold font-display"
+                  className="block text-2xl sm:text-3xl font-medium text-gold font-display"
                 >
                   0%
                 </span>
@@ -214,7 +214,7 @@ export default function Sustainability() {
               <div>
                 <span
                   ref={stat4Ref}
-                  className="block text-3xl sm:text-4xl font-bold text-deep-blue font-display"
+                  className="block text-2xl sm:text-3xl font-medium text-deep-blue font-display"
                 >
                   0 T
                 </span>

@@ -141,12 +141,12 @@ export default function ProductCategories({
               OUR CATEGORIES
             </span>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 leading-[1.15]">
+            <h2 className="text-2xl sm:text-3xl lg:text-[38px] font-medium tracking-tight text-slate-900 leading-[1.15]">
               Explore Our <br />
               <span className="text-[#2563EB]">Product Categories</span>
             </h2>
 
-            <p className="text-slate-500 text-sm sm:text-base leading-relaxed capitalize">
+            <p className="text-slate-500 text-sm  leading-relaxed capitalize">
               We export high-quality garments, fabrics, and lifestyle products to global
               markets, serving brands, wholesalers and retailers worldwide.
             </p>

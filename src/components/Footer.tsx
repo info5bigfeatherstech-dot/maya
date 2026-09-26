@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Globe2,
   ShieldCheck,
@@ -11,6 +12,7 @@ import {
   Phone,
   Printer,
   Mail,
+  Smartphone,
   ArrowRight,
   Check,
 } from "lucide-react";
@@ -129,7 +131,7 @@ export default function Footer() {
               </h4>
               <div className="w-7 h-[2.5px] bg-[#E5A93C] mb-4" />
             </div>
-            <ul className="space-y-2.5 text-xs text-slate-400">
+            <ul className="space-y-2.5 text-[13.5px] sm:text-sm text-slate-300">
               <li>
                 <Link href="/about" className="hover:text-white transition-colors">
                   About Maya Exports (Since 2003)
@@ -179,7 +181,7 @@ export default function Footer() {
               </h4>
               <div className="w-7 h-[2.5px] bg-[#E5A93C] mb-4" />
             </div>
-            <ul className="space-y-2.5 text-xs text-slate-400">
+            <ul className="space-y-2.5 text-[13.5px] sm:text-sm text-slate-300">
               <li>
                 <a href="/#products" className="hover:text-white transition-colors">
                   Garments
@@ -216,7 +218,7 @@ export default function Footer() {
               </h4>
               <div className="w-7 h-[2.5px] bg-[#E5A93C] mb-4" />
             </div>
-            <ul className="space-y-2.5 text-xs text-slate-400">
+            <ul className="space-y-2.5 text-[13.5px] sm:text-sm text-slate-300">
               <li>
                 <Link href="/events" className="hover:text-white transition-colors">
                   Events
@@ -299,7 +301,7 @@ export default function Footer() {
                   onChange={(e) => setAgreed(e.target.checked)}
                   className="mt-0.5 rounded border-slate-600 bg-slate-900/60 text-cyan-500 focus:ring-0 w-3.5 h-3.5 cursor-pointer"
                 />
-                <span className="text-[11px] text-slate-400 group-hover:text-slate-300 transition-colors leading-tight">
+                <span className="text-[12px] text-slate-400 group-hover:text-slate-300 transition-colors leading-tight">
                   I agree to receive updates from Maya Exports Ltd.
                 </span>
               </label>
@@ -330,22 +332,22 @@ export default function Footer() {
           {/* 2 Office Cards */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Card 1: China Head Office (Fujian) */}
-            <div className="rounded-xl bg-[#091b2e]/70 border border-slate-700/60 p-5 sm:p-6 backdrop-blur-md shadow-lg flex flex-col justify-between hover:border-slate-600 transition-all">
+            <div className="rounded-xl bg-[#091b2e]/70 border border-slate-700/60 px-5 py-4 sm:px-6 sm:py-4 backdrop-blur-md shadow-lg flex flex-col justify-between hover:border-slate-600 transition-all">
               <div className="flex items-start gap-4">
                 {/* Round Building Icon Badge */}
                 <div className="w-12 h-12 rounded-full bg-[#0d2744] border border-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0 shadow-inner">
                   <Building2 className="w-5 h-5" />
                 </div>
 
-                <div className="space-y-1.5 flex-1">
+                <div className="space-y-1 flex-1">
                   <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400 block">
                     CHINA
                   </span>
                   <h4 className="text-base font-bold text-white font-display">
                     Head Office (Fujian)
                   </h4>
-                  <div className="flex items-start gap-2 pt-1 text-slate-300 text-xs leading-relaxed">
-                    <MapPin className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                  <div className="flex items-start gap-1.5 pt-0.5 text-slate-300 text-xs leading-relaxed">
+                    <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
                     <span>
                       Room 2nd FLR, C# BLDG NO.17#, Yinchang Area, Beihuan Liangshi Road, Shishi City, Fujian P.R. China. P.C: 362700
                     </span>
@@ -354,7 +356,18 @@ export default function Footer() {
               </div>
 
               {/* Bottom Details Divider */}
-              <div className="mt-5 pt-4 border-t border-slate-700/50 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-300">
+              <div className="mt-3 pt-2.5 border-t border-slate-700/50 sm:pl-16 sm:pr-8 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-300">
+                <div className="flex items-center gap-2">
+                  <Smartphone className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                  <a
+                    href="https://wa.me/8613506082198"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-white transition-colors"
+                  >
+                    +86-13506082198
+                  </a>
+                </div>
                 <div className="flex items-center gap-2">
                   <Phone className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
                   <a href="tel:+86059588568700" className="hover:text-white transition-colors">
@@ -369,22 +382,22 @@ export default function Footer() {
             </div>
 
             {/* Card 2: Hong Kong Office */}
-            <div className="rounded-xl bg-[#091b2e]/70 border border-slate-700/60 p-5 sm:p-6 backdrop-blur-md shadow-lg flex flex-col justify-between hover:border-slate-600 transition-all">
+            <div className="rounded-xl bg-[#091b2e]/70 border border-slate-700/60 px-5 py-4 sm:px-6 sm:py-4 backdrop-blur-md shadow-lg flex flex-col justify-between hover:border-slate-600 transition-all">
               <div className="flex items-start gap-4">
                 {/* Round Building Icon Badge */}
                 <div className="w-12 h-12 rounded-full bg-[#0d2744] border border-cyan-500/20 text-cyan-400 flex items-center justify-center shrink-0 shadow-inner">
                   <Building2 className="w-5 h-5" />
                 </div>
 
-                <div className="space-y-1.5 flex-1">
+                <div className="space-y-1 flex-1">
                   <span className="text-[10px] uppercase font-bold tracking-widest text-slate-400 block">
                     HONG KONG
                   </span>
                   <h4 className="text-base font-bold text-white font-display">
                     Hong Kong Office
                   </h4>
-                  <div className="flex items-start gap-2 pt-1 text-slate-300 text-xs leading-relaxed">
-                    <MapPin className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                  <div className="flex items-start gap-1.5 pt-0.5 text-slate-300 text-xs leading-relaxed">
+                    <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0 mt-0.5" />
                     <span>
                       Kensington Plaza, 98 Parkes Street, Jordan, Kowloon, Hong Kong.
                     </span>
@@ -393,7 +406,7 @@ export default function Footer() {
               </div>
 
               {/* Bottom Details Divider */}
-              <div className="mt-5 pt-4 border-t border-slate-700/50 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-300">
+              <div className="mt-3 pt-2.5 border-t border-slate-700/50 sm:pl-16 sm:pr-8 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-300">
                 <div className="flex items-center gap-2">
                   <Mail className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
                   <a href="mailto:sonu@mayaexportsltd.com" className="hover:text-white transition-colors">
@@ -404,6 +417,17 @@ export default function Footer() {
                   <Phone className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
                   <a href="tel:+85268580690" className="hover:text-white transition-colors">
                     +852-68580690
+                  </a>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Smartphone className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                  <a
+                    href="https://wa.me/8613506082198"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-white transition-colors"
+                  >
+                    +86-13506082198
                   </a>
                 </div>
               </div>

@@ -324,11 +324,11 @@ export default function Manufacturing() {
               <Activity className="w-3.5 h-3.5 text-blue-600" />
               <span>Maya Manufacturing Infrastructure</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 font-display leading-[1.15]">
+            <h2 className="text-3xl sm:text-4xl lg:text-[38px] font-medium tracking-tight text-slate-900 font-display leading-[1.15]">
               High-Capacity Automated <br />
               <span className="text-[#2563EB]">Production Architecture.</span>
             </h2>
-            <p className="text-slate-600 mt-3.5 text-sm sm:text-base leading-relaxed capitalize">
+            <p className="text-slate-600 mt-3.5 text-sm  leading-relaxed capitalize">
               Engineered end-to-end to eliminate bottlenecks, minimize variance, and absorb multi-million unit
               seasonal demand spikes for premier global fashion brands.
             </p>
@@ -352,7 +352,7 @@ export default function Manufacturing() {
             </div>
             <span
               ref={stat1Ref}
-              className="block text-2xl sm:text-3xl font-bold text-deep-blue font-display leading-tight"
+              className="block text-xl sm:text-2xl font-medium text-deep-blue font-display leading-tight"
             >
               0
             </span>
@@ -371,7 +371,7 @@ export default function Manufacturing() {
             </div>
             <span
               ref={stat2Ref}
-              className="block text-2xl sm:text-3xl font-bold text-gold font-display leading-tight"
+              className="block text-xl sm:text-2xl font-medium text-gold font-display leading-tight"
             >
               0
             </span>
@@ -390,7 +390,7 @@ export default function Manufacturing() {
             </div>
             <span
               ref={stat3Ref}
-              className="block text-2xl sm:text-3xl font-bold text-deep-blue font-display leading-tight"
+              className="block text-xl sm:text-2xl font-medium text-deep-blue font-display leading-tight"
             >
               0
             </span>
@@ -409,7 +409,7 @@ export default function Manufacturing() {
             </div>
             <span
               ref={stat4Ref}
-              className="block text-2xl sm:text-3xl font-bold text-gold font-display leading-tight"
+              className="block text-xl sm:text-2xl font-medium text-gold font-display leading-tight"
             >
               0
             </span>

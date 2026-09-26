@@ -3,13 +3,13 @@
 import React, { useState } from "react";
 import {
   MapPin,
-  Factory,
-  PenTool,
-  Leaf,
+  Ship,
+  Warehouse,
+  ShieldCheck,
+  PackageCheck,
   ChevronRight,
   Building2,
-  Headphones,
-  Globe,
+  Globe2,
   ArrowLeft,
   ArrowRight,
 } from "lucide-react";
@@ -20,12 +20,12 @@ import Interactive3DGlobe, {
 } from "./Interactive3DGlobe";
 
 export default function ExportMarkets() {
-  // 4 Main Presence Categories matching user's reference mockup
+  // 4 Industry-Standard Global Import/Export & Supply Chain Pillars
   const categories: PresenceCategory[] = [
     {
-      id: "offices",
-      name: "Offices",
-      countSubtitle: "14 global offices",
+      id: "freight",
+      name: "Ocean & Air Freight Forwarding",
+      countSubtitle: "FCL, LCL & Garments on Hanger (GOH)",
       color: "#2563EB", // Royal blue
       countryIds: [
         "840", // USA
@@ -35,124 +35,118 @@ export default function ExportMarkets() {
         "724", // Spain
         "250", // France
         "380", // Italy
-        "792", // Turkey
-        "818", // Egypt
-        "784", // UAE
-        "156", // China
-        "392", // Japan
-        "036", // Australia
         "528", // Netherlands
+        "784", // UAE
+        "682", // Saudi Arabia
+        "036", // Australia
+        "392", // Japan
+        "578", // Norway
+        "752", // Sweden
+        "208", // Denmark
+        "702", // Singapore
       ],
-      stats: "14 Global Desks · 350+ Multilingual Staff",
+      stats: "40+ Maritime Corridors · Global Port Coverage",
       description:
-        "14 international commercial offices & buyer desks across London, New York, Madrid, Istanbul, Cairo, Dubai, and Shanghai providing 24/7 dedicated enterprise account servicing.",
+        "Scheduled containerized ocean freight (FCL/LCL) and expedited air cargo connecting Asian production hubs with destination ports worldwide, including specialized Garments on Hanger (GOH) equipment to prevent creasing.",
       countries: [
         "United States",
-        "Canada",
         "United Kingdom",
         "Germany",
+        "Netherlands",
         "Spain",
         "France",
-        "Italy",
-        "Turkey",
+        "United Arab Emirates",
+        "Australia",
       ],
-      moreCount: 6,
+      moreCount: 32,
     },
     {
-      id: "manufacturing",
-      name: "Sourcing & Manufacturing",
-      countSubtitle: "Over 50+ partner factories",
-      color: "#334155", // Slate charcoal
+      id: "warehousing",
+      name: "Bonded Warehousing & Storage",
+      countSubtitle: "500,000+ sq.ft cargo staging hubs",
+      color: "#0284C7", // Sky blue
       countryIds: [
-        "156", // China
+        "156", // China (Fujian, Shanghai, Ningbo)
         "704", // Vietnam
         "050", // Bangladesh
         "356", // India
-        "792", // Turkey
-        "818", // Egypt
-        "360", // Indonesia
-        "586", // Pakistan
-        "116", // Cambodia
-      ],
-      stats: "50+ Partner Mills · 4.8M Units/Month",
-      description:
-        "Vertically integrated smart manufacturing centers, certified dye facilities, and yarn spinning mills engineered for high-volume enterprise garment production.",
-      countries: [
-        "Bangladesh",
-        "India",
-        "Vietnam",
-        "China",
-        "Turkey",
-        "Egypt",
-        "Indonesia",
-        "Pakistan",
-      ],
-      moreCount: 5,
-    },
-    {
-      id: "designers",
-      name: "Designers",
-      countSubtitle: "100+ in-house designers",
-      color: "#6366F1", // Indigo / periwinkle
-      countryIds: [
-        "826", // UK
-        "250", // France
-        "380", // Italy
-        "724", // Spain
-        "840", // USA
-        "392", // Japan
-        "410", // South Korea
-        "752", // Sweden
+        "784", // UAE
         "276", // Germany
+        "840", // USA
+        "702", // Singapore
       ],
-      stats: "4 Design Hubs · 1,200+ Seasonal Styles",
+      stats: "4 Strategic Depots · WMS Barcode Tracking",
       description:
-        "In-house fashion design studios & 3D digital sampling ateliers in London, Paris, Milan, and Seoul developing over 1,200 commercial silhouettes every season.",
+        "Secure bonded warehousing, cargo consolidation, and cross-docking at Fujian HQ, Shanghai, Ningbo, and Hong Kong providing bulk palletizing, carton sorting, barcode labeling, and container stuffing.",
       countries: [
-        "United Kingdom",
-        "France",
-        "Italy",
-        "Spain",
-        "United States",
-        "Japan",
-        "South Korea",
-        "Germany",
+        "Fujian Central Depot",
+        "Hong Kong Hub",
+        "Shanghai Facility",
+        "Ningbo Terminal",
+        "Vietnam Staging",
+        "Bangladesh Hub",
       ],
       moreCount: 4,
     },
     {
-      id: "esg",
-      name: "ESG Team",
-      countSubtitle: "Sustainable future, together",
-      color: "#10B981", // Emerald green
+      id: "customs",
+      name: "Customs Brokerage & Compliance",
+      countSubtitle: "AEO certified & HS code filing",
+      color: "#38BDF8", // Light Brand Blue / Sky Cyan
+      countryIds: [
+        "156", // China
+        "840", // USA
+        "826", // UK
+        "276", // Germany
+        "250", // France
+        "724", // Spain
+        "528", // Netherlands
+        "036", // Australia
+        "784", // UAE
+        "392", // Japan
+      ],
+      stats: "PRC Export #3302910842 · AEO Advanced Certified",
+      description:
+        "Complete export and import customs administration, electronic single-window declarations, tariff HS code classification, and Certificates of Origin (Form A, E, RCEP) to eliminate port clearance delays.",
+      countries: [
+        "China (PRC AEO)",
+        "United States (CBP)",
+        "European Union (TARIC)",
+        "United Kingdom (HMRC)",
+        "Australia (ChAFTA)",
+        "UAE (GCC Trade)",
+      ],
+      moreCount: 18,
+    },
+    {
+      id: "inspection",
+      name: "Pre-Shipment Inspection & QA",
+      countSubtitle: "100% pre-export AQL 2.5 verification",
+      color: "#D97706", // Amber gold
       countryIds: [
         "156", // China
         "704", // Vietnam
         "050", // Bangladesh
         "356", // India
-        "276", // Germany
-        "528", // Netherlands
-        "826", // UK
-        "578", // Norway
+        "116", // Cambodia
+        "792", // Turkey
       ],
-      stats: "100% ZDHC Compliant · Higg FEM Verified",
+      stats: "AQL 2.5 / 4.0 Standards · Needle & Carton Audits",
       description:
-        "On-site compliance officers conducting continuous ZDHC wastewater monitoring, Higg Index verification, and ethical labour audits at every production facility.",
+        "Rigorous pre-shipment quality control including full needle detection, carton drop testing, moisture control, barcode scannability checks, and container seal integrity prior to vessel departure.",
       countries: [
-        "Germany",
-        "Netherlands",
-        "United Kingdom",
-        "Norway",
-        "Bangladesh",
-        "India",
-        "Vietnam",
-        "Denmark",
+        "Fujian Origin Labs",
+        "Vietnam QA Centers",
+        "Bangladesh Pods",
+        "India Inspection",
+        "Cambodia QA",
+        "Turkey Fabric Audits",
       ],
       moreCount: 8,
     },
   ];
 
-  const [activeCategoryId, setActiveCategoryId] = useState<string>("offices");
+  const [activeCategoryId, setActiveCategoryId] = useState<string>("freight");
   const [activeHubIndex, setActiveHubIndex] = useState<number>(0);
 
   const activeCategory =
@@ -167,21 +161,21 @@ export default function ExportMarkets() {
 
   const handleNextHub = () => {
     setActiveHubIndex((prev) =>
-      prev === GLOBAL_HUBS.length - 1 ? 0 : prev + 1
+      prev === 0 ? GLOBAL_HUBS.length - 1 : prev + 1
     );
   };
 
   // Helper icon for category
   const getCategoryIcon = (id: string, className?: string) => {
     switch (id) {
-      case "offices":
-        return <MapPin className={className} />;
-      case "manufacturing":
-        return <Factory className={className} />;
-      case "designers":
-        return <PenTool className={className} />;
-      case "esg":
-        return <Leaf className={className} />;
+      case "freight":
+        return <Ship className={className} />;
+      case "warehousing":
+        return <Warehouse className={className} />;
+      case "customs":
+        return <ShieldCheck className={className} />;
+      case "inspection":
+        return <PackageCheck className={className} />;
       default:
         return <Building2 className={className} />;
     }
@@ -202,14 +196,13 @@ export default function ExportMarkets() {
                 GLOBAL PRESENCE
               </span>
 
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 leading-[1.15] mb-3">
+              <h2 className="text-3xl sm:text-4xl lg:text-[38px] font-medium tracking-tight text-slate-900 leading-[1.15] mb-3">
                 Maya Around the <br />
                 World
               </h2>
 
               <p className="text-slate-500 text-sm leading-relaxed mb-6">
-                With a strong global network, Maya serves clients across continents,
-                ensuring seamless sourcing, manufacturing and delivery.
+                Direct export supply chain connecting our central warehousing, audited manufacturing mills, and containerized maritime freight to global destination markets.
               </p>
             </div>
 
@@ -239,9 +232,9 @@ export default function ExportMarkets() {
                       </div>
                       <div>
                         <h4
-                          className={`text-sm font-bold transition-colors ${
+                          className={`text-sm font-medium transition-colors ${
                             isActive
-                              ? "text-slate-900 font-semibold"
+                              ? "text-slate-900"
                               : "text-slate-700 group-hover:text-slate-900"
                           }`}
                         >
@@ -271,7 +264,7 @@ export default function ExportMarkets() {
                   <div className="w-8 h-8 rounded-lg bg-blue-100/70 text-blue-600 flex items-center justify-center shrink-0">
                     {getCategoryIcon(activeCategory.id, "w-4 h-4")}
                   </div>
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-900">
+                  <span className="text-xs font-medium uppercase tracking-wider text-slate-900">
                     {activeCategory.name}
                   </span>
                 </div>
@@ -333,7 +326,7 @@ export default function ExportMarkets() {
                   <div className="w-6 h-6 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
                     <MapPin className="w-3.5 h-3.5" />
                   </div>
-                  <span className="text-xs font-bold text-slate-900 truncate">
+                  <span className="text-xs font-medium text-slate-900 truncate">
                     {currentHub.name}
                   </span>
                 </div>
@@ -342,15 +335,15 @@ export default function ExportMarkets() {
 
               <div className="space-y-1.5 text-xs">
                 <div className="flex items-center gap-2.5 text-slate-600">
-                  <Building2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <Warehouse className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                   <span className="truncate">{currentHub.office}</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-slate-600">
-                  <Headphones className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <Ship className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                   <span className="truncate">{currentHub.support}</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-slate-600">
-                  <Globe className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <Globe2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                   <span className="truncate">{currentHub.desk}</span>
                 </div>
               </div>

@@ -35,10 +35,10 @@ export default function Navbar({
   const isContact = pathname === "/contact" || pathname.startsWith("/contact/");
 
   const getDesktopLinkClass = (isActive: boolean) =>
-    `transition-colors relative py-1 text-[14px] font-semibold after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1.5px] after:bg-brand-blue after:transition-all after:duration-300 ${
+    `transition-colors relative py-1 text-[15.5px] font-medium after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-brand-blue after:transition-all after:duration-300 ${
       isActive
-        ? "text-white after:w-full"
-        : "text-slate-light hover:text-brand-blue after:w-0 hover:after:w-full"
+        ? "text-white after:w-full font-semibold"
+        : "text-slate-light hover:text-white after:w-0 hover:after:w-full"
     }`;
 
   const getMobileLinkClass = (isActive: boolean) =>
@@ -215,7 +215,7 @@ export default function Navbar({
             </a>
 
             {/* Desktop Navigation Links: Home | About Us | Products ▾ | Event | Career | Contact Us */}
-            <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-light">
+            <nav className="hidden lg:flex items-center gap-7 xl:gap-8 text-slate-light">
               <Link
                 href="/"
                 className={getDesktopLinkClass(isHome)}
@@ -240,8 +240,8 @@ export default function Navbar({
                 <button
                   type="button"
                   onClick={() => setProductsOpen((prev) => !prev)}
-                  className={`flex items-center gap-1 transition-colors hover:text-brand-blue py-1 text-[14px] font-semibold outline-none group cursor-pointer ${
-                    productsOpen ? "text-brand-blue" : "text-slate-light hover:text-brand-blue"
+                  className={`flex items-center gap-1.5 transition-colors hover:text-white py-1 text-[15.5px] font-medium outline-none group cursor-pointer ${
+                    productsOpen ? "text-brand-blue font-semibold" : "text-slate-light"
                   }`}
                   aria-expanded={productsOpen}
                 >
@@ -413,7 +413,7 @@ export default function Navbar({
             <div className="hidden lg:flex items-center gap-4">
               {/* Region Selector with shadcn DropdownMenu */}
               <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-1.5 text-xs text-slate-light hover:text-white px-2 py-1 rounded border border-transparent hover:border-deep-blue-border outline-none transition-colors">
+                <DropdownMenuTrigger className="flex items-center gap-1.5 text-[13.5px] text-slate-light hover:text-white px-2.5 py-1.5 rounded-sm border border-transparent hover:border-deep-blue-border outline-none transition-colors">
                   <Globe className="w-3.5 h-3.5 text-brand-blue" />
                   <span>{selectedRegion}</span>
                   <ChevronDown className="w-3 h-3 text-slate-muted" />
@@ -439,10 +439,10 @@ export default function Navbar({
 
               <button
                 onClick={() => onOpenQuoteModal?.()}
-                className="relative group overflow-hidden border border-gold bg-gold/10 hover:bg-gold text-slate-100 hover:text-deep-blue px-5 py-2.5 rounded-sm text-xs font-semibold tracking-widest uppercase transition-all duration-300 flex items-center gap-2 shadow-sm"
+                className="relative group overflow-hidden bg-brand-blue hover:bg-brand-blue-hover text-white px-5 py-2.5 rounded-sm text-xs font-semibold tracking-widest uppercase transition-all duration-300 flex items-center gap-2 shadow-md shadow-brand-blue/25 hover:shadow-brand-blue/40 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
               >
                 <span>Get a Quote</span>
-                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                <ArrowUpRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform text-white" />
               </button>
             </div>
 
@@ -450,7 +450,7 @@ export default function Navbar({
             <div className="lg:hidden flex items-center gap-3">
               <button
                 onClick={() => onOpenQuoteModal?.()}
-                className="border border-gold text-gold px-3 py-1.5 rounded-sm text-xs font-semibold tracking-wider uppercase"
+                className="bg-brand-blue hover:bg-brand-blue-hover text-white px-3 py-1.5 rounded-sm text-xs font-semibold tracking-wider uppercase transition-colors cursor-pointer"
               >
                 Quote
               </button>

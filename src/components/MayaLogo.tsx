@@ -21,8 +21,8 @@ export default function MayaLogo({
   const heightClass = {
     xs: "h-9 sm:h-10",
     sm: "h-11 sm:h-12",
-    md: "h-14 sm:h-16 md:h-18",
-    lg: "h-20 sm:h-24 md:h-28",
+    md: "h-16 sm:h-20 md:h-22",
+    lg: "h-22 sm:h-26 md:h-30",
   }[size];
 
   return (

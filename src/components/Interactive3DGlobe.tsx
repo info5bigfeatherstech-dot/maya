@@ -30,67 +30,58 @@ export interface GlobalHub {
 
 export const GLOBAL_HUBS: GlobalHub[] = [
   {
-    id: "uk",
-    name: "United Kingdom",
-    lat: 51.5074,
-    lng: -0.1278,
-    office: "London Office",
-    support: "24/7 Support",
-    desk: "Buyer Desk",
+    id: "china",
+    name: "China (HQ & Central Hub)",
+    lat: 24.7345,
+    lng: 118.6666,
+    office: "Fujian Central Warehouse",
+    support: "Xiamen Port Staging",
+    desk: "PRC Direct Export Hub",
   },
   {
     id: "usa",
-    name: "United States",
+    name: "United States (Export)",
     lat: 40.7128,
     lng: -74.006,
-    office: "New York Hub",
-    support: "Enterprise Support",
-    desk: "Americas Desk",
+    office: "NY & Long Beach Ports",
+    support: "DDP / CIF Consignments",
+    desk: "North America Market",
+  },
+  {
+    id: "uk",
+    name: "United Kingdom (Export)",
+    lat: 51.5074,
+    lng: -0.1278,
+    office: "Felixstowe / London Port",
+    support: "Customs Cleared Cargo",
+    desk: "UK Retail Distribution",
   },
   {
     id: "germany",
-    name: "Germany",
-    lat: 50.1109,
-    lng: 8.6821,
-    office: "Frankfurt Office",
-    support: "DACH Regional Support",
-    desk: "Logistics Hub",
+    name: "Germany (EU Transit)",
+    lat: 53.5511,
+    lng: 9.9937,
+    office: "Hamburg Port Gateway",
+    support: "Bonded Cargo Transit",
+    desk: "Central Europe Route",
   },
   {
     id: "spain",
-    name: "Spain",
-    lat: 40.4168,
-    lng: -3.7038,
-    office: "Madrid Studio",
-    support: "Design Support",
-    desk: "Merchandising Desk",
-  },
-  {
-    id: "turkey",
-    name: "Turkey",
-    lat: 41.0082,
-    lng: 28.9784,
-    office: "Istanbul Sourcing",
-    support: "Procurement Team",
-    desk: "Eurasia Desk",
+    name: "Spain & Mediterranean",
+    lat: 39.4699,
+    lng: -0.3763,
+    office: "Valencia Maritime Port",
+    support: "Retail Garment Logistics",
+    desk: "South Europe Gateway",
   },
   {
     id: "uae",
     name: "United Arab Emirates",
     lat: 25.2048,
     lng: 55.2708,
-    office: "Dubai Trade Office",
-    support: "MENA Account Team",
-    desk: "Global Trade Desk",
-  },
-  {
-    id: "china",
-    name: "China",
-    lat: 31.2304,
-    lng: 121.4737,
-    office: "Shanghai QA Center",
-    support: "Inspection Labs",
-    desk: "APAC Desk",
+    office: "Jebel Ali Container Port",
+    support: "Transit & Re-Export Hub",
+    desk: "Middle East Trade Route",
   },
 ];
 
@@ -371,12 +362,21 @@ export default function Interactive3DGlobe({
 
     scene.add(orbitalGroup);
 
-    // 6. 3D Pin Markers on Hubs
+    // 6. 3D Pin Markers on Hubs (with animated blinking/pulsing beacons)
     const pinsGroup = new THREE.Group();
     globeGroup.add(pinsGroup);
     pinsGroupRef.current = pinsGroup;
 
-    GLOBAL_HUBS.forEach((hub) => {
+    interface AnimatedPin {
+      dotMesh: THREE.Mesh;
+      dotMat: THREE.MeshBasicMaterial;
+      ringMesh: THREE.Mesh;
+      ringMat: THREE.MeshBasicMaterial;
+      phaseOffset: number;
+    }
+    const animatedPins: AnimatedPin[] = [];
+
+    GLOBAL_HUBS.forEach((hub, idx) => {
       const phi = (90 - hub.lat) * (Math.PI / 180);
       const theta = (hub.lng + 180) * (Math.PI / 180);
       const r = globeRadius * 1.015;
@@ -385,24 +385,36 @@ export default function Interactive3DGlobe({
       const y = r * Math.cos(phi);
 
       // Pin core dot
-      const pinGeo = new THREE.SphereGeometry(1.2, 16, 16);
-      const pinMat = new THREE.MeshBasicMaterial({ color: 0x2563eb });
+      const pinGeo = new THREE.SphereGeometry(1.3, 16, 16);
+      const pinMat = new THREE.MeshBasicMaterial({
+        color: 0x2e9fc4, // Maya brand blue
+        transparent: true,
+        opacity: 0.95,
+      });
       const pinMesh = new THREE.Mesh(pinGeo, pinMat);
       pinMesh.position.set(x, y, z);
       pinsGroup.add(pinMesh);
 
-      // Pin subtle outer halo ring
-      const ringGeo = new THREE.RingGeometry(1.5, 2.3, 16);
+      // Pin subtle outer halo ring (radar pulse wave)
+      const ringGeo = new THREE.RingGeometry(1.6, 2.6, 24);
       const ringMat = new THREE.MeshBasicMaterial({
-        color: 0x60a5fa,
+        color: 0x38bdf8, // Sky Cyan
         transparent: true,
-        opacity: 0.6,
+        opacity: 0.75,
         side: THREE.DoubleSide,
       });
       const ringMesh = new THREE.Mesh(ringGeo, ringMat);
       ringMesh.position.set(x, y, z);
       ringMesh.lookAt(new THREE.Vector3(x * 2, y * 2, z * 2));
       pinsGroup.add(ringMesh);
+
+      animatedPins.push({
+        dotMesh: pinMesh,
+        dotMat: pinMat,
+        ringMesh,
+        ringMat,
+        phaseOffset: idx * 0.15,
+      });
     });
 
     // 7. Lighting
@@ -524,6 +536,22 @@ export default function Interactive3DGlobe({
         globeGroupRef.current.rotation.y = currentRotationRef.current.y;
       }
 
+      // Animate blinking & radar pulse on hub pins
+      const now = Date.now() * 0.001;
+      animatedPins.forEach((pin) => {
+        // 1. Radar wave ripple expansion and fade
+        const cycle = (now * 0.85 + pin.phaseOffset) % 1;
+        const ringScale = 1.0 + cycle * 1.8;
+        pin.ringMesh.scale.set(ringScale, ringScale, ringScale);
+        pin.ringMat.opacity = Math.max(0, (1 - cycle) * 0.85);
+
+        // 2. Core dot blinking beacon pulse
+        const blink = (Math.sin(now * 4 + pin.phaseOffset * 6) + 1) * 0.5;
+        const dotScale = 0.85 + blink * 0.45;
+        pin.dotMesh.scale.set(dotScale, dotScale, dotScale);
+        pin.dotMat.opacity = 0.6 + blink * 0.4;
+      });
+
       renderer.render(scene, camera);
     };
 
@@ -538,6 +566,12 @@ export default function Interactive3DGlobe({
       canvas.removeEventListener("touchstart", handleTouchStart);
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleTouchEnd);
+      animatedPins.forEach((p) => {
+        p.dotMat.dispose();
+        p.ringMat.dispose();
+        p.dotMesh.geometry.dispose();
+        p.ringMesh.geometry.dispose();
+      });
       renderer.dispose();
       texture.dispose();
     };

@@ -183,7 +183,7 @@ export default function About() {
               <div className="p-3 bg-pearl-card rounded-sm border border-pearl-gray">
                 <span
                   ref={stat1Ref}
-                  className="block text-xl sm:text-2xl font-bold text-brand-blue font-display leading-tight"
+                  className="block text-lg sm:text-xl font-medium text-brand-blue font-display leading-tight"
                 >
                   0
                 </span>
@@ -196,7 +196,7 @@ export default function About() {
               <div className="p-3 bg-pearl-card rounded-sm border border-pearl-gray">
                 <span
                   ref={stat2Ref}
-                  className="block text-xl sm:text-2xl font-bold text-brand-blue font-display leading-tight"
+                  className="block text-lg sm:text-xl font-medium text-brand-blue font-display leading-tight"
                 >
                   0
                 </span>
@@ -209,7 +209,7 @@ export default function About() {
               <div className="p-3 bg-pearl-card rounded-sm border border-pearl-gray">
                 <span
                   ref={stat3Ref}
-                  className="block text-xl sm:text-2xl font-bold text-brand-blue font-display leading-tight"
+                  className="block text-lg sm:text-xl font-medium text-brand-blue font-display leading-tight"
                 >
                   0
                 </span>
@@ -222,7 +222,7 @@ export default function About() {
               <div className="p-3 bg-pearl-card rounded-sm border border-pearl-gray">
                 <span
                   ref={stat4Ref}
-                  className="block text-xl sm:text-2xl font-bold text-gold font-display leading-tight"
+                  className="block text-lg sm:text-xl font-medium text-gold font-display leading-tight"
                 >
                   0
                 </span>
