@@ -146,7 +146,7 @@ export default function ProductCategories({
               <span className="text-[#2563EB]">Product Categories</span>
             </h2>
 
-            <p className="text-slate-500 text-sm sm:text-base leading-relaxed">
+            <p className="text-slate-500 text-sm sm:text-base leading-relaxed capitalize">
               We export high-quality garments, fabrics, and lifestyle products to global
               markets, serving brands, wholesalers and retailers worldwide.
             </p>

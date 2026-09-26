@@ -151,16 +151,16 @@ export default function About() {
 
           {/* Right Column: Editorial Copy & History */}
           <div ref={contentRef} className="lg:col-span-6 space-y-6">
-            {/* <div className="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-pearl-gray border border-pearl-gray text-xs font-semibold uppercase tracking-widest text-deep-blue">
-              <Layers className="w-3.5 h-3.5 text-brand-blue" />
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-sm bg-pearl-gray/80 border border-pearl-gray text-[11px] font-semibold uppercase tracking-widest text-deep-blue mb-1">
+              {/* <Layers className="w-3.5 h-3.5 text-brand-blue" /> */}
               <span>Maya Exports Ltd — Fashion · Corporate Heritage</span>
-            </div> */}
+            </div>
 
-            <h2 className="text-2xl sm:text-3xl lg:text-[32px] font-bold tracking-tight text-deep-blue leading-snug font-display">
+            <h2 className="text-2xl sm:text-3xl lg:text-[32px] font-bold tracking-tight text-[#1a658e] leading-snug font-display">
               Engineered Precision in Vertical Apparel Export.
             </h2>
 
-            <div className="space-y-3.5 text-slate-body text-xs sm:text-sm leading-relaxed">
+            <div className="space-y-3.5 text-slate-body text-xs sm:text-sm leading-relaxed capitalize">
               <p>
                 Established with a vision for uncompromising garment craftsmanship, Maya Exports Ltd —
                 Fashion has grown into an international manufacturing partner trusted by tier-one retail

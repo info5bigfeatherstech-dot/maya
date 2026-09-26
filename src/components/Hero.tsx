@@ -132,11 +132,11 @@ export default function Hero({ onOpenQuoteModal }: HeroProps) {
           {/* Subheadline in Pearl/Slate light */}
           <p
             ref={subheadRef}
-            className="text-sm sm:text-base text-slate-light/90 leading-relaxed font-normal max-w-xl"
+            className="text-sm sm:text-base text-slate-light/90 leading-relaxed font-normal max-w-xl capitalize"
           >
             Vertically integrated apparel engineering across 160,000 m² of smart industrial
             infrastructure. Supplying tier-one enterprise retailers and fashion conglomerates across the
-            UK, Europe, North America, the Middle East, and Australia.
+            UK, Europe & North America.
           </p>
 
           {/* Primary CTA + Secondary CTA */}

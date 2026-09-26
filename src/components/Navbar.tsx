@@ -207,7 +207,7 @@ export default function Navbar({
             : "bg-gradient-to-b from-deep-blue/95 via-deep-blue/50 to-transparent py-4 sm:py-5"
         }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl xl:max-w-[1480px] 2xl:max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10">
           <div className="flex items-center justify-between">
             {/* Logo at full color carrying the Brand Blue sphere and Gold M */}
             <a href="/" className="flex items-center" aria-label="Maya Exports Ltd Home">
