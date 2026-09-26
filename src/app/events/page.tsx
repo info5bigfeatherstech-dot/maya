@@ -369,7 +369,7 @@ export default function EventsPage() {
                   Flagship Global Trade Delegations
                 </h2>
               </div>
-              <p className="text-xs sm:text-sm text-slate-500 max-w-md">
+              <p className="text-xs sm:text-sm text-slate-500 max-w-md capitalize">
                 Our bespoke multi-zone exhibition stands feature live apparel runway
                 racks, footwear sole engineering showcases, and private VIP
                 conference rooms.

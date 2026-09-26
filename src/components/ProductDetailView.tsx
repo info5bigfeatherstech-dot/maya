@@ -105,7 +105,7 @@ export default function ProductDetailView({ product, catalog }: ProductDetailVie
                   <div className="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur-xs text-white text-[11px] font-medium px-2.5 py-1 rounded-md">
                     Angle {selectedImageIndex + 1} of {gallery.length}
                   </div>
-                  <div className="absolute top-3 right-3 bg-[#5ecba1]/90 text-slate-900 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+                  <div className="absolute top-3 right-3 bg-brand-blue text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
                     OEM / ODM
                   </div>
                 </div>
@@ -122,7 +122,7 @@ export default function ProductDetailView({ product, catalog }: ProductDetailVie
                           onClick={() => setSelectedImageIndex(idx)}
                           className={`relative aspect-[4/3] w-20 sm:w-24 rounded-lg overflow-hidden bg-slate-50 border-2 transition-all shrink-0 cursor-pointer ${
                             isSelected
-                              ? "border-[#5ecba1] ring-2 ring-[#5ecba1]/30"
+                              ? "border-brand-blue ring-2 ring-brand-blue/30"
                               : "border-slate-200 hover:border-slate-400 opacity-70 hover:opacity-100"
                           }`}
                         >
@@ -237,7 +237,7 @@ export default function ProductDetailView({ product, catalog }: ProductDetailVie
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-600">
                         {product.specs.map((spec, sIdx) => (
                           <div key={sIdx} className="flex items-center gap-2">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-[#5ecba1] shrink-0" />
+                            <CheckCircle2 className="w-3.5 h-3.5 text-brand-blue shrink-0" />
                             <span>{spec}</span>
                           </div>
                         ))}
@@ -250,7 +250,7 @@ export default function ProductDetailView({ product, catalog }: ProductDetailVie
                 <div className="pt-4 border-t border-slate-200">
                   <Link
                     href={contactUrl}
-                    className="w-full py-3.5 px-6 rounded-md font-semibold text-xs uppercase tracking-wider text-slate-900 bg-[#5ecba1] hover:bg-[#52be95] active:scale-[0.98] transition-all shadow-sm flex items-center justify-center gap-2 text-center"
+                    className="w-full py-3.5 px-6 rounded-md font-semibold text-xs uppercase tracking-wider text-white bg-brand-blue hover:bg-brand-blue-hover active:scale-[0.98] transition-all shadow-sm flex items-center justify-center gap-2 text-center"
                   >
                     <Send className="w-4 h-4" />
                     <span>Contact Us for This Product</span>
@@ -366,7 +366,7 @@ export default function ProductDetailView({ product, catalog }: ProductDetailVie
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-slate-600">
                 <div className="space-y-2">
                   <h5 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                    <PackageCheck className="w-4 h-4 text-[#5ecba1]" />
+                    <PackageCheck className="w-4 h-4 text-brand-blue" />
                     <span>Export-Grade Polybagging</span>
                   </h5>
                   <p className="leading-relaxed">
@@ -375,7 +375,7 @@ export default function ProductDetailView({ product, catalog }: ProductDetailVie
                 </div>
                 <div className="space-y-2">
                   <h5 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                    <Layers className="w-4 h-4 text-[#5ecba1]" />
+                    <Layers className="w-4 h-4 text-brand-blue" />
                     <span>5-Ply Corrugated Master Cartons</span>
                   </h5>
                   <p className="leading-relaxed">
@@ -384,7 +384,7 @@ export default function ProductDetailView({ product, catalog }: ProductDetailVie
                 </div>
                 <div className="space-y-2">
                   <h5 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                    <Clock className="w-4 h-4 text-[#5ecba1]" />
+                    <Clock className="w-4 h-4 text-brand-blue" />
                     <span>Global Port Coordination</span>
                   </h5>
                   <p className="leading-relaxed">
@@ -442,7 +442,7 @@ export default function ProductDetailView({ product, catalog }: ProductDetailVie
 
                     <Link
                       href={`/products/${catalog.slug}/${item.id}`}
-                      className="w-full py-2 px-3 rounded-md font-semibold text-xs text-slate-900 bg-[#5ecba1] hover:bg-[#52be95] transition-all flex items-center justify-center gap-1 cursor-pointer"
+                      className="w-full py-2 px-3 rounded-md font-semibold text-xs text-white bg-brand-blue hover:bg-brand-blue-hover transition-all flex items-center justify-center gap-1 cursor-pointer"
                     >
                       <span>Explore More</span>
                     </Link>

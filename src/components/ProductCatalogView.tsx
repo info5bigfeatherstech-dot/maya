@@ -147,13 +147,13 @@ export default function ProductCatalogView({ catalog }: ProductCatalogViewProps)
                     </p>
                   </Link>
 
-                  {/* Explore More Green Action Button: Directly navigates to the dedicated Product Detail Page */}
+                  {/* Explore More Action Button: Directly navigates to the dedicated Product Detail Page */}
                   <Link
                     href={productUrl}
-                    className="w-full py-2.5 px-4 rounded-md font-semibold text-xs text-slate-900 bg-[#5ecba1] hover:bg-[#52be95] active:scale-[0.98] transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer mt-2 text-center"
+                    className="w-full py-2.5 px-4 rounded-md font-semibold text-xs text-white bg-brand-blue hover:bg-brand-blue-hover active:scale-[0.98] transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer mt-2 text-center"
                   >
                     <span>Explore More</span>
-                    <ArrowRight className="w-3.5 h-3.5 opacity-80" />
+                    <ArrowRight className="w-3.5 h-3.5 opacity-90" />
                   </Link>
                 </div>
               );

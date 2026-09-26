@@ -6,7 +6,7 @@ import logoImg from "@/assest/logo.4d3ab4ce51d282e13e6c.png";
 
 interface MayaLogoProps {
   className?: string;
-  size?: "sm" | "md" | "lg";
+  size?: "xs" | "sm" | "md" | "lg";
   variant?: "light" | "dark";
   priority?: boolean;
 }
@@ -19,6 +19,7 @@ export default function MayaLogo({
 }: MayaLogoProps) {
   // Sized larger for prominent, crystal-clear readability
   const heightClass = {
+    xs: "h-9 sm:h-10",
     sm: "h-11 sm:h-12",
     md: "h-14 sm:h-16 md:h-18",
     lg: "h-20 sm:h-24 md:h-28",

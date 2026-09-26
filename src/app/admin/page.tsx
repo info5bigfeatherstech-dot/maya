@@ -17,6 +17,7 @@ import { ReadyStockManager } from "@/components/admin/ReadyStockManager";
 import { SamplingPipelineView } from "@/components/admin/SamplingPipelineView";
 import { FactoryDirectoryView } from "@/components/admin/FactoryDirectoryView";
 import { CustomerDirectoryView } from "@/components/admin/CustomerDirectoryView";
+import MayaLogo from "@/components/MayaLogo";
 import {
   Select,
   SelectTrigger,
@@ -440,26 +441,13 @@ export default function AdminPage() {
               )}
             </button>
 
-            <Link href="/admin" className="flex items-center gap-2.5 group">
-              <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold text-base shadow-xs group-hover:bg-blue-700 transition">
-                M
-              </div>
-              <div>
-                <span className="font-bold text-slate-900 text-sm tracking-tight flex items-center gap-1.5">
-                  MAYA EXPORTS
-                  <span className="text-[10px] font-semibold text-blue-700 bg-blue-50 px-1.5 py-0.2 rounded border border-blue-200">
-                    ERP ADMIN
-                  </span>
-                </span>
-                <span className="text-[11px] text-slate-600 block -mt-0.5">
-                  Garments & Textile Sourcing Portal
-                </span>
-              </div>
+            <Link href="/admin" className="flex items-center group py-0.5" aria-label="Maya Exports Admin Portal">
+              <MayaLogo size="md" priority />
             </Link>
           </div>
 
           {/* Center Search Input */}
-          <div className="hidden md:flex flex-1 max-w-md mx-4">
+          {/* <div className="hidden md:flex flex-1 max-w-md mx-4">
             <div className="relative w-full">
               <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
@@ -478,7 +466,7 @@ export default function AdminPage() {
                 </button>
               )}
             </div>
-          </div>
+          </div> */}
 
           {/* Right Top Actions */}
           <div className="flex items-center gap-2 sm:gap-3">
@@ -506,14 +494,14 @@ export default function AdminPage() {
             </Link>
 
             {/* Demo Reset */}
-            <button
+            {/* <button
               onClick={handleResetData}
               type="button"
               className="p-2 text-slate-400 hover:text-blue-600 hover:bg-slate-100 rounded-lg transition"
               title="Reset Demo Data"
             >
               <RefreshCw className="w-4 h-4" />
-            </button>
+            </button> */}
 
             {/* Admin Avatar */}
             <div className="pl-2 border-l border-slate-200 flex items-center gap-2">

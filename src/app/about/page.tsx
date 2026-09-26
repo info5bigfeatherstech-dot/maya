@@ -386,7 +386,7 @@ export default function AboutPage() {
                   <h4 className="text-sm font-bold text-deep-blue mb-2 font-display">
                     {m.title}
                   </h4>
-                  <p className="text-xs text-slate-body leading-relaxed">
+                  <p className="text-xs text-slate-body leading-relaxed capitalize">
                     {m.desc}
                   </p>
                 </div>

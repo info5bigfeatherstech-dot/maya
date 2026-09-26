@@ -31,9 +31,34 @@ export default function ContactCTA({ onOpenQuoteModal }: ContactCTAProps) {
     message: "",
   });
 
+  const TARGET_EMAIL = "sophie_maya86@yahoo.com";
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setFormSubmitted(true);
+
+    const subject = encodeURIComponent(
+      `B2B Enterprise Inquiry: ${formData.company ? `${formData.company} (${formData.name})` : formData.name} - Maya Exports Ltd`
+    );
+    const body = encodeURIComponent(
+      `Dear Ms. Sophie & Maya Exports Merchandising Team,
+
+Please review our B2B manufacturing inquiry:
+• Full Name: ${formData.name}
+• Company / Brand: ${formData.company}
+• Contact Email: ${formData.email}
+• Target Volume / Category: ${formData.category}
+
+PROJECT SPECIFICATIONS:
+${formData.message}
+
+Sent via Maya Exports Ltd Portal (mayaexportsltd.com)
+Direct Recipient: ${TARGET_EMAIL}`
+    );
+
+    try {
+      window.location.href = `mailto:${TARGET_EMAIL}?subject=${subject}&body=${body}`;
+    } catch {}
   };
 
   return (

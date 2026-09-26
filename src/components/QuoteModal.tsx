@@ -42,9 +42,38 @@ export default function QuoteModal({
     notes: "",
   });
 
+  const TARGET_EMAIL = "sophie_maya86@yahoo.com";
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
+
+    const subject = encodeURIComponent(
+      `B2B RFQ Specification Dossier: ${formData.company ? `${formData.company} (${formData.name})` : formData.name} - ${formData.category}`
+    );
+    const body = encodeURIComponent(
+      `Dear Ms. Sophie & Maya Exports Merchandising Team,
+
+Please review our official RFQ capacity and quotation request:
+• Client Name: ${formData.name}
+• Company / Brand: ${formData.company}
+• Contact Email: ${formData.email}
+• Destination Country: ${formData.country}
+• Product Category: ${formData.category}
+• Target Quantity: ${formData.quantity}
+• Target Port of Discharge: ${formData.targetPort}
+• Required Delivery Timeline: ${formData.timeline}
+
+SPECIFICATIONS & TECH PACK NOTES:
+${formData.notes || "Standard OEM/ODM export specifications apply."}
+
+Sent via Maya Exports Ltd RFQ Desk (mayaexportsltd.com)
+Direct Recipient: ${TARGET_EMAIL}`
+    );
+
+    try {
+      window.location.href = `mailto:${TARGET_EMAIL}?subject=${subject}&body=${body}`;
+    } catch {}
   };
 
   return (

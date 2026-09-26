@@ -231,7 +231,7 @@ export default function ProductionProcess() {
             {/* Subtle Divider Bar */}
             <div className="w-12 h-1 bg-[#2563EB] rounded-full my-3.5" />
 
-            <p className="text-slate-500 text-sm sm:text-base leading-relaxed">
+            <p className="text-slate-500 text-sm sm:text-base leading-relaxed capitalize">
               From raw materials to global delivery, we manage every step with precision, quality control and complete transparency.
             </p>
           </div>

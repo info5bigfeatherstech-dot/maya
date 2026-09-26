@@ -328,7 +328,7 @@ export default function Manufacturing() {
               High-Capacity Automated <br />
               <span className="text-[#2563EB]">Production Architecture.</span>
             </h2>
-            <p className="text-slate-600 mt-3.5 text-sm sm:text-base leading-relaxed">
+            <p className="text-slate-600 mt-3.5 text-sm sm:text-base leading-relaxed capitalize">
               Engineered end-to-end to eliminate bottlenecks, minimize variance, and absorb multi-million unit
               seasonal demand spikes for premier global fashion brands.
             </p>
@@ -359,7 +359,7 @@ export default function Manufacturing() {
             <span className="text-xs uppercase tracking-wider text-slate-700 font-semibold mt-1 block">
               Dedicated Assembly Lines
             </span>
-            <span className="text-[11px] text-slate-500 mt-0.5 block">
+            <span className="text-[11px] text-slate-500 mt-0.5 block capitalize">
               Flexible modular quick-change configuration
             </span>
           </div>
@@ -378,7 +378,7 @@ export default function Manufacturing() {
             <span className="text-xs uppercase tracking-wider text-slate-700 font-semibold mt-1 block">
               Daily Output Velocity
             </span>
-            <span className="text-[11px] text-slate-500 mt-0.5 block">
+            <span className="text-[11px] text-slate-500 mt-0.5 block capitalize">
               Continuous 2-shift high-efficiency run
             </span>
           </div>
@@ -397,7 +397,7 @@ export default function Manufacturing() {
             <span className="text-xs uppercase tracking-wider text-slate-700 font-semibold mt-1 block">
               Industrial Square Footage
             </span>
-            <span className="text-[11px] text-slate-500 mt-0.5 block">
+            <span className="text-[11px] text-slate-500 mt-0.5 block capitalize">
               Across smart campus manufacturing hub
             </span>
           </div>
@@ -416,7 +416,7 @@ export default function Manufacturing() {
             <span className="text-xs uppercase tracking-wider text-slate-700 font-semibold mt-1 block">
               Automated CNC Units
             </span>
-            <span className="text-[11px] text-slate-500 mt-0.5 block">
+            <span className="text-[11px] text-slate-500 mt-0.5 block capitalize">
               Japanese & German high-precision machinery
             </span>
           </div>
@@ -473,7 +473,7 @@ export default function Manufacturing() {
 
             {/* Content Body */}
             <div className="p-6 flex-1 flex flex-col justify-between space-y-5">
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed capitalize">
                 {facilities[0].description}
               </p>
 
@@ -557,7 +557,7 @@ export default function Manufacturing() {
 
             {/* Content Body */}
             <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed capitalize">
                 {facilities[1].description}
               </p>
 
@@ -635,7 +635,7 @@ export default function Manufacturing() {
 
             {/* Content Body */}
             <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed capitalize">
                 {facilities[2].description}
               </p>
 
@@ -713,7 +713,7 @@ export default function Manufacturing() {
 
             {/* Content Body */}
             <div className="p-6 flex-1 flex flex-col justify-between space-y-5">
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed capitalize">
                 {facilities[3].description}
               </p>
 
@@ -811,7 +811,7 @@ export default function Manufacturing() {
                   <p className="text-sm font-semibold text-brand-blue mb-4">
                     {selectedStation.subTitle}
                   </p>
-                  <p className="text-sm text-slate-600 leading-relaxed">
+                  <p className="text-sm text-slate-600 leading-relaxed capitalize">
                     {selectedStation.description}
                   </p>
                 </div>
