@@ -112,7 +112,7 @@ export default function ProductDetailView({ product, catalog }: ProductDetailVie
 
                 {/* Thumbnail Strip (Different angles: front, back, profile, detail) */}
                 {gallery.length > 1 && (
-                  <div className="flex items-center gap-3 overflow-x-auto pb-2">
+                  <div className="flex items-center gap-3 overflow-x-auto pb-2 no-scrollbar">
                     {gallery.map((img, idx) => {
                       const isSelected = selectedImageIndex === idx;
                       return (
@@ -262,7 +262,7 @@ export default function ProductDetailView({ product, catalog }: ProductDetailVie
 
           {/* Deep-Dive Production & Factory Standards Tabs */}
           <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-6 sm:p-8 mb-14">
-            <div className="flex items-center gap-4 border-b border-slate-200 pb-3 mb-6 overflow-x-auto">
+            <div className="flex items-center gap-4 border-b border-slate-200 pb-3 mb-6 overflow-x-auto no-scrollbar">
               <button
                 type="button"
                 onClick={() => setActiveTab("specs")}

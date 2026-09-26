@@ -73,9 +73,10 @@ html.lenis, html.lenis body {
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0A1C2A;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: #15354D;
@@ -84,3 +85,12 @@ html.lenis, html.lenis body {
 ::-webkit-scrollbar-thumb:hover {
   background: #2E9FC4;
 }
+
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+

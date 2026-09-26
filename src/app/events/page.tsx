@@ -249,7 +249,7 @@ export default function EventsPage() {
             </div>
 
             {/* Region Filter Buttons */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8">
+            <div className="flex flex-wrap items-center gap-2 mb-8">
               {[
                 { label: "All Trade Expos", key: "All" },
                 { label: "United States (USA)", key: "USA" },

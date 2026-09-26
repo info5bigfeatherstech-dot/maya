@@ -379,6 +379,13 @@ export default function Navbar({
               >
                 Contact Us
               </a>
+
+              <Link
+                href="/admin"
+                className="transition-colors hover:text-brand-blue relative py-1 text-[13px] font-medium text-blue-400 hover:text-blue-300 px-2 py-0.5 rounded border border-blue-500/30 bg-blue-500/10"
+              >
+                Admin
+              </Link>
             </nav>
 
             {/* Right Action: International Desk Dropdown + Gold-bordered CTA */}
@@ -681,6 +688,13 @@ export default function Navbar({
           >
             Contact Us
           </a>
+          <Link
+            href="/admin"
+            onClick={() => setMobileMenuOpen(false)}
+            className="block text-xl font-medium text-blue-400 hover:text-blue-300 transition-colors py-2 border-b border-deep-blue-border"
+          >
+            Admin ERP Portal
+          </Link>
         </div>
 
         <div className="space-y-4 pt-6 border-t border-deep-blue-border">
