@@ -44,12 +44,6 @@ import {
   SelectGroup,
   SelectLabel,
 } from "@/components/ui/admin-select";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from "@/components/ui/admin-tabs";
 import { Input } from "@/components/ui/admin-input";
 import {
   X,
@@ -66,6 +60,8 @@ import {
   Upload,
   Info,
   HelpCircle,
+  Tag,
+  ShoppingBag,
 } from "lucide-react";
 
 interface ProductFormModalProps {
@@ -77,8 +73,6 @@ interface ProductFormModalProps {
   customers: CustomerRecord[];
 }
 
-type TabType = "basic" | "specs" | "variants" | "pricing" | "orders" | "media";
-
 export function ProductFormModal({
   isOpen,
   onClose,
@@ -88,9 +82,6 @@ export function ProductFormModal({
   customers,
 }: ProductFormModalProps) {
   const isEditing = Boolean(initialProduct);
-
-  // Form State
-  const [activeTab, setActiveTab] = useState<TabType>("basic");
 
   // Form fields
   const [productCode, setProductCode] = useState("ST-1001");
@@ -167,14 +158,14 @@ export function ProductFormModal({
 
   // Media & Metadata
   const [description, setDescription] = useState(
-    "Floral printed maxi dress with gathered skirt tier and elastic smocking."
+    "Floor-grazing bohemian maxi dress featuring artisanal watercolor floral print, gathered tier skirts, and comfortable elastic smocking across back bodice. Tested for color fastness and shrinkage under international retail standards."
   );
   const [productImage, setProductImage] = useState(
     "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=800&q=80"
   );
   const [createdMonth, setCreatedMonth] = useState("March");
   const [createdYear, setCreatedYear] = useState("2026");
-  const [updatedAtDate, setUpdatedAtDate] = useState("Initial development tech pack created");
+  const [updatedAtDate, setUpdatedAtDate] = useState("Tech pack reviewed & ready stock confirmed for SS26 campaign");
 
   // Initialize or reset form
   useEffect(() => {
@@ -408,22 +399,13 @@ export function ProductFormModal({
     "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80",
   ];
 
-  const allTabs: TabType[] = [
-    "basic",
-    "specs",
-    "variants",
-    "pricing",
-    "orders",
-    "media",
-  ];
-
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-5xl max-h-[92vh] flex flex-col p-0 overflow-hidden">
-        {/* Shadcn Dialog Header */}
-        <DialogHeader className="px-6 py-4 border-b border-slate-200">
+        {/* Sticky Modal Header with Cross Icon */}
+        <DialogHeader className="px-6 py-4 border-b border-slate-200 bg-white sticky top-0 z-20 flex flex-row items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 font-bold text-sm">
+            <div className="w-8 h-8 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600 font-bold text-sm shrink-0">
               M
             </div>
             <div>
@@ -431,1344 +413,1306 @@ export function ProductFormModal({
                 {isEditing ? `Edit Product: ${productCode}` : "Create New Product Entry"}
               </DialogTitle>
               <DialogDescription className="text-xs text-slate-500">
-                Configure garment specifications, pricing, factory code and inventory using Shadcn UI.
+                Configure garment specifications, pricing, factory code and inventory in a single scroll.
               </DialogDescription>
             </div>
           </div>
+
+          {/* Close cross button */}
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-1.5 rounded-lg border border-slate-200 hover:border-slate-300 bg-white hover:bg-slate-100 text-slate-400 hover:text-slate-800 transition-colors shadow-2xs focus:outline-hidden focus:ring-2 focus:ring-blue-100"
+            title="Close modal (Esc)"
+            aria-label="Close"
+          >
+            <X className="w-5 h-5 text-slate-500 hover:text-slate-900" />
+          </button>
         </DialogHeader>
 
-        {/* Shadcn Tabs Stepper Header */}
-        <div className="px-6 py-2.5 bg-slate-50/70 border-b border-slate-200">
-          <Tabs
-            value={activeTab}
-            onValueChange={(val) => setActiveTab(val as TabType)}
-            className="w-full"
-          >
-            <TabsList className="w-full flex justify-start overflow-x-auto no-scrollbar bg-slate-200/50 p-1">
-              <TabsTrigger value="basic" className="gap-1.5 text-xs">
-                <Layers className="w-3.5 h-3.5" />
-                <span>1. Core & IDs</span>
-              </TabsTrigger>
-              <TabsTrigger value="specs" className="gap-1.5 text-xs">
-                <Package className="w-3.5 h-3.5" />
-                <span>2. Fabric & Specs</span>
-              </TabsTrigger>
-              <TabsTrigger value="variants" className="gap-1.5 text-xs">
-                <Info className="w-3.5 h-3.5" />
-                <span>3. Variant Matrix</span>
-              </TabsTrigger>
-              <TabsTrigger value="pricing" className="gap-1.5 text-xs">
-                <DollarSign className="w-3.5 h-3.5" />
-                <span>4. Factory & Pricing</span>
-              </TabsTrigger>
-              <TabsTrigger value="orders" className="gap-1.5 text-xs">
-                <Calendar className="w-3.5 h-3.5" />
-                <span>5. Buyer & Schedule</span>
-              </TabsTrigger>
-              <TabsTrigger value="media" className="gap-1.5 text-xs">
-                <Upload className="w-3.5 h-3.5" />
-                <span>6. Media & Notes</span>
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
-
-        {/* Form Body */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 md:p-8 space-y-6">
-          {/* TAB 1: CORE & IDS */}
-          {activeTab === "basic" && (
-            <div className="space-y-6 animate-in fade-in duration-150">
-              <div className="border-b border-slate-100 pb-3">
-                <h3 className="text-sm font-semibold text-slate-900">
-                  Identification, SKU & Visibility
+        {/* Single Scroll Form Body */}
+        <form
+          onSubmit={handleSubmit}
+          className="flex-1 overflow-y-auto p-6 md:p-8 space-y-10"
+        >
+          {/* SECTION 1: CORE IDENTIFICATION & VISIBILITY */}
+          <section className="space-y-4">
+            <div className="border-b border-slate-200 pb-2.5 flex items-center gap-2">
+              <Layers className="w-4 h-4 text-blue-600" />
+              <div>
+                <h3 className="text-sm font-bold text-slate-900">
+                  1. Core Identification & Visibility
                 </h3>
                 <p className="text-xs text-slate-500">
-                  Core garment codes, procurement reference, and catalog status.
+                  Primary SKU codes, internal style references, purchase order tags, and visibility status.
                 </p>
               </div>
+            </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {/* Product Code */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Product Code <span className="text-red-500">*</span>
-                  </label>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {/* Product Code */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Product Code <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  type="text"
+                  value={productCode}
+                  onChange={(e) => setProductCode(e.target.value)}
+                  placeholder="e.g. ST-1001"
+                  required
+                />
+                <span className="text-[11px] text-slate-500 mt-1 block">
+                  Internal garment style code
+                </span>
+              </div>
+
+              {/* SKU */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  SKU <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  type="text"
+                  value={sku}
+                  onChange={(e) => setSku(e.target.value)}
+                  placeholder="e.g. DRS-001"
+                  required
+                />
+                <span className="text-[11px] text-slate-500 mt-1 block">
+                  Stock Keeping Unit base
+                </span>
+              </div>
+
+              {/* Purchase Code */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Purchase Code <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  type="text"
+                  value={purchaseCode}
+                  onChange={(e) => setPurchaseCode(e.target.value)}
+                  placeholder="e.g. PUR-001"
+                  required
+                />
+                <span className="text-[11px] text-slate-500 mt-1 block">
+                  Procurement reference
+                </span>
+              </div>
+
+              {/* Product Name */}
+              <div className="md:col-span-3">
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Product Name <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  type="text"
+                  value={productName}
+                  onChange={(e) => setProductName(e.target.value)}
+                  placeholder="e.g. Floral Maxi Dress"
+                  className="font-medium text-slate-900"
+                  required
+                />
+              </div>
+
+              {/* Product Status (Shadcn Select) */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Product Status
+                </label>
+                <Select
+                  value={productStatus}
+                  onValueChange={(val) => setProductStatus(val as ProductStatus)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Active">Active (In Catalog)</SelectItem>
+                    <SelectItem value="Inactive">Inactive (Archived)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Featured Product (Shadcn Select) */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Featured Product
+                </label>
+                <Select
+                  value={featuredProduct}
+                  onValueChange={(val) => setFeaturedProduct(val as YesNo)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select option" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Yes">Yes (Pin to highlights)</SelectItem>
+                    <SelectItem value="No">No (Standard catalog)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Product Type (Shadcn Select with custom input) */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Product Type
+                </label>
+                <Select
+                  value={productType}
+                  onValueChange={(val) => setProductType(val)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select product type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {productTypeOptions.map((opt) => (
+                      <SelectItem key={opt} value={opt}>
+                        {opt}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {productType === "Custom" && (
                   <Input
                     type="text"
-                    value={productCode}
-                    onChange={(e) => setProductCode(e.target.value)}
-                    placeholder="e.g. ST-1001"
-                    required
+                    value={productTypeCustom}
+                    onChange={(e) => setProductTypeCustom(e.target.value)}
+                    placeholder="Type custom product type..."
+                    className="mt-2"
                   />
-                  <span className="text-[11px] text-slate-600 mt-1 block">
-                    Internal garment style code
-                  </span>
-                </div>
+                )}
+              </div>
+            </div>
+          </section>
 
-                {/* SKU */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    SKU <span className="text-red-500">*</span>
-                  </label>
+          {/* SECTION 2: CLASSIFICATION & FABRIC SPECS */}
+          <section className="space-y-4 pt-2">
+            <div className="border-b border-slate-200 pb-2.5 flex items-center gap-2">
+              <Package className="w-4 h-4 text-blue-600" />
+              <div>
+                <h3 className="text-sm font-bold text-slate-900">
+                  2. Classification & Fabric Specifications
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Target demographic, apparel category, yarn, fabric blend, GSM and size range.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {/* Gender */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Gender
+                </label>
+                <Select
+                  value={gender}
+                  onValueChange={(val) => setGender(val as GenderType)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select gender" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Women">Women</SelectItem>
+                    <SelectItem value="Men">Men</SelectItem>
+                    <SelectItem value="Unisex">Unisex</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Age Group */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Age Group
+                </label>
+                <Select
+                  value={ageGroup}
+                  onValueChange={(val) => setAgeGroup(val as AgeGroupType)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select age group" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Adult">Adult</SelectItem>
+                    <SelectItem value="Teen">Teen</SelectItem>
+                    <SelectItem value="Kids">Kids</SelectItem>
+                    <SelectItem value="Toddler">Toddler</SelectItem>
+                    <SelectItem value="Infant">Infant</SelectItem>
+                    <SelectItem value="Newborn">Newborn</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Category */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Category
+                </label>
+                <Select
+                  value={category}
+                  onValueChange={(val) => {
+                    const newCat = val as MainCategory;
+                    setCategory(newCat);
+                    const subs = categoriesList[newCat] || [];
+                    if (subs.length > 0) setSubcategory(subs[0]);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select category" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Object.keys(categoriesList).map((cat) => (
+                      <SelectItem key={cat} value={cat}>
+                        {cat}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Subcategory */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Subcategory
+                </label>
+                <Select
+                  value={subcategory}
+                  onValueChange={(val) => setSubcategory(val)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select subcategory" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(categoriesList[category] || ["General"]).map((sub) => (
+                      <SelectItem key={sub} value={sub}>
+                        {sub}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Collection */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Collection
+                </label>
+                <Select
+                  value={collection}
+                  onValueChange={(val) => setCollection(val)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select collection" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {collectionOptions.map((col) => (
+                      <SelectItem key={col} value={col}>
+                        {col}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {collection === "Custom" && (
                   <Input
                     type="text"
-                    value={sku}
-                    onChange={(e) => setSku(e.target.value)}
-                    placeholder="e.g. DRS-001"
-                    required
+                    value={collectionCustom}
+                    onChange={(e) => setCollectionCustom(e.target.value)}
+                    placeholder="Type custom collection name..."
+                    className="mt-2"
                   />
-                  <span className="text-[11px] text-slate-600 mt-1 block">
-                    Stock Keeping Unit base
-                  </span>
-                </div>
+                )}
+              </div>
 
-                {/* Purchase Code */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Purchase Code <span className="text-red-500">*</span>
-                  </label>
+              {/* Season */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Season
+                </label>
+                <Select
+                  value={season}
+                  onValueChange={(val) => setSeason(val)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select season" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {seasonOptions.map((s) => (
+                      <SelectItem key={s} value={s}>
+                        {s}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {season === "Custom" && (
                   <Input
                     type="text"
-                    value={purchaseCode}
-                    onChange={(e) => setPurchaseCode(e.target.value)}
-                    placeholder="e.g. PUR-001"
-                    required
+                    value={seasonCustom}
+                    onChange={(e) => setSeasonCustom(e.target.value)}
+                    placeholder="e.g. Resort 2027..."
+                    className="mt-2"
                   />
-                  <span className="text-[11px] text-slate-600 mt-1 block">
-                    Procurement reference
-                  </span>
-                </div>
+                )}
+              </div>
 
-                {/* Product Name */}
-                <div className="md:col-span-3">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Product Name <span className="text-red-500">*</span>
-                  </label>
+              {/* Fabric */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Fabric
+                </label>
+                <Input
+                  type="text"
+                  value={fabric}
+                  onChange={(e) => setFabric(e.target.value)}
+                  placeholder="e.g. Cotton / Viscose / Linen"
+                />
+              </div>
+
+              {/* Fabric Composition */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Fabric Composition
+                </label>
+                <Input
+                  type="text"
+                  value={fabricComposition}
+                  onChange={(e) => setFabricComposition(e.target.value)}
+                  placeholder="e.g. 100% Cotton"
+                />
+              </div>
+
+              {/* GSM */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  GSM (Fabric Weight)
+                </label>
+                <Input
+                  type="text"
+                  value={gsm}
+                  onChange={(e) => setGsm(e.target.value)}
+                  placeholder="e.g. 120"
+                />
+              </div>
+
+              {/* Pattern */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Pattern
+                </label>
+                <Input
+                  type="text"
+                  value={pattern}
+                  onChange={(e) => setPattern(e.target.value)}
+                  placeholder="e.g. Solid / Printed / Floral / Striped"
+                />
+              </div>
+
+              {/* Base Color */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Base / Primary Color
+                </label>
+                <Input
+                  type="text"
+                  value={color}
+                  onChange={(e) => setColor(e.target.value)}
+                  placeholder="e.g. Blue"
+                />
+              </div>
+
+              {/* Size Range */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Size Range
+                </label>
+                <Select
+                  value={sizeRange}
+                  onValueChange={(val) => setSizeRange(val)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select size range" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {defaultSizeRanges.map((sz) => (
+                      <SelectItem key={sz} value={sz}>
+                        {sz}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {sizeRange === "Custom" && (
                   <Input
                     type="text"
-                    value={productName}
-                    onChange={(e) => setProductName(e.target.value)}
-                    placeholder="e.g. Floral Maxi Dress"
-                    className="font-medium text-slate-900"
-                    required
+                    value={sizeRangeCustom}
+                    onChange={(e) => setSizeRangeCustom(e.target.value)}
+                    placeholder="e.g. 2, 4, 6, 8, 10, 12"
+                    className="mt-2"
                   />
-                </div>
+                )}
+              </div>
 
-                {/* Product Status (Shadcn Select) */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Product Status
-                  </label>
-                  <Select
-                    value={productStatus}
-                    onValueChange={(val) => setProductStatus(val as ProductStatus)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Active">Active (In Catalog)</SelectItem>
-                      <SelectItem value="Inactive">Inactive (Archived)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Featured Product (Shadcn Select) */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Featured Product
-                  </label>
-                  <Select
-                    value={featuredProduct}
-                    onValueChange={(val) => setFeaturedProduct(val as YesNo)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select option" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Yes">Yes (Pin to highlights)</SelectItem>
-                      <SelectItem value="No">No (Standard catalog)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Product Type (Shadcn Select with custom input) */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Product Type
-                  </label>
-                  <Select
-                    value={productType}
-                    onValueChange={(val) => setProductType(val)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select product type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {productTypeOptions.map((opt) => (
-                        <SelectItem key={opt} value={opt}>
-                          {opt}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {productType === "Custom" && (
-                    <Input
-                      type="text"
-                      value={productTypeCustom}
-                      onChange={(e) => setProductTypeCustom(e.target.value)}
-                      placeholder="Type custom product type..."
-                      className="mt-2"
-                    />
-                  )}
+              {/* Available Colors */}
+              <div className="md:col-span-3">
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Available Colors (Auto-fill or comma-separated list)
+                </label>
+                <Input
+                  type="text"
+                  value={availableColorsInput}
+                  onChange={(e) => setAvailableColorsInput(e.target.value)}
+                  placeholder="e.g. Blue, Pink, Green, White"
+                />
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  {availableColorsInput
+                    .split(",")
+                    .map((c) => c.trim())
+                    .filter(Boolean)
+                    .map((col, idx) => (
+                      <span
+                        key={idx}
+                        className="px-2 py-0.5 text-xs rounded-full bg-blue-50 text-blue-700 border border-blue-200 flex items-center gap-1"
+                      >
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
+                        {col}
+                      </span>
+                    ))}
                 </div>
               </div>
             </div>
-          )}
+          </section>
 
-          {/* TAB 2: SPECS & CLASSIFICATION */}
-          {activeTab === "specs" && (
-            <div className="space-y-6 animate-in fade-in duration-150">
-              <div className="border-b border-slate-100 pb-3">
-                <h3 className="text-sm font-semibold text-slate-900">
-                  Classification, Yarn & Fabric Specifications
-                </h3>
-                <p className="text-xs text-slate-500">
-                  Apparel category, demographic, fabric composition, GSM and colors.
-                </p>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {/* Gender (Shadcn Select) */}
+          {/* SECTION 3: VARIANT MATRIX */}
+          <section className="space-y-4 pt-2">
+            <div className="border-b border-slate-200 pb-2.5 flex flex-wrap items-center justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <Tag className="w-4 h-4 text-blue-600" />
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Gender
-                  </label>
-                  <Select
-                    value={gender}
-                    onValueChange={(val) => setGender(val as GenderType)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select gender" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Women">Women</SelectItem>
-                      <SelectItem value="Men">Men</SelectItem>
-                      <SelectItem value="Unisex">Unisex</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Age Group (Shadcn Select) */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Age Group
-                  </label>
-                  <Select
-                    value={ageGroup}
-                    onValueChange={(val) => setAgeGroup(val as AgeGroupType)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select age group" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Adult">Adult</SelectItem>
-                      <SelectItem value="Teen">Teen</SelectItem>
-                      <SelectItem value="Kids">Kids</SelectItem>
-                      <SelectItem value="Toddler">Toddler</SelectItem>
-                      <SelectItem value="Infant">Infant</SelectItem>
-                      <SelectItem value="Newborn">Newborn</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Category (Shadcn Select) */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Category
-                  </label>
-                  <Select
-                    value={category}
-                    onValueChange={(val) => {
-                      const newCat = val as MainCategory;
-                      setCategory(newCat);
-                      const subs = categoriesList[newCat] || [];
-                      if (subs.length > 0) setSubcategory(subs[0]);
-                    }}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {Object.keys(categoriesList).map((cat) => (
-                        <SelectItem key={cat} value={cat}>
-                          {cat}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Subcategory (Shadcn Select) */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Subcategory
-                  </label>
-                  <Select
-                    value={subcategory}
-                    onValueChange={(val) => setSubcategory(val)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select subcategory" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {(categoriesList[category] || ["General"]).map((sub) => (
-                        <SelectItem key={sub} value={sub}>
-                          {sub}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Collection (Shadcn Select with custom input) */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Collection
-                  </label>
-                  <Select
-                    value={collection}
-                    onValueChange={(val) => setCollection(val)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select collection" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {collectionOptions.map((col) => (
-                        <SelectItem key={col} value={col}>
-                          {col}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {collection === "Custom" && (
-                    <Input
-                      type="text"
-                      value={collectionCustom}
-                      onChange={(e) => setCollectionCustom(e.target.value)}
-                      placeholder="Type custom collection name..."
-                      className="mt-2"
-                    />
-                  )}
-                </div>
-
-                {/* Season (Shadcn Select with custom input) */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Season
-                  </label>
-                  <Select
-                    value={season}
-                    onValueChange={(val) => setSeason(val)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select season" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {seasonOptions.map((s) => (
-                        <SelectItem key={s} value={s}>
-                          {s}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {season === "Custom" && (
-                    <Input
-                      type="text"
-                      value={seasonCustom}
-                      onChange={(e) => setSeasonCustom(e.target.value)}
-                      placeholder="e.g. Resort 2027..."
-                      className="mt-2"
-                    />
-                  )}
-                </div>
-              </div>
-
-              {/* Textile Specs */}
-              <div className="pt-4 border-t border-slate-100 grid grid-cols-1 md:grid-cols-3 gap-5">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Fabric
-                  </label>
-                  <Input
-                    type="text"
-                    value={fabric}
-                    onChange={(e) => setFabric(e.target.value)}
-                    placeholder="e.g. Cotton / Viscose / Linen"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Fabric Composition
-                  </label>
-                  <Input
-                    type="text"
-                    value={fabricComposition}
-                    onChange={(e) => setFabricComposition(e.target.value)}
-                    placeholder="e.g. 100% Cotton"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    GSM (Fabric Weight)
-                  </label>
-                  <Input
-                    type="text"
-                    value={gsm}
-                    onChange={(e) => setGsm(e.target.value)}
-                    placeholder="e.g. 120"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Pattern
-                  </label>
-                  <Input
-                    type="text"
-                    value={pattern}
-                    onChange={(e) => setPattern(e.target.value)}
-                    placeholder="e.g. Solid / Printed / Floral / Striped"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Base / Primary Color
-                  </label>
-                  <Input
-                    type="text"
-                    value={color}
-                    onChange={(e) => setColor(e.target.value)}
-                    placeholder="e.g. Blue"
-                  />
-                </div>
-
-                {/* Size Range (Shadcn Select with custom) */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Size Range
-                  </label>
-                  <Select
-                    value={sizeRange}
-                    onValueChange={(val) => setSizeRange(val)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select size range" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {defaultSizeRanges.map((sz) => (
-                        <SelectItem key={sz} value={sz}>
-                          {sz}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {sizeRange === "Custom" && (
-                    <Input
-                      type="text"
-                      value={sizeRangeCustom}
-                      onChange={(e) => setSizeRangeCustom(e.target.value)}
-                      placeholder="e.g. 2, 4, 6, 8, 10, 12"
-                      className="mt-2"
-                    />
-                  )}
-                </div>
-
-                {/* Available Colors */}
-                <div className="md:col-span-3">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Available Colors (Auto-fill or comma-separated list)
-                  </label>
-                  <Input
-                    type="text"
-                    value={availableColorsInput}
-                    onChange={(e) => setAvailableColorsInput(e.target.value)}
-                    placeholder="e.g. Blue, Pink, Green, White"
-                  />
-                  <div className="flex flex-wrap gap-1.5 mt-2">
-                    {availableColorsInput
-                      .split(",")
-                      .map((c) => c.trim())
-                      .filter(Boolean)
-                      .map((col, idx) => (
-                        <span
-                          key={idx}
-                          className="px-2 py-0.5 text-xs rounded-full bg-blue-50 text-blue-700 border border-blue-200 flex items-center gap-1"
-                        >
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-600" />
-                          {col}
-                        </span>
-                      ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* TAB 3: VARIANTS MATRIX */}
-          {activeTab === "variants" && (
-            <div className="space-y-6 animate-in fade-in duration-150">
-              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-3">
-                <div>
-                  <h3 className="text-sm font-semibold text-slate-900">
-                    Variant Configuration & Matrix Builder
+                  <h3 className="text-sm font-bold text-slate-900">
+                    3. Variant Matrix & SKU Combinations
                   </h3>
                   <p className="text-xs text-slate-500">
                     Defines SKU variants for each combination of color & size with inventory and barcode tracking.
                   </p>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs font-medium text-slate-700">Enable Variants:</span>
-                  <div className="w-36">
-                    <Select
-                      value={variant}
-                      onValueChange={(val) => setVariant(val as YesNo)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Yes">Yes (Multi-Variant)</SelectItem>
-                        <SelectItem value="No">No (Single SKU)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-medium text-slate-700">Enable Variants:</span>
+                <div className="w-36">
+                  <Select
+                    value={variant}
+                    onValueChange={(val) => setVariant(val as YesNo)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Yes">Yes (Multi-Variant)</SelectItem>
+                      <SelectItem value="No">No (Single SKU)</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
+            </div>
 
-              {variant === "Yes" ? (
-                <div className="space-y-4">
-                  <div className="p-4 rounded-xl bg-blue-50/60 border border-blue-100 flex items-start gap-3">
-                    <HelpCircle className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-                    <div className="text-xs text-slate-700 space-y-1">
-                      <span className="font-semibold text-blue-900 block">
-                        How Variants Work in Maya Garments ERP:
-                      </span>
-                      <p>
-                        A variant represents one specific salable unit combination (e.g. <b>{sku || "DRS-001"}</b> in <b>Blue</b>, size <b>Medium</b> = <code>{sku || "DRS-001"}-BLU-M</code>). You can generate the entire matrix automatically from your selected Colors ({availableColorsInput || "none"}) and Sizes ({sizeRange}).
-                      </p>
-                    </div>
+            {variant === "Yes" ? (
+              <div className="space-y-4">
+                <div className="p-4 rounded-xl bg-blue-50/60 border border-blue-100 flex items-start gap-3">
+                  <HelpCircle className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+                  <div className="text-xs text-slate-700 space-y-1">
+                    <span className="font-semibold text-blue-900 block">
+                      How Variants Work in Maya Garments ERP:
+                    </span>
+                    <p>
+                      A variant represents one specific salable unit combination (e.g. <b>{sku || "DRS-001"}</b> in <b>Blue</b>, size <b>Medium</b> = <code>{sku || "DRS-001"}-BLU-M</code>). You can generate the entire matrix automatically from your selected Colors ({availableColorsInput || "none"}) and Sizes ({sizeRange}).
+                    </p>
                   </div>
+                </div>
 
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <button
-                      type="button"
-                      onClick={handleAutoGenerateVariants}
-                      className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition shadow-xs"
-                    >
-                      <RefreshCw className="w-3.5 h-3.5" />
-                      Auto-Generate Matrix from Colors & Sizes
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleAddManualVariant}
-                      className="inline-flex items-center gap-1 px-3 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-lg transition"
-                    >
-                      <Plus className="w-3.5 h-3.5 text-slate-500" />
-                      Add Single Variant
-                    </button>
-                  </div>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <button
+                    type="button"
+                    onClick={handleAutoGenerateVariants}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition shadow-xs"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5" />
+                    Auto-Generate Matrix from Colors & Sizes
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleAddManualVariant}
+                    className="inline-flex items-center gap-1 px-3 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 rounded-lg transition"
+                  >
+                    <Plus className="w-3.5 h-3.5 text-slate-500" />
+                    Add Single Variant
+                  </button>
+                </div>
 
-                  {variantDetails.length > 0 ? (
-                    <div className="border border-slate-200 rounded-xl overflow-hidden shadow-xs">
-                      <div className="max-h-80 overflow-y-auto">
-                        <table className="w-full text-left text-xs">
-                          <thead className="bg-slate-50 text-slate-600 uppercase font-semibold border-b border-slate-200 sticky top-0 z-1">
-                            <tr>
-                              <th className="py-2.5 px-3">Variant SKU</th>
-                              <th className="py-2.5 px-3">Color</th>
-                              <th className="py-2.5 px-3">Size</th>
-                              <th className="py-2.5 px-3">Barcode</th>
-                              <th className="py-2.5 px-3 text-right">Stock Qty</th>
-                              <th className="py-2.5 px-3 text-center">Status</th>
-                              <th className="py-2.5 px-3 text-center">Action</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-slate-100 bg-white">
-                            {variantDetails.map((v) => (
-                              <tr key={v.id} className="hover:bg-slate-50/50">
-                                <td className="py-2 px-3 font-mono">
-                                  <Input
-                                    type="text"
-                                    value={v.sku}
-                                    onChange={(e) =>
-                                      handleUpdateVariant(v.id, "sku", e.target.value)
-                                    }
-                                    className="font-mono text-xs h-8"
-                                  />
-                                </td>
-                                <td className="py-2 px-3">
-                                  <Input
-                                    type="text"
-                                    value={v.color}
-                                    onChange={(e) =>
-                                      handleUpdateVariant(v.id, "color", e.target.value)
-                                    }
-                                    className="w-24 text-xs h-8"
-                                  />
-                                </td>
-                                <td className="py-2 px-3">
-                                  <Input
-                                    type="text"
-                                    value={v.size}
-                                    onChange={(e) =>
-                                      handleUpdateVariant(v.id, "size", e.target.value)
-                                    }
-                                    className="w-16 text-xs h-8 text-center font-semibold"
-                                  />
-                                </td>
-                                <td className="py-2 px-3 font-mono">
-                                  <Input
-                                    type="text"
-                                    value={v.barcode}
-                                    onChange={(e) =>
-                                      handleUpdateVariant(v.id, "barcode", e.target.value)
-                                    }
-                                    className="w-32 text-xs font-mono h-8"
-                                  />
-                                </td>
-                                <td className="py-2 px-3 text-right">
-                                  <Input
-                                    type="number"
-                                    value={v.stockQty}
-                                    onChange={(e) =>
+                {variantDetails.length > 0 ? (
+                  <div className="border border-slate-200 rounded-xl overflow-hidden shadow-xs">
+                    <div className="max-h-80 overflow-y-auto">
+                      <table className="w-full text-left text-xs">
+                        <thead className="bg-slate-50 text-slate-600 uppercase font-semibold border-b border-slate-200 sticky top-0 z-1">
+                          <tr>
+                            <th className="py-2.5 px-3">Variant SKU</th>
+                            <th className="py-2.5 px-3">Color</th>
+                            <th className="py-2.5 px-3">Size</th>
+                            <th className="py-2.5 px-3">Barcode</th>
+                            <th className="py-2.5 px-3 text-right">Stock Qty</th>
+                            <th className="py-2.5 px-3 text-center">Status</th>
+                            <th className="py-2.5 px-3 text-center">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 bg-white">
+                          {variantDetails.map((v) => (
+                            <tr key={v.id} className="hover:bg-slate-50/50">
+                              <td className="py-2 px-3 font-mono">
+                                <Input
+                                  type="text"
+                                  value={v.sku}
+                                  onChange={(e) =>
+                                    handleUpdateVariant(v.id, "sku", e.target.value)
+                                  }
+                                  className="font-mono text-xs h-8"
+                                />
+                              </td>
+                              <td className="py-2 px-3">
+                                <Input
+                                  type="text"
+                                  value={v.color}
+                                  onChange={(e) =>
+                                    handleUpdateVariant(v.id, "color", e.target.value)
+                                  }
+                                  className="w-24 text-xs h-8"
+                                />
+                              </td>
+                              <td className="py-2 px-3">
+                                <Input
+                                  type="text"
+                                  value={v.size}
+                                  onChange={(e) =>
+                                    handleUpdateVariant(v.id, "size", e.target.value)
+                                  }
+                                  className="w-16 text-xs h-8 text-center font-semibold"
+                                />
+                              </td>
+                              <td className="py-2 px-3 font-mono">
+                                <Input
+                                  type="text"
+                                  value={v.barcode}
+                                  onChange={(e) =>
+                                    handleUpdateVariant(v.id, "barcode", e.target.value)
+                                  }
+                                  className="w-32 text-xs font-mono h-8"
+                                />
+                              </td>
+                              <td className="py-2 px-3 text-right">
+                                <Input
+                                  type="number"
+                                  value={v.stockQty}
+                                  onChange={(e) =>
+                                    handleUpdateVariant(
+                                      v.id,
+                                      "stockQty",
+                                      parseInt(e.target.value) || 0
+                                    )
+                                  }
+                                  className="w-20 text-xs text-right h-8"
+                                />
+                              </td>
+                              <td className="py-2 px-3 text-center">
+                                <div className="w-28 mx-auto">
+                                  <Select
+                                    value={v.status}
+                                    onValueChange={(val) =>
                                       handleUpdateVariant(
                                         v.id,
-                                        "stockQty",
-                                        parseInt(e.target.value) || 0
+                                        "status",
+                                        val as VariantDetail["status"]
                                       )
                                     }
-                                    className="w-20 text-xs text-right h-8"
-                                  />
-                                </td>
-                                <td className="py-2 px-3 text-center">
-                                  <div className="w-28 mx-auto">
-                                    <Select
-                                      value={v.status}
-                                      onValueChange={(val) =>
-                                        handleUpdateVariant(
-                                          v.id,
-                                          "status",
-                                          val as VariantDetail["status"]
-                                        )
-                                      }
-                                    >
-                                      <SelectTrigger className="h-8 text-[11px]">
-                                        <SelectValue />
-                                      </SelectTrigger>
-                                      <SelectContent>
-                                        <SelectItem value="In Stock">In Stock</SelectItem>
-                                        <SelectItem value="Low Stock">Low Stock</SelectItem>
-                                        <SelectItem value="Out of Stock">Out of Stock</SelectItem>
-                                      </SelectContent>
-                                    </Select>
-                                  </div>
-                                </td>
-                                <td className="py-2 px-3 text-center">
-                                  <button
-                                    type="button"
-                                    onClick={() => handleRemoveVariant(v.id)}
-                                    className="p-1 text-slate-400 hover:text-red-600 transition"
                                   >
-                                    <Trash2 className="w-3.5 h-3.5" />
-                                  </button>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+                                    <SelectTrigger className="h-8 text-[11px]">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="In Stock">In Stock</SelectItem>
+                                      <SelectItem value="Low Stock">Low Stock</SelectItem>
+                                      <SelectItem value="Out of Stock">Out of Stock</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                </div>
+                              </td>
+                              <td className="py-2 px-3 text-center">
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveVariant(v.id)}
+                                  className="p-1 text-slate-400 hover:text-red-600 transition"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
                     </div>
-                  ) : (
-                    <div className="py-8 border-2 border-dashed border-slate-200 rounded-xl text-center text-xs text-slate-500">
-                      Click &quot;Auto-Generate Matrix from Colors & Sizes&quot; above to build all variant SKU combinations.
-                    </div>
-                  )}
-                </div>
-              ) : (
-                <div className="py-10 text-center text-slate-500 text-xs bg-slate-50 rounded-xl border border-slate-200">
-                  Variants disabled for this product. The single base SKU <b>{sku}</b> will be used for all stock tracking.
-                </div>
-              )}
-            </div>
-          )}
+                  </div>
+                ) : (
+                  <div className="py-8 border-2 border-dashed border-slate-200 rounded-xl text-center text-xs text-slate-500">
+                    Click &quot;Auto-Generate Matrix from Colors & Sizes&quot; above to build all variant SKU combinations.
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="py-6 text-center text-slate-500 text-xs bg-slate-50 rounded-xl border border-slate-200">
+                Variants disabled for this product. The single base SKU <b>{sku}</b> will be used for all stock tracking.
+              </div>
+            )}
+          </section>
 
-          {/* TAB 4: FACTORY & PRICING */}
-          {activeTab === "pricing" && (
-            <div className="space-y-6 animate-in fade-in duration-150">
-              <div className="border-b border-slate-100 pb-3">
-                <h3 className="text-sm font-semibold text-slate-900">
-                  Manufacturing Factory, Costs & FOB Pricing
+          {/* SECTION 4: FACTORY SOURCING & COMMERCIAL PRICING */}
+          <section className="space-y-4 pt-2">
+            <div className="border-b border-slate-200 pb-2.5 flex items-center gap-2">
+              <DollarSign className="w-4 h-4 text-blue-600" />
+              <div>
+                <h3 className="text-sm font-bold text-slate-900">
+                  4. Manufacturing Factory Sourcing & Commercial Pricing
                 </h3>
                 <p className="text-xs text-slate-500">
                   Auto-generated factory identification code, database sourcing, export ports and pricing margins.
                 </p>
               </div>
+            </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {/* Factory Code with Auto Generate button */}
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-xs font-semibold text-slate-700">
-                      Factory Code <span className="text-red-500">*</span>
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setFactoryCode(
-                          generateFactoryCode(Math.floor(1 + Math.random() * 99))
-                        )
-                      }
-                      className="text-[11px] text-blue-600 hover:text-blue-800 font-medium inline-flex items-center gap-1"
-                    >
-                      <Sparkles className="w-3 h-3" /> Auto-Gen (F26-xxx)
-                    </button>
-                  </div>
-                  <Input
-                    type="text"
-                    value={factoryCode}
-                    onChange={(e) => setFactoryCode(e.target.value)}
-                    placeholder="e.g. F26-001"
-                    required
-                    className="font-mono font-semibold"
-                  />
-                  <span className="text-[11px] text-slate-600 mt-1 block">
-                    Auto-generated with current 2-digit year prefix (F26)
-                  </span>
-                </div>
-
-                {/* Factory Name (Shadcn Select) */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Factory Name (Select or Input)
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {/* Factory Code */}
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-semibold text-slate-700">
+                    Factory Code <span className="text-red-500">*</span>
                   </label>
-                  <Select
-                    value={factoryName}
-                    onValueChange={(val) => setFactoryName(val)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select Factory" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Registered Mills</SelectLabel>
-                        {factories.map((f) => (
-                          <SelectItem key={f.id} value={f.name}>
-                            {f.name} ({f.country})
-                          </SelectItem>
-                        ))}
-                        <SelectItem value="ABC Garments">ABC Garments</SelectItem>
-                        <SelectItem value="Custom">Other / Enter Below...</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  {factoryName === "Custom" && (
-                    <Input
-                      type="text"
-                      onChange={(e) => setFactoryName(e.target.value)}
-                      placeholder="Type factory name..."
-                      className="mt-2"
-                    />
-                  )}
-                </div>
-
-                {/* FOB Port (Shadcn Select) */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    FOB Port
-                  </label>
-                  <Select
-                    value={fobPort}
-                    onValueChange={(val) => setFobPort(val)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select FOB Port" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {fobPorts.map((port) => (
-                        <SelectItem key={port} value={port}>
-                          {port}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Factory Price EXW */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Factory Price (EXW)
-                  </label>
-                  <Input
-                    type="text"
-                    value={factoryPriceEXW}
-                    onChange={(e) => setFactoryPriceEXW(e.target.value)}
-                    placeholder="e.g. $7.20"
-                    className="font-medium"
-                  />
-                  <span className="text-[11px] text-slate-600 mt-1 block">
-                    Ex-Works factory purchase price
-                  </span>
-                </div>
-
-                {/* FOB Price */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    FOB Price
-                  </label>
-                  <Input
-                    type="text"
-                    value={fobPrice}
-                    onChange={(e) => setFobPrice(e.target.value)}
-                    placeholder="e.g. $8.00"
-                    className="font-medium"
-                  />
-                  <span className="text-[11px] text-slate-600 mt-1 block">
-                    Free on Board export price
-                  </span>
-                </div>
-
-                {/* Sale Price */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Sale Price
-                  </label>
-                  <Input
-                    type="text"
-                    value={salePrice}
-                    onChange={(e) => setSalePrice(e.target.value)}
-                    placeholder="e.g. $8.50"
-                    className="font-medium"
-                  />
-                  <span className="text-[11px] text-slate-600 mt-1 block">
-                    Final buyer quoting price
-                  </span>
-                </div>
-
-                {/* MOQ */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    MOQ (Minimum Order Qty)
-                  </label>
-                  <Input
-                    type="text"
-                    value={moq}
-                    onChange={(e) => setMoq(e.target.value)}
-                    placeholder="e.g. 500"
-                  />
-                </div>
-
-                {/* Quantity Unit (Shadcn Select) */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Quantity Unit
-                  </label>
-                  <Select
-                    value={quantityUnit}
-                    onValueChange={(val) =>
-                      setQuantityUnit(val as QuantityUnitType)
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setFactoryCode(
+                        generateFactoryCode(Math.floor(1 + Math.random() * 99))
+                      )
                     }
+                    className="text-[11px] text-blue-600 hover:text-blue-800 font-medium inline-flex items-center gap-1"
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select unit" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {quantityUnitOptions.map((unit) => (
-                        <SelectItem key={unit} value={unit}>
-                          {unit}
+                    <Sparkles className="w-3 h-3" /> Auto-Gen (F26-xxx)
+                  </button>
+                </div>
+                <Input
+                  type="text"
+                  value={factoryCode}
+                  onChange={(e) => setFactoryCode(e.target.value)}
+                  placeholder="e.g. F26-001"
+                  required
+                  className="font-mono font-semibold"
+                />
+                <span className="text-[11px] text-slate-500 mt-1 block">
+                  Auto-generated with current 2-digit year prefix (F26)
+                </span>
+              </div>
+
+              {/* Factory Name */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Factory Name (Select or Input)
+                </label>
+                <Select
+                  value={factoryName}
+                  onValueChange={(val) => setFactoryName(val)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Factory" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Registered Mills</SelectLabel>
+                      {factories.map((f) => (
+                        <SelectItem key={f.id} value={f.name}>
+                          {f.name} ({f.country})
                         </SelectItem>
                       ))}
-                    </SelectContent>
-                  </Select>
-                </div>
+                      <SelectItem value="ABC Garments">ABC Garments</SelectItem>
+                      <SelectItem value="Custom">Other / Enter Below...</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+                {factoryName === "Custom" && (
+                  <Input
+                    type="text"
+                    onChange={(e) => setFactoryName(e.target.value)}
+                    placeholder="Type factory name..."
+                    className="mt-2"
+                  />
+                )}
+              </div>
+
+              {/* FOB Port */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  FOB Port
+                </label>
+                <Select
+                  value={fobPort}
+                  onValueChange={(val) => setFobPort(val)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select FOB Port" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {fobPorts.map((port) => (
+                      <SelectItem key={port} value={port}>
+                        {port}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Factory Price EXW */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Factory Price (EXW)
+                </label>
+                <Input
+                  type="text"
+                  value={factoryPriceEXW}
+                  onChange={(e) => setFactoryPriceEXW(e.target.value)}
+                  placeholder="e.g. $7.20"
+                  className="font-medium"
+                />
+                <span className="text-[11px] text-slate-500 mt-1 block">
+                  Ex-Works factory purchase price
+                </span>
+              </div>
+
+              {/* FOB Price */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  FOB Price
+                </label>
+                <Input
+                  type="text"
+                  value={fobPrice}
+                  onChange={(e) => setFobPrice(e.target.value)}
+                  placeholder="e.g. $8.00"
+                  className="font-medium"
+                />
+                <span className="text-[11px] text-slate-500 mt-1 block">
+                  Free on Board export price
+                </span>
+              </div>
+
+              {/* Sale Price */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Sale Price
+                </label>
+                <Input
+                  type="text"
+                  value={salePrice}
+                  onChange={(e) => setSalePrice(e.target.value)}
+                  placeholder="e.g. $8.50"
+                  className="font-medium"
+                />
+                <span className="text-[11px] text-slate-500 mt-1 block">
+                  Final buyer quoting price
+                </span>
+              </div>
+
+              {/* MOQ */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  MOQ (Minimum Order Qty)
+                </label>
+                <Input
+                  type="text"
+                  value={moq}
+                  onChange={(e) => setMoq(e.target.value)}
+                  placeholder="e.g. 500"
+                />
+              </div>
+
+              {/* Quantity Unit */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Quantity Unit
+                </label>
+                <Select
+                  value={quantityUnit}
+                  onValueChange={(val) =>
+                    setQuantityUnit(val as QuantityUnitType)
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select unit" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {quantityUnitOptions.map((unit) => (
+                      <SelectItem key={unit} value={unit}>
+                        {unit}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
-          )}
+          </section>
 
-          {/* TAB 5: ORDERS, CUSTOMER & INVENTORY */}
-          {activeTab === "orders" && (
-            <div className="space-y-6 animate-in fade-in duration-150">
-              <div className="border-b border-slate-100 pb-3">
-                <h3 className="text-sm font-semibold text-slate-900">
-                  Buyer Account, Schedule & Ready Stock Inventory
+          {/* SECTION 5: BUYER ACCOUNT, SCHEDULE & READY STOCK */}
+          <section className="space-y-4 pt-2">
+            <div className="border-b border-slate-200 pb-2.5 flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-blue-600" />
+              <div>
+                <h3 className="text-sm font-bold text-slate-900">
+                  5. Buyer Account, Schedule & Ready Stock Inventory
                 </h3>
                 <p className="text-xs text-slate-500">
                   Customer style code auto-generation, repeat order history, shipment target dates and ready stock.
                 </p>
               </div>
+            </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                {/* Customer Name (Shadcn Select) */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Customer Name (Buyer)
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {/* Customer Name */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Customer Name (Buyer)
+                </label>
+                <Select
+                  value={customerName}
+                  onValueChange={(val) => setCustomerName(val)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select customer" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      <SelectLabel>Buyer Accounts</SelectLabel>
+                      {customers.map((c) => (
+                        <SelectItem key={c.id} value={c.name}>
+                          {c.name} ({c.country})
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="XYZ Fashion">XYZ Fashion</SelectItem>
+                      <SelectItem value="Custom">Other Customer...</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Customer Style Code */}
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-xs font-semibold text-slate-700">
+                    Customer Style Code <span className="text-red-500">*</span>
                   </label>
-                  <Select
-                    value={customerName}
-                    onValueChange={(val) => setCustomerName(val)}
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setCustomerStyleCode(
+                        generateCustomerStyleCode(Math.floor(1 + Math.random() * 99))
+                      )
+                    }
+                    className="text-[11px] text-blue-600 hover:text-blue-800 font-medium inline-flex items-center gap-1"
                   >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select customer" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectGroup>
-                        <SelectLabel>Buyer Accounts</SelectLabel>
-                        {customers.map((c) => (
-                          <SelectItem key={c.id} value={c.name}>
-                            {c.name} ({c.country})
-                          </SelectItem>
-                        ))}
-                        <SelectItem value="XYZ Fashion">XYZ Fashion</SelectItem>
-                        <SelectItem value="Custom">Other Customer...</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
+                    <Sparkles className="w-3 h-3" /> Auto-Gen (C26-xxx)
+                  </button>
                 </div>
+                <Input
+                  type="text"
+                  value={customerStyleCode}
+                  onChange={(e) => setCustomerStyleCode(e.target.value)}
+                  placeholder="e.g. C26-001 or XYZ-1001"
+                  required
+                  className="font-mono font-semibold"
+                />
+                <span className="text-[11px] text-slate-500 mt-1 block">
+                  Prefix C with current 2-digit year (C26-001)
+                </span>
+              </div>
 
-                {/* Customer Style Code with Auto Generate */}
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <label className="text-xs font-semibold text-slate-700">
-                      Customer Style Code <span className="text-red-500">*</span>
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setCustomerStyleCode(
-                          generateCustomerStyleCode(Math.floor(1 + Math.random() * 99))
-                        )
-                      }
-                      className="text-[11px] text-blue-600 hover:text-blue-800 font-medium inline-flex items-center gap-1"
-                    >
-                      <Sparkles className="w-3 h-3" /> Auto-Gen (C26-xxx)
-                    </button>
-                  </div>
-                  <Input
-                    type="text"
-                    value={customerStyleCode}
-                    onChange={(e) => setCustomerStyleCode(e.target.value)}
-                    placeholder="e.g. C26-001 or XYZ-1001"
-                    required
-                    className="font-mono font-semibold"
-                  />
-                  <span className="text-[11px] text-slate-600 mt-1 block">
-                    Prefix C with current 2-digit year (C26-001)
-                  </span>
-                </div>
+              {/* Repeat Order */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Repeat Order
+                </label>
+                <Select
+                  value={repeatOrder}
+                  onValueChange={(val) => setRepeatOrder(val as YesNo)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="No">No (Initial / First Run)</SelectItem>
+                    <SelectItem value="Yes">Yes (Repeat Order)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
 
-                {/* Repeat Order (Shadcn Select) */}
+              {/* Repeat Order Number */}
+              {repeatOrder === "Yes" && (
                 <div>
                   <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Repeat Order
+                    Repeat Order Number
                   </label>
                   <Select
-                    value={repeatOrder}
-                    onValueChange={(val) => setRepeatOrder(val as YesNo)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="No">No (Initial / First Run)</SelectItem>
-                      <SelectItem value="Yes">Yes (Repeat Order)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                {/* Repeat Order Number (Shadcn Select) */}
-                {repeatOrder === "Yes" && (
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                      Repeat Order Number
-                    </label>
-                    <Select
-                      value={repeatOrderNumber}
-                      onValueChange={(val) =>
-                        setRepeatOrderNumber(
-                          val as "1st" | "2nd" | "3rd" | "None"
-                        )
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="1st">1st Repeat</SelectItem>
-                        <SelectItem value="2nd">2nd Repeat</SelectItem>
-                        <SelectItem value="3rd">3rd Repeat</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                )}
-
-                {/* Development Date (Shadcn Selects for Month & Year) */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Development Date (Month & Year)
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Select
-                      value={devMonth}
-                      onValueChange={(val) => setDevMonth(val)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {monthsList.map((m) => (
-                          <SelectItem key={m} value={m}>
-                            {m}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Select
-                      value={devYear}
-                      onValueChange={(val) => setDevYear(val)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {yearsList.map((y) => (
-                          <SelectItem key={y} value={y}>
-                            {y}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                {/* Shipment Date (Shadcn Selects for Month & Year) */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Shipment Date (Month & Year)
-                  </label>
-                  <div className="grid grid-cols-2 gap-2">
-                    <Select
-                      value={shipMonth}
-                      onValueChange={(val) => setShipMonth(val)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {monthsList.map((m) => (
-                          <SelectItem key={m} value={m}>
-                            {m}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-
-                    <Select
-                      value={shipYear}
-                      onValueChange={(val) => setShipYear(val)}
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {yearsList.map((y) => (
-                          <SelectItem key={y} value={y}>
-                            {y}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                {/* Ready Stock Availability (Shadcn Select) */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Ready Stock Availability
-                  </label>
-                  <Select
-                    value={readyStockAvailability}
+                    value={repeatOrderNumber}
                     onValueChange={(val) =>
-                      setReadyStockAvailability(val as YesNo)
+                      setRepeatOrderNumber(
+                        val as "1st" | "2nd" | "3rd" | "None"
+                      )
                     }
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Yes">Yes (Stock On Hand)</SelectItem>
-                      <SelectItem value="No">No (Production on Order)</SelectItem>
+                      <SelectItem value="1st">1st Repeat</SelectItem>
+                      <SelectItem value="2nd">2nd Repeat</SelectItem>
+                      <SelectItem value="3rd">3rd Repeat</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
+              )}
 
-                {/* Ready Stock Quantity */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Ready Stock Quantity
-                  </label>
-                  <Input
-                    type="text"
-                    value={readyStockQuantity}
-                    onChange={(e) => setReadyStockQuantity(e.target.value)}
-                    placeholder="e.g. 2500"
-                  />
-                </div>
-
-                {/* Ready Stock Quantity Unit (Shadcn Select) */}
-                <div>
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Ready Stock Quantity Unit
-                  </label>
+              {/* Development Date */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Development Date (Month & Year)
+                </label>
+                <div className="grid grid-cols-2 gap-2">
                   <Select
-                    value={readyStockQuantityUnit}
-                    onValueChange={(val) =>
-                      setReadyStockQuantityUnit(val as QuantityUnitType)
-                    }
+                    value={devMonth}
+                    onValueChange={(val) => setDevMonth(val)}
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {quantityUnitOptions.map((unit) => (
-                        <SelectItem key={unit} value={unit}>
-                          {unit}
+                      {monthsList.map((m) => (
+                        <SelectItem key={m} value={m}>
+                          {m}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <Select
+                    value={devYear}
+                    onValueChange={(val) => setDevYear(val)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {yearsList.map((y) => (
+                        <SelectItem key={y} value={y}>
+                          {y}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
+              </div>
 
-                {/* Market Suitability */}
-                <div className="md:col-span-3">
-                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                    Market Suitability (Multi-select tags + custom addition)
-                  </label>
-                  <div className="flex flex-wrap items-center gap-2 mb-2">
-                    {marketOptions.map((m) => {
-                      const isSel = selectedMarkets.includes(m);
-                      return (
-                        <button
-                          key={m}
-                          type="button"
-                          onClick={() => toggleMarket(m)}
-                          className={`px-3 py-1 rounded-full text-xs font-medium transition ${
-                            isSel
-                              ? "bg-blue-600 text-white shadow-xs"
-                              : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200"
-                          }`}
-                        >
-                          {m} {isSel && "✓"}
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <div className="flex gap-2">
-                    <Input
-                      type="text"
-                      value={customMarket}
-                      onChange={(e) => setCustomMarket(e.target.value)}
-                      placeholder="Add another custom market (e.g. Scandinavia, GCC)..."
-                      className="flex-1"
-                    />
-                    <button
-                      type="button"
-                      onClick={handleAddCustomMarket}
-                      className="px-3.5 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-200 transition"
-                    >
-                      Add Market
-                    </button>
-                  </div>
+              {/* Shipment Date */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Shipment Date (Month & Year)
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <Select
+                    value={shipMonth}
+                    onValueChange={(val) => setShipMonth(val)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {monthsList.map((m) => (
+                        <SelectItem key={m} value={m}>
+                          {m}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <Select
+                    value={shipYear}
+                    onValueChange={(val) => setShipYear(val)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {yearsList.map((y) => (
+                        <SelectItem key={y} value={y}>
+                          {y}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {/* Ready Stock Availability */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Ready Stock Availability
+                </label>
+                <Select
+                  value={readyStockAvailability}
+                  onValueChange={(val) =>
+                    setReadyStockAvailability(val as YesNo)
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Yes">Yes (Stock On Hand)</SelectItem>
+                    <SelectItem value="No">No (Production on Order)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Ready Stock Quantity */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Ready Stock Quantity
+                </label>
+                <Input
+                  type="text"
+                  value={readyStockQuantity}
+                  onChange={(e) => setReadyStockQuantity(e.target.value)}
+                  placeholder="e.g. 2500"
+                />
+              </div>
+
+              {/* Ready Stock Quantity Unit */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Ready Stock Quantity Unit
+                </label>
+                <Select
+                  value={readyStockQuantityUnit}
+                  onValueChange={(val) =>
+                    setReadyStockQuantityUnit(val as QuantityUnitType)
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {quantityUnitOptions.map((unit) => (
+                      <SelectItem key={unit} value={unit}>
+                        {unit}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Market Suitability */}
+              <div className="md:col-span-3">
+                <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                  Market Suitability (Multi-select tags + custom addition)
+                </label>
+                <div className="flex flex-wrap items-center gap-2 mb-2">
+                  {marketOptions.map((m) => {
+                    const isSel = selectedMarkets.includes(m);
+                    return (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => toggleMarket(m)}
+                        className={`px-3 py-1 rounded-full text-xs font-medium transition ${
+                          isSel
+                            ? "bg-blue-600 text-white shadow-xs"
+                            : "bg-slate-100 text-slate-700 hover:bg-slate-200 border border-slate-200"
+                        }`}
+                      >
+                        {m} {isSel && "✓"}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="flex gap-2">
+                  <Input
+                    type="text"
+                    value={customMarket}
+                    onChange={(e) => setCustomMarket(e.target.value)}
+                    placeholder="Add another custom market (e.g. Scandinavia, GCC)..."
+                    className="flex-1"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddCustomMarket}
+                    className="px-3.5 py-1.5 text-xs font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg border border-slate-200 transition"
+                  >
+                    Add Market
+                  </button>
                 </div>
               </div>
             </div>
-          )}
+          </section>
 
-          {/* TAB 6: MEDIA, DESCRIPTION & AUDIT DATES */}
-          {activeTab === "media" && (
-            <div className="space-y-6 animate-in fade-in duration-150">
-              <div className="border-b border-slate-100 pb-3">
-                <h3 className="text-sm font-semibold text-slate-900">
-                  Product Image, Short Description & Timestamp History
+          {/* SECTION 6: MEDIA, DESCRIPTION & AUDIT DATES */}
+          <section className="space-y-4 pt-2">
+            <div className="border-b border-slate-200 pb-2.5 flex items-center gap-2">
+              <Upload className="w-4 h-4 text-blue-600" />
+              <div>
+                <h3 className="text-sm font-bold text-slate-900">
+                  6. Media, Technical Description & Timestamp History
                 </h3>
                 <p className="text-xs text-slate-500">
                   Visual garment preview photo, tech description, record creation date and latest update memo.
                 </p>
               </div>
+            </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                {/* Visual Preview */}
-                <div className="md:col-span-4 space-y-3">
-                  <label className="block text-xs font-semibold text-slate-700">
-                    Live Garment Image Preview
-                  </label>
-                  <div className="aspect-3/4 rounded-xl border border-slate-200 bg-slate-50 overflow-hidden flex items-center justify-center relative shadow-xs">
-                    {productImage ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={productImage}
-                        alt="Product Preview"
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="text-xs text-slate-400 text-center p-4">
-                        <Upload className="w-8 h-8 mx-auto mb-2 text-slate-300" />
-                        No image URL provided
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-medium text-slate-600 mb-1">
-                      Choose from Quick Garment Gallery:
-                    </label>
-                    <div className="grid grid-cols-6 gap-1.5">
-                      {sampleImages.map((img, i) => (
-                        <button
-                          key={i}
-                          type="button"
-                          onClick={() => setProductImage(img)}
-                          className={`aspect-square rounded-md overflow-hidden border-2 transition ${
-                            productImage === img
-                              ? "border-blue-600 scale-105"
-                              : "border-transparent opacity-70 hover:opacity-100"
-                          }`}
-                        >
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={img}
-                            alt={`Preset ${i}`}
-                            className="w-full h-full object-cover"
-                          />
-                        </button>
-                      ))}
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+              {/* Visual Preview */}
+              <div className="md:col-span-4 space-y-3">
+                <label className="block text-xs font-semibold text-slate-700">
+                  Live Garment Image Preview
+                </label>
+                <div className="aspect-3/4 rounded-xl border border-slate-200 bg-slate-50 overflow-hidden flex items-center justify-center relative shadow-xs">
+                  {productImage ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={productImage}
+                      alt="Product Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="text-xs text-slate-400 text-center p-4">
+                      <ShoppingBag className="w-8 h-8 mx-auto mb-2 text-slate-300" />
+                      No image URL provided
                     </div>
-                  </div>
+                  )}
                 </div>
-
-                {/* Inputs */}
-                <div className="md:col-span-8 space-y-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                      Product Image URL or Path
-                    </label>
-                    <Input
-                      type="text"
-                      value={productImage}
-                      onChange={(e) => setProductImage(e.target.value)}
-                      placeholder="https://images.unsplash.com/... or /products/sample.jpg"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                      Description (Short product description)
-                    </label>
-                    <textarea
-                      rows={4}
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      placeholder="Enter short technical and aesthetic description..."
-                      className="w-full px-3.5 py-2 text-xs bg-white border border-slate-300 rounded-lg text-slate-900 focus:outline-hidden focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition resize-none"
-                    />
-                  </div>
-
-                  {/* Created At Date (Shadcn Selects for Month & Year) */}
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                      Created At Date (Month & Year)
-                    </label>
-                    <div className="grid grid-cols-2 gap-2">
-                      <Select
-                        value={createdMonth}
-                        onValueChange={(val) => setCreatedMonth(val)}
+                <div>
+                  <label className="block text-[11px] font-medium text-slate-600 mb-1">
+                    Choose from Quick Garment Gallery:
+                  </label>
+                  <div className="grid grid-cols-6 gap-1.5">
+                    {sampleImages.map((img, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => setProductImage(img)}
+                        className={`aspect-square rounded-md overflow-hidden border-2 transition ${
+                          productImage === img
+                            ? "border-blue-600 scale-105"
+                            : "border-transparent opacity-70 hover:opacity-100"
+                        }`}
                       >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {monthsList.map((m) => (
-                            <SelectItem key={m} value={m}>
-                              {m}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-
-                      <Select
-                        value={createdYear}
-                        onValueChange={(val) => setCreatedYear(val)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {yearsList.map((y) => (
-                            <SelectItem key={y} value={y}>
-                              {y}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 mb-1.5">
-                      Updated At Note (Title / Short description of update)
-                    </label>
-                    <Input
-                      type="text"
-                      value={updatedAtDate}
-                      onChange={(e) => setUpdatedAtDate(e.target.value)}
-                      placeholder="e.g. Updated cost sheet and FOB port on Oct 2026"
-                    />
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={img}
+                          alt={`Preset ${i}`}
+                          className="w-full h-full object-cover"
+                        />
+                      </button>
+                    ))}
                   </div>
                 </div>
               </div>
-            </div>
-          )}
 
-          {/* Form Actions Footer */}
-          <div className="pt-6 border-t border-slate-200 flex items-center justify-between">
-            <div className="flex gap-2">
-              {activeTab !== "basic" && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    const currentIndex = allTabs.indexOf(activeTab);
-                    if (currentIndex > 0) setActiveTab(allTabs[currentIndex - 1]);
-                  }}
-                  className="px-3.5 py-1.5 text-xs font-medium text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition"
-                >
-                  &larr; Back
-                </button>
-              )}
-              {activeTab !== "media" && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    const currentIndex = allTabs.indexOf(activeTab);
-                    if (currentIndex < allTabs.length - 1)
-                      setActiveTab(allTabs[currentIndex + 1]);
-                  }}
-                  className="px-3.5 py-1.5 text-xs font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition border border-blue-200"
-                >
-                  Next Step &rarr;
-                </button>
-              )}
+              {/* Inputs */}
+              <div className="md:col-span-8 space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Product Image URL or Path
+                  </label>
+                  <Input
+                    type="text"
+                    value={productImage}
+                    onChange={(e) => setProductImage(e.target.value)}
+                    placeholder="https://images.unsplash.com/... or /products/sample.jpg"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Description (Short product description)
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Enter short technical and aesthetic description..."
+                    className="w-full px-3.5 py-2 text-xs bg-white border border-slate-300 rounded-lg text-slate-900 focus:outline-hidden focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition resize-none"
+                  />
+                </div>
+
+                {/* Created At Date */}
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Created At Date (Month & Year)
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <Select
+                      value={createdMonth}
+                      onValueChange={(val) => setCreatedMonth(val)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {monthsList.map((m) => (
+                          <SelectItem key={m} value={m}>
+                            {m}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+
+                    <Select
+                      value={createdYear}
+                      onValueChange={(val) => setCreatedYear(val)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {yearsList.map((y) => (
+                          <SelectItem key={y} value={y}>
+                            {y}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 mb-1.5">
+                    Updated At Note (Title / Short description of update)
+                  </label>
+                  <Input
+                    type="text"
+                    value={updatedAtDate}
+                    onChange={(e) => setUpdatedAtDate(e.target.value)}
+                    placeholder="e.g. Updated cost sheet and FOB port on Oct 2026"
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Sticky Form Actions Footer */}
+          <div className="pt-6 border-t border-slate-200 flex items-center justify-between sticky bottom-0 bg-white py-4 -mb-8 -mx-8 px-8 z-10">
+            <div className="text-xs text-slate-500">
+              Maya ERP &bull; Single Scroll Garment Form
             </div>
 
             <div className="flex items-center gap-2">

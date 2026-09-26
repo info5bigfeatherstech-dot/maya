@@ -133,12 +133,12 @@ export default function CareersPage() {
         </section>
 
         {/* 2. Career Growth Visual & Team Culture Section */}
-        <section className="py-16 sm:py-24 bg-deep-blue border-b border-deep-blue-border">
+        <section className="py-16 sm:py-24 bg-white text-slate-900 border-b border-slate-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center mb-16">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
               {/* Left Column: Studio Photo */}
               <div className="lg:col-span-6">
-                <div className="relative aspect-[16/10] w-full rounded-sm overflow-hidden bg-deep-blue-dark border border-deep-blue-border shadow-2xl group">
+                <div className="relative aspect-[16/10] w-full rounded-2xl overflow-hidden bg-slate-100 border border-slate-200 shadow-md group">
                   <Image
                     src="/careers/careers-team-culture.jpg"
                     alt="Maya Exports Creative Fashion Design & Merchandising Studio"
@@ -146,10 +146,10 @@ export default function CareersPage() {
                     sizes="(max-width: 1024px) 100vw, 50vw"
                     className="object-cover group-hover:scale-102 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-deep-blue-dark/80 via-transparent to-transparent pointer-events-none" />
-                  <div className="absolute bottom-4 left-4 right-4 bg-slate-900/85 backdrop-blur-xs p-3 rounded border border-white/10 text-xs">
-                    <span className="font-bold text-white block">Creative Design & Merchandising Studio</span>
-                    <span className="text-slate-light text-[11px]">Collaborative swatch reviews and 3D CAD pattern digitization at Maya Exports Hub</span>
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute bottom-4 left-4 right-4 bg-slate-900/85 backdrop-blur-md p-3.5 rounded-xl border border-white/10 text-xs">
+                    <span className="font-bold text-white block">Creative Design &amp; Merchandising Studio</span>
+                    <span className="text-slate-300 text-[11px]">Collaborative swatch reviews and 3D CAD pattern digitization at Maya Exports Hub</span>
                   </div>
                 </div>
               </div>
@@ -157,63 +157,63 @@ export default function CareersPage() {
               {/* Right Column: Life at Maya Exports */}
               <div className="lg:col-span-6 space-y-6">
                 <div>
-                  <span className="text-[11px] uppercase font-bold tracking-widest text-gold block mb-2">
-                    Our Culture & Work Environment
+                  <span className="text-xs uppercase font-bold tracking-wider text-blue-600 block mb-2">
+                    Our Culture &amp; Work Environment
                   </span>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-white font-display">
+                  <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-slate-900 font-display">
                     Where Creative Ambition Meets Global Scale
                   </h2>
                 </div>
 
-                <p className="text-xs sm:text-sm text-slate-light leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                   At Maya Exports Ltd., you are never just a cog in the wheel. Whether working on outerwear silhouettes for top US department stores, engineering ergonomic athletic footwear, or coordinating international ocean cargo from Xiamen Port — every role has direct visibility, accountability, and high-growth potential.
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                  <div className="p-4 rounded-sm bg-deep-blue-card border border-deep-blue-border space-y-1.5">
-                    <div className="flex items-center gap-2 text-brand-blue">
+                  <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200 hover:border-blue-400 hover:bg-white hover:shadow-md transition-all space-y-1.5 group/card">
+                    <div className="flex items-center gap-2 text-blue-600">
                       <Globe2 className="w-4 h-4" />
-                      <h4 className="text-xs font-bold text-white font-display uppercase tracking-wider">
+                      <h4 className="text-xs font-bold text-slate-900 font-display uppercase tracking-wider group-hover/card:text-blue-600 transition-colors">
                         Global Footprint
                       </h4>
                     </div>
-                    <p className="text-[11px] text-slate-muted leading-relaxed">
+                    <p className="text-[11px] text-slate-500 leading-relaxed">
                       Cross-border coordination with offices in Shishi City (Fujian), Hong Kong, and international retail clients.
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-sm bg-deep-blue-card border border-deep-blue-border space-y-1.5">
-                    <div className="flex items-center gap-2 text-gold">
+                  <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200 hover:border-amber-400 hover:bg-white hover:shadow-md transition-all space-y-1.5 group/card">
+                    <div className="flex items-center gap-2 text-amber-600">
                       <TrendingUp className="w-4 h-4" />
-                      <h4 className="text-xs font-bold text-white font-display uppercase tracking-wider">
+                      <h4 className="text-xs font-bold text-slate-900 font-display uppercase tracking-wider group-hover/card:text-amber-600 transition-colors">
                         Merit-Based Growth
                       </h4>
                     </div>
-                    <p className="text-[11px] text-slate-muted leading-relaxed">
+                    <p className="text-[11px] text-slate-500 leading-relaxed">
                       Fast-track promotion pathways and leadership responsibilities based on performance and creative impact.
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-sm bg-deep-blue-card border border-deep-blue-border space-y-1.5">
-                    <div className="flex items-center gap-2 text-emerald-400">
+                  <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200 hover:border-emerald-500 hover:bg-white hover:shadow-md transition-all space-y-1.5 group/card">
+                    <div className="flex items-center gap-2 text-emerald-600">
                       <Building2 className="w-4 h-4" />
-                      <h4 className="text-xs font-bold text-white font-display uppercase tracking-wider">
+                      <h4 className="text-xs font-bold text-slate-900 font-display uppercase tracking-wider group-hover/card:text-emerald-600 transition-colors">
                         Modern Tech Stack
                       </h4>
                     </div>
-                    <p className="text-[11px] text-slate-muted leading-relaxed">
+                    <p className="text-[11px] text-slate-500 leading-relaxed">
                       Automated pattern grading, 3D CLO visualization, computerized cutting, and in-house photo cycloramas.
                     </p>
                   </div>
 
-                  <div className="p-4 rounded-sm bg-deep-blue-card border border-deep-blue-border space-y-1.5">
-                    <div className="flex items-center gap-2 text-[#5ecba1]">
+                  <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200 hover:border-teal-500 hover:bg-white hover:shadow-md transition-all space-y-1.5 group/card">
+                    <div className="flex items-center gap-2 text-teal-600">
                       <HeartHandshake className="w-4 h-4" />
-                      <h4 className="text-xs font-bold text-white font-display uppercase tracking-wider">
+                      <h4 className="text-xs font-bold text-slate-900 font-display uppercase tracking-wider group-hover/card:text-teal-600 transition-colors">
                         Family Culture
                       </h4>
                     </div>
-                    <p className="text-[11px] text-slate-muted leading-relaxed">
+                    <p className="text-[11px] text-slate-500 leading-relaxed">
                       Comprehensive health support, continuous mentorship from senior directors, and team celebrations.
                     </p>
                   </div>
@@ -337,7 +337,7 @@ export default function CareersPage() {
         </section>
 
         {/* 4. Interactive Application Form */}
-        <section ref={formSectionRef} className="py-16 sm:py-20 bg-deep-blue border-b border-deep-blue-border">
+        {/* <section ref={formSectionRef} className="py-16 sm:py-20 bg-deep-blue border-b border-deep-blue-border">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="p-8 sm:p-12 rounded-sm bg-deep-blue-card border border-deep-blue-border shadow-2xl">
               <div className="mb-8 pb-4 border-b border-deep-blue-border">
@@ -480,7 +480,7 @@ export default function CareersPage() {
               )}
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* 5. General Application Banner ("Don’t see a position that fits? We still want to hear from you!") */}
         <section className="py-16 sm:py-20 bg-gradient-to-r from-deep-blue-dark via-deep-blue to-deep-blue-card border-b border-deep-blue-border">

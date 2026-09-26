@@ -127,7 +127,7 @@ export default function QualityControl() {
             </div>
 
             {/* In-House Testing Laboratory Stats */}
-            <div className="p-5 rounded-sm bg-pearl-gray/60 border-l-4 border-brand-blue border-y border-r border-pearl-gray">
+            {/* <div className="p-5 rounded-sm bg-pearl-gray/60 border-l-4 border-brand-blue border-y border-r border-pearl-gray">
               <div className="flex items-center justify-between flex-wrap gap-4">
                 <div>
                   <span className="text-[11px] uppercase tracking-wider text-brand-blue font-semibold block">
@@ -141,7 +141,7 @@ export default function QualityControl() {
                   AQL 1.0 Tolerances
                 </span>
               </div>
-            </div>
+            </div> */}
           </div>
 
           {/* Right Column: Visual Inspection Photo with Clip-Path Wipe */}

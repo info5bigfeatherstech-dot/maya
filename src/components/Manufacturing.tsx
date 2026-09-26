@@ -320,12 +320,13 @@ export default function Manufacturing() {
         {/* Section Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-12 gap-6">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-blue/10 border border-brand-blue/20 text-[11px] font-semibold uppercase tracking-widest text-brand-blue mb-3">
-              <Activity className="w-3.5 h-3.5" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-xs font-semibold uppercase tracking-wider text-blue-600 mb-3">
+              <Activity className="w-3.5 h-3.5 text-blue-600" />
               <span>Maya Manufacturing Infrastructure</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-deep-blue font-display">
-              High-Capacity Automated Production Architecture.
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 font-display leading-[1.15]">
+              High-Capacity Automated <br />
+              <span className="text-[#2563EB]">Production Architecture.</span>
             </h2>
             <p className="text-slate-600 mt-3.5 text-sm sm:text-base leading-relaxed">
               Engineered end-to-end to eliminate bottlenecks, minimize variance, and absorb multi-million unit

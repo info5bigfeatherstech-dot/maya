@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowUpRight, Menu, X, ShieldCheck, ChevronDown, ChevronRight, Globe } from "lucide-react";
 import MayaLogo from "./MayaLogo";
 import {
@@ -25,6 +26,26 @@ export default function Navbar({
   onOpenInfoModal,
   solid = false,
 }: NavbarProps) {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+  const isAbout = pathname === "/about" || pathname.startsWith("/about/");
+  const isProducts = pathname.startsWith("/products");
+  const isEvents = pathname === "/events" || pathname.startsWith("/events/");
+  const isCareers = pathname === "/careers" || pathname.startsWith("/careers/");
+  const isContact = pathname === "/contact" || pathname.startsWith("/contact/");
+
+  const getDesktopLinkClass = (isActive: boolean) =>
+    `transition-colors relative py-1 text-[14px] font-semibold after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[1.5px] after:bg-brand-blue after:transition-all after:duration-300 ${
+      isActive
+        ? "text-white after:w-full"
+        : "text-slate-light hover:text-brand-blue after:w-0 hover:after:w-full"
+    }`;
+
+  const getMobileLinkClass = (isActive: boolean) =>
+    `block text-xl font-medium transition-colors py-2 border-b border-deep-blue-border ${
+      isActive ? "text-brand-blue font-semibold" : "text-slate-100 hover:text-brand-blue"
+    }`;
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [isInnerPage, setIsInnerPage] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -195,19 +216,19 @@ export default function Navbar({
 
             {/* Desktop Navigation Links: Home | About Us | Products ▾ | Event | Career | Contact Us */}
             <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-slate-light">
-              <a
+              <Link
                 href="/"
-                className="transition-colors hover:text-brand-blue relative py-1 text-[14px] font-semibold text-white after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-brand-blue hover:after:w-full after:transition-all after:duration-300"
+                className={getDesktopLinkClass(isHome)}
               >
                 Home
-              </a>
+              </Link>
 
-              <a
+              <Link
                 href="/about"
-                className="transition-colors hover:text-brand-blue relative py-1 text-[14px] font-semibold after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-brand-blue hover:after:w-full after:transition-all after:duration-300"
+                className={getDesktopLinkClass(isAbout)}
               >
                 About Us
-              </a>
+              </Link>
 
               {/* Products ▾ Multi-Tier Mega Menu */}
               <div
@@ -361,31 +382,31 @@ export default function Navbar({
 
               <Link
                 href="/events"
-                className="transition-colors hover:text-brand-blue relative py-1 text-[14px] font-semibold after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-brand-blue hover:after:w-full after:transition-all after:duration-300"
+                className={getDesktopLinkClass(isEvents)}
               >
                 Events
               </Link>
 
               <Link
                 href="/careers"
-                className="transition-colors hover:text-brand-blue relative py-1 text-[14px] font-semibold after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-brand-blue hover:after:w-full after:transition-all after:duration-300"
+                className={getDesktopLinkClass(isCareers)}
               >
                 Careers
               </Link>
 
-              <a
+              <Link
                 href="/contact"
-                className="transition-colors hover:text-brand-blue relative py-1 text-[14px] font-semibold after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1.5px] after:bg-brand-blue hover:after:w-full after:transition-all after:duration-300"
+                className={getDesktopLinkClass(isContact)}
               >
                 Contact Us
-              </a>
+              </Link>
 
-              <Link
+              {/* <Link
                 href="/admin"
                 className="transition-colors hover:text-brand-blue relative py-1 text-[13px] font-medium text-blue-400 hover:text-blue-300 px-2 py-0.5 rounded border border-blue-500/30 bg-blue-500/10"
               >
                 Admin
-              </Link>
+              </Link> */}
             </nav>
 
             {/* Right Action: International Desk Dropdown + Gold-bordered CTA */}
@@ -455,20 +476,20 @@ export default function Navbar({
           <p className="text-xs uppercase tracking-widest text-brand-blue font-semibold mb-4">
             Navigation Index
           </p>
-          <a
+          <Link
             href="/"
             onClick={() => setMobileMenuOpen(false)}
-            className="block text-xl font-medium text-slate-100 hover:text-brand-blue transition-colors py-2 border-b border-deep-blue-border"
+            className={getMobileLinkClass(isHome)}
           >
             Home
-          </a>
-          <a
+          </Link>
+          <Link
             href="/about"
             onClick={() => setMobileMenuOpen(false)}
-            className="block text-xl font-medium text-slate-100 hover:text-brand-blue transition-colors py-2 border-b border-deep-blue-border"
+            className={getMobileLinkClass(isAbout)}
           >
             About Us
-          </a>
+          </Link>
           {/* Products Accordion in Mobile */}
           <div className="border-b border-deep-blue-border py-2">
             <button
@@ -670,24 +691,24 @@ export default function Navbar({
           <Link
             href="/events"
             onClick={() => setMobileMenuOpen(false)}
-            className="w-full text-left block text-xl font-medium text-slate-100 hover:text-brand-blue transition-colors py-2 border-b border-deep-blue-border"
+            className={getMobileLinkClass(isEvents)}
           >
             Events
           </Link>
           <Link
             href="/careers"
             onClick={() => setMobileMenuOpen(false)}
-            className="w-full text-left block text-xl font-medium text-slate-100 hover:text-brand-blue transition-colors py-2 border-b border-deep-blue-border"
+            className={getMobileLinkClass(isCareers)}
           >
             Careers
           </Link>
-          <a
+          <Link
             href="/contact"
             onClick={() => setMobileMenuOpen(false)}
-            className="block text-xl font-medium text-slate-100 hover:text-brand-blue transition-colors py-2 border-b border-deep-blue-border"
+            className={getMobileLinkClass(isContact)}
           >
             Contact Us
-          </a>
+          </Link>
           <Link
             href="/admin"
             onClick={() => setMobileMenuOpen(false)}

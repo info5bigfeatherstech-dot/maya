@@ -1,27 +1,32 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Check, MapPin, Building2, Factory, Palette, Leaf, ArrowRight } from "lucide-react";
-import Interactive3DGlobe, { PresenceCategory, COUNTRY_NAMES } from "./Interactive3DGlobe";
+import React, { useState } from "react";
+import {
+  MapPin,
+  Factory,
+  PenTool,
+  Leaf,
+  ChevronRight,
+  Building2,
+  Headphones,
+  Globe,
+  ArrowLeft,
+  ArrowRight,
+} from "lucide-react";
+import Interactive3DGlobe, {
+  PresenceCategory,
+  GLOBAL_HUBS,
+  GlobalHub,
+} from "./Interactive3DGlobe";
 
 export default function ExportMarkets() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-
-  // Counter refs
-  const stat1Ref = useRef<HTMLSpanElement>(null);
-  const stat2Ref = useRef<HTMLSpanElement>(null);
-  const stat3Ref = useRef<HTMLSpanElement>(null);
-  const stat4Ref = useRef<HTMLSpanElement>(null);
-
-  // Categories matching the user's reference screenshot
-  const [categories, setCategories] = useState<PresenceCategory[]>([
+  // 4 Main Presence Categories matching user's reference mockup
+  const categories: PresenceCategory[] = [
     {
       id: "offices",
       name: "Offices",
-      color: "#FF334B", // Vibrant red/coral matching screenshot
-      active: true, // Active by default as in screenshot
+      countSubtitle: "14 global offices",
+      color: "#2563EB", // Royal blue
       countryIds: [
         "840", // USA
         "124", // Canada
@@ -38,15 +43,26 @@ export default function ExportMarkets() {
         "036", // Australia
         "528", // Netherlands
       ],
-      description:
-        "14 International commercial offices & buyer desks across London, New York, Madrid, Istanbul, Cairo, Dubai, and Shanghai providing 24/7 dedicated enterprise account servicing.",
       stats: "14 Global Desks · 350+ Multilingual Staff",
+      description:
+        "14 international commercial offices & buyer desks across London, New York, Madrid, Istanbul, Cairo, Dubai, and Shanghai providing 24/7 dedicated enterprise account servicing.",
+      countries: [
+        "United States",
+        "Canada",
+        "United Kingdom",
+        "Germany",
+        "Spain",
+        "France",
+        "Italy",
+        "Turkey",
+      ],
+      moreCount: 6,
     },
     {
       id: "manufacturing",
       name: "Sourcing & Manufacturing",
-      color: "#313D48", // Dark charcoal matching screenshot
-      active: false,
+      countSubtitle: "Over 50+ partner factories",
+      color: "#334155", // Slate charcoal
       countryIds: [
         "156", // China
         "704", // Vietnam
@@ -58,15 +74,26 @@ export default function ExportMarkets() {
         "586", // Pakistan
         "116", // Cambodia
       ],
+      stats: "50+ Partner Mills · 4.8M Units/Month",
       description:
         "Vertically integrated smart manufacturing centers, certified dye facilities, and yarn spinning mills engineered for high-volume enterprise garment production.",
-      stats: "18 Owned & Partner Mills · 2.4M Pcs/Mo",
+      countries: [
+        "Bangladesh",
+        "India",
+        "Vietnam",
+        "China",
+        "Turkey",
+        "Egypt",
+        "Indonesia",
+        "Pakistan",
+      ],
+      moreCount: 5,
     },
     {
       id: "designers",
       name: "Designers",
-      color: "#7F90EB", // Soft periwinkle / lavender blue matching screenshot
-      active: false,
+      countSubtitle: "100+ in-house designers",
+      color: "#6366F1", // Indigo / periwinkle
       countryIds: [
         "826", // UK
         "250", // France
@@ -78,15 +105,26 @@ export default function ExportMarkets() {
         "752", // Sweden
         "276", // Germany
       ],
+      stats: "4 Design Hubs · 1,200+ Seasonal Styles",
       description:
         "In-house fashion design studios & 3D digital sampling ateliers in London, Paris, Milan, and Seoul developing over 1,200 commercial silhouettes every season.",
-      stats: "4 Design Hubs · 1,200+ Seasonal Styles",
+      countries: [
+        "United Kingdom",
+        "France",
+        "Italy",
+        "Spain",
+        "United States",
+        "Japan",
+        "South Korea",
+        "Germany",
+      ],
+      moreCount: 4,
     },
     {
       id: "esg",
       name: "ESG Team",
-      color: "#A3CE85", // Soft sage green matching screenshot
-      active: false,
+      countSubtitle: "Sustainable future, together",
+      color: "#10B981", // Emerald green
       countryIds: [
         "156", // China
         "704", // Vietnam
@@ -97,216 +135,267 @@ export default function ExportMarkets() {
         "826", // UK
         "578", // Norway
       ],
+      stats: "100% ZDHC Compliant · Higg FEM Verified",
       description:
         "On-site compliance officers conducting continuous ZDHC wastewater monitoring, Higg Index verification, and ethical labour audits at every production facility.",
-      stats: "100% ZDHC Compliant · Higg FEM Verified",
+      countries: [
+        "Germany",
+        "Netherlands",
+        "United Kingdom",
+        "Norway",
+        "Bangladesh",
+        "India",
+        "Vietnam",
+        "Denmark",
+      ],
+      moreCount: 8,
     },
-  ]);
+  ];
 
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("offices");
+  const [activeCategoryId, setActiveCategoryId] = useState<string>("offices");
+  const [activeHubIndex, setActiveHubIndex] = useState<number>(0);
 
-  // Toggle category on/off and select for details card (strictly on click, never on hover)
-  const toggleCategory = (id: string) => {
-    setCategories((prev) =>
-      prev.map((cat) => (cat.id === id ? { ...cat, active: !cat.active } : cat))
+  const activeCategory =
+    categories.find((c) => c.id === activeCategoryId) || categories[0];
+  const currentHub: GlobalHub = GLOBAL_HUBS[activeHubIndex] || GLOBAL_HUBS[0];
+
+  const handlePrevHub = () => {
+    setActiveHubIndex((prev) =>
+      prev === 0 ? GLOBAL_HUBS.length - 1 : prev - 1
     );
-    setSelectedCategoryId(id);
   };
 
-  // Find inspected category (stable: does NOT change on hover)
-  const primaryActiveCat =
-    categories.find((c) => c.id === selectedCategoryId) ||
-    categories.find((c) => c.active) ||
-    categories[0];
+  const handleNextHub = () => {
+    setActiveHubIndex((prev) =>
+      prev === GLOBAL_HUBS.length - 1 ? 0 : prev + 1
+    );
+  };
 
-  useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-
-    const ctx = gsap.context(() => {
-      const stats = [
-        { ref: stat1Ref, target: 45, prefix: "", suffix: "+" },
-        { ref: stat2Ref, target: 165, prefix: "$", suffix: "M" },
-        { ref: stat3Ref, target: 99.2, prefix: "", suffix: "%", isDecimal: true },
-        { ref: stat4Ref, target: 26, prefix: "", suffix: " Yrs" },
-      ];
-
-      stats.forEach((item) => {
-        if (!item.ref.current) return;
-        const targetVal = item.target;
-        const proxy = { val: 0 };
-
-        gsap.to(proxy, {
-          val: targetVal,
-          duration: 2,
-          ease: "power2.out",
-          scrollTrigger: {
-            trigger: item.ref.current,
-            start: "top 90%",
-            once: true,
-          },
-          onUpdate: () => {
-            if (item.ref.current) {
-              if (item.isDecimal) {
-                item.ref.current.innerText =
-                  item.prefix + proxy.val.toFixed(1) + item.suffix;
-              } else {
-                item.ref.current.innerText =
-                  item.prefix + Math.floor(proxy.val).toString() + item.suffix;
-              }
-            }
-          },
-        });
-      });
-    }, sectionRef);
-
-    return () => ctx.revert();
-  }, []);
+  // Helper icon for category
+  const getCategoryIcon = (id: string, className?: string) => {
+    switch (id) {
+      case "offices":
+        return <MapPin className={className} />;
+      case "manufacturing":
+        return <Factory className={className} />;
+      case "designers":
+        return <PenTool className={className} />;
+      case "esg":
+        return <Leaf className={className} />;
+      default:
+        return <Building2 className={className} />;
+    }
+  };
 
   return (
     <section
       id="export-markets"
-      ref={sectionRef}
-      className="bg-white text-slate-900 py-16 sm:py-24 relative overflow-hidden border-t border-b border-slate-200"
+      className="bg-white text-slate-900 py-16 sm:py-20 lg:py-24 relative overflow-hidden border-t border-slate-100"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Main Grid: Left Controls, Right 3D Globe matching user's reference image */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
-          {/* Left Column: Title & Checkboxes */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          {/* ================= LEFT COLUMN: Categories & Detail Card ================= */}
           <div className="lg:col-span-5 flex flex-col justify-center z-10">
-            {/* Title matching "PDS Around the World" */}
-            <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-bold tracking-tight text-slate-900 font-display leading-[1.15] mb-6">
-              Maya Around the <br />
-              World
-            </h2>
+            {/* 1. Header & Value Proposition */}
+            <div>
+              <span className="inline-block px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-600 text-xs font-semibold uppercase tracking-wider mb-3.5">
+                GLOBAL PRESENCE
+              </span>
 
-            {/* Checklist with exact styled square checkboxes matching screenshot */}
-            <div className="space-y-3.5 mb-6">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 leading-[1.15] mb-3">
+                Maya Around the <br />
+                World
+              </h2>
+
+              <p className="text-slate-500 text-sm leading-relaxed mb-6">
+                With a strong global network, Maya serves clients across continents,
+                ensuring seamless sourcing, manufacturing and delivery.
+              </p>
+            </div>
+
+            {/* 2. Selectable Categories List */}
+            <div className="space-y-2.5 mb-6">
               {categories.map((cat) => {
-                const isActive = cat.active;
+                const isActive = cat.id === activeCategoryId;
                 return (
-                  <div
+                  <button
                     key={cat.id}
-                    onClick={() => toggleCategory(cat.id)}
-                    className="flex items-center gap-3 cursor-pointer group select-none py-1 px-1.5 -mx-1.5 rounded hover:bg-slate-100/70 transition-colors"
+                    onClick={() => setActiveCategoryId(cat.id)}
+                    className={`w-full flex items-center justify-between p-3.5 rounded-xl border text-left transition-all duration-200 group ${
+                      isActive
+                        ? "bg-blue-50/80 border-blue-200 shadow-2xs"
+                        : "bg-white border-transparent hover:border-slate-200 hover:bg-slate-50/60"
+                    }`}
                   >
-                    {/* Custom colored square checkbox */}
-                    <div
-                      className="w-4.5 h-4.5 rounded-[4px] flex items-center justify-center transition-all duration-150 shadow-xs shrink-0"
-                      style={{
-                        backgroundColor: isActive ? cat.color : `${cat.color}33`,
-                        border: `2px solid ${cat.color}`,
-                      }}
-                    >
-                      {isActive && (
-                        <Check className="w-3 h-3 text-white stroke-[3]" />
-                      )}
+                    <div className="flex items-center gap-3.5">
+                      <div
+                        className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 transition-colors ${
+                          isActive
+                            ? "bg-blue-100/70 text-blue-600"
+                            : "bg-slate-100 text-slate-500 group-hover:text-slate-700"
+                        }`}
+                      >
+                        {getCategoryIcon(cat.id, "w-4.5 h-4.5")}
+                      </div>
+                      <div>
+                        <h4
+                          className={`text-sm font-bold transition-colors ${
+                            isActive
+                              ? "text-slate-900 font-semibold"
+                              : "text-slate-700 group-hover:text-slate-900"
+                          }`}
+                        >
+                          {cat.name}
+                        </h4>
+                        <p className="text-xs text-slate-400 mt-0.5">
+                          {cat.countSubtitle}
+                        </p>
+                      </div>
                     </div>
 
-                    {/* Label */}
-                    <span
-                      className={`text-sm font-medium transition-colors ${
-                        isActive
-                          ? "text-slate-900 font-semibold"
-                          : "text-slate-600 group-hover:text-slate-900"
+                    <ChevronRight
+                      className={`w-4 h-4 transition-transform group-hover:translate-x-0.5 ${
+                        isActive ? "text-blue-600" : "text-slate-400"
                       }`}
-                    >
-                      {cat.name}
-                    </span>
-                  </div>
+                    />
+                  </button>
                 );
               })}
             </div>
 
-            {/* Active Category Details Card */}
-            {primaryActiveCat && (
-              <div className="p-4 sm:p-5 rounded-lg bg-slate-50 border border-slate-200/80 transition-all duration-300">
-                <div className="flex items-center gap-2 mb-2">
-                  <div
-                    className="w-2.5 h-2.5 rounded-full"
-                    style={{ backgroundColor: primaryActiveCat.color }}
-                  />
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-                    {primaryActiveCat.name}
+            {/* 3. Bottom Detail Box for Active Category */}
+            <div className="rounded-2xl border border-blue-100 bg-blue-50/30 p-5 transition-all duration-300">
+              {/* Category meta header */}
+              <div className="flex items-center justify-between gap-3 mb-2.5">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-blue-100/70 text-blue-600 flex items-center justify-center shrink-0">
+                    {getCategoryIcon(activeCategory.id, "w-4 h-4")}
+                  </div>
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-900">
+                    {activeCategory.name}
                   </span>
-                  {primaryActiveCat.stats && (
-                    <span className="text-[11px] font-mono font-medium text-slate-500 ml-auto">
-                      {primaryActiveCat.stats}
-                    </span>
-                  )}
                 </div>
-                <p className="text-xs leading-relaxed text-slate-600 mb-3">
-                  {primaryActiveCat.description}
-                </p>
+                <span className="text-[11px] font-mono font-medium text-slate-500">
+                  {activeCategory.stats}
+                </span>
+              </div>
 
-                {/* Country tags */}
-                <div className="flex flex-wrap gap-1.5">
-                  {primaryActiveCat.countryIds.slice(0, 8).map((cId) => (
-                    <span
-                      key={cId}
-                      className="inline-block px-2 py-0.5 rounded text-[11px] font-medium bg-white border border-slate-200 text-slate-700"
-                    >
-                      {COUNTRY_NAMES[cId] || cId}
-                    </span>
-                  ))}
-                  {primaryActiveCat.countryIds.length > 8 && (
-                    <span className="inline-block px-2 py-0.5 rounded text-[11px] font-medium bg-slate-200/60 text-slate-600">
-                      +{primaryActiveCat.countryIds.length - 8} more
-                    </span>
-                  )}
+              {/* Description */}
+              <p className="text-xs leading-relaxed text-slate-600 mb-3.5">
+                {activeCategory.description}
+              </p>
+
+              {/* Country pill badges */}
+              <div className="flex flex-wrap gap-1.5">
+                {activeCategory.countries.map((cName) => (
+                  <span
+                    key={cName}
+                    className="inline-block px-2.5 py-1 rounded-full text-[11px] font-medium bg-white border border-slate-200/80 text-slate-700 shadow-2xs"
+                  >
+                    {cName}
+                  </span>
+                ))}
+                {activeCategory.moreCount && (
+                  <span className="inline-block px-2.5 py-1 rounded-full text-[11px] font-medium bg-blue-50 border border-blue-200 text-blue-600 shadow-2xs">
+                    +{activeCategory.moreCount} more
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* ================= RIGHT COLUMN: Interactive Globe & Floating Hub Card ================= */}
+          <div className="lg:col-span-7 relative flex flex-col items-center justify-center">
+            {/* Playful Handwritten Annotation with curved arrow pointing to globe */}
+            <div className="absolute top-2 left-2 sm:left-6 z-20 pointer-events-none hidden sm:flex flex-col items-start select-none">
+              <span className="text-xs font-medium text-blue-500 italic leading-snug">
+                Click on a region <br />
+                to explore our presence
+              </span>
+              <svg
+                className="w-10 h-8 text-blue-400 mt-1 ml-3"
+                viewBox="0 0 50 40"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M8 6 C 18 20, 26 26, 38 24" />
+                <path d="M31 18 L 38 24 L 32 30" />
+              </svg>
+            </div>
+
+            {/* Floating Selected Hub Card (Top Right of Globe) */}
+            <div className="absolute top-2 right-2 sm:right-4 z-20 bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-2xl p-4 shadow-lg w-56 sm:w-60 transition-all duration-300">
+              <div className="flex items-center justify-between pb-2.5 border-b border-slate-100 mb-2.5">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                    <MapPin className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="text-xs font-bold text-slate-900 truncate">
+                    {currentHub.name}
+                  </span>
+                </div>
+                <ChevronRight className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              </div>
+
+              <div className="space-y-1.5 text-xs">
+                <div className="flex items-center gap-2.5 text-slate-600">
+                  <Building2 className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <span className="truncate">{currentHub.office}</span>
+                </div>
+                <div className="flex items-center gap-2.5 text-slate-600">
+                  <Headphones className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <span className="truncate">{currentHub.support}</span>
+                </div>
+                <div className="flex items-center gap-2.5 text-slate-600">
+                  <Globe className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <span className="truncate">{currentHub.desk}</span>
                 </div>
               </div>
-            )}
-          </div>
+            </div>
 
-          {/* Right Column: 3D Interactive Globe */}
-          <div className="lg:col-span-7 relative flex items-center justify-center">
+            {/* 3D WebGL Globe Component */}
             <Interactive3DGlobe
-              categories={categories}
-              onToggleCategory={toggleCategory}
+              activeCategory={activeCategory}
+              activeHubIndex={activeHubIndex}
+              onSelectHub={setActiveHubIndex}
             />
-          </div>
-        </div>
 
-        {/* Bottom Stats Strip */}
-        <div className="mt-10 pt-6 border-t border-slate-200 grid grid-cols-2 lg:grid-cols-4 gap-4 text-center lg:text-left">
-          <div className="p-3.5 rounded-sm bg-slate-50 border border-slate-200/70">
-            <span
-              ref={stat1Ref}
-              className="block text-xl sm:text-2xl font-bold text-slate-900 font-display leading-tight"
-            >
-              45+
-            </span>
-            <span className="text-[11px] text-slate-500 font-medium">Countries Served</span>
-          </div>
+            {/* Carousel Controls (Below Globe) */}
+            <div className="flex items-center justify-center gap-4 mt-2 z-10">
+              <button
+                onClick={handlePrevHub}
+                className="w-8 h-8 rounded-full bg-white border border-slate-200 shadow-2xs flex items-center justify-center text-slate-600 hover:text-blue-600 hover:border-blue-400 transition-all cursor-pointer"
+                aria-label="Previous region"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" />
+              </button>
 
-          <div className="p-3.5 rounded-sm bg-slate-50 border border-slate-200/70">
-            <span
-              ref={stat2Ref}
-              className="block text-xl sm:text-2xl font-bold text-slate-900 font-display leading-tight"
-            >
-              $165M
-            </span>
-            <span className="text-[11px] text-slate-500 font-medium">Annual Export Volume</span>
-          </div>
+              <div className="flex items-center gap-1.5">
+                {GLOBAL_HUBS.map((hub, idx) => (
+                  <button
+                    key={hub.id}
+                    onClick={() => setActiveHubIndex(idx)}
+                    className={`h-2 rounded-full transition-all cursor-pointer ${
+                      activeHubIndex === idx
+                        ? "w-6 bg-blue-600"
+                        : "w-2 bg-slate-300 hover:bg-slate-400"
+                    }`}
+                    aria-label={`Go to ${hub.name}`}
+                  />
+                ))}
+              </div>
 
-          <div className="p-3.5 rounded-sm bg-slate-50 border border-slate-200/70">
-            <span
-              ref={stat3Ref}
-              className="block text-xl sm:text-2xl font-bold text-slate-900 font-display leading-tight"
-            >
-              99.2%
-            </span>
-            <span className="text-[11px] text-slate-500 font-medium">On-Time Vessel Departure</span>
-          </div>
-
-          <div className="p-3.5 rounded-sm bg-slate-50 border border-slate-200/70">
-            <span
-              ref={stat4Ref}
-              className="block text-xl sm:text-2xl font-bold text-slate-900 font-display leading-tight"
-            >
-              26 Yrs
-            </span>
-            <span className="text-[11px] text-slate-500 font-medium">Direct International Export</span>
+              <button
+                onClick={handleNextHub}
+                className="w-8 h-8 rounded-full bg-white border border-slate-200 shadow-2xs flex items-center justify-center text-slate-600 hover:text-blue-600 hover:border-blue-400 transition-all cursor-pointer"
+                aria-label="Next region"
+              >
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         </div>
       </div>

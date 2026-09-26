@@ -654,7 +654,7 @@ export default function AdminPage() {
             </div>
 
             {/* Quick Sourcing Info Box */}
-            <div className="p-3.5 bg-blue-50/50 rounded-xl border border-blue-100 text-xs space-y-1.5">
+            {/* <div className="p-3.5 bg-blue-50/50 rounded-xl border border-blue-100 text-xs space-y-1.5">
               <div className="font-semibold text-blue-900 flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-blue-600" />
                 <span>Auto Code Prefix</span>
@@ -662,17 +662,17 @@ export default function AdminPage() {
               <p className="text-[11px] text-slate-600">
                 Factory codes prefix with <b>F26-xxx</b> & Buyer style codes prefix with <b>C26-xxx</b>.
               </p>
-            </div>
+            </div> */}
           </div>
 
           {/* Sidebar Footer */}
-          <div className="p-4 border-t border-slate-200 text-[11px] text-slate-600 flex items-center justify-between">
+          {/* <div className="p-4 border-t border-slate-200 text-[11px] text-slate-600 flex items-center justify-between">
             <span>Maya Exports v2.6</span>
             <span className="text-emerald-700 font-medium flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
               Online
             </span>
-          </div>
+          </div> */}
         </aside>
 
         {/* MAIN BODY CONTENT */}

@@ -110,54 +110,81 @@ export default function AboutPage() {
           onOpenInfoModal={(type) => setInfoModalType(type)}
         />
 
-        {/* 1. Hero Section */}
-        <section className="relative pt-32 pb-16 sm:pt-40 sm:pb-24 overflow-hidden border-b border-deep-blue-border">
-          {/* Subtle background image & gradient */}
-          <div className="absolute inset-0 z-0 opacity-20 pointer-events-none">
-            <Image
-              src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&q=80&w=2000"
-              alt="Fashion boutique craftsmanship"
-              fill
-              className="object-cover"
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-deep-blue via-deep-blue/80 to-deep-blue/95" />
+        {/* 1. Hero Section (Matching User's Reference Mockup) */}
+        <section className="relative pt-32 pb-16 sm:pt-36 sm:pb-20 lg:pt-40 lg:pb-24 bg-white text-slate-900 overflow-hidden border-b border-slate-200">
+          {/* Subtle Abstract Cyan/Sky Curved Ribbons on Far Left */}
+          <div className="absolute -left-28 -top-28 w-[500px] h-[500px] rounded-full border-[40px] border-sky-100/50 pointer-events-none select-none -z-0" />
+          <div className="absolute -left-12 top-1/4 w-[380px] h-[380px] rounded-full border-[28px] border-sky-50/70 pointer-events-none select-none -z-0" />
+          <div className="absolute left-0 bottom-0 w-72 h-72 bg-gradient-to-tr from-sky-100/40 via-sky-50/20 to-transparent rounded-full blur-2xl pointer-events-none -z-0" />
+
+          {/* Right Boutique Showcase with Angled Diagonal Slice on Desktop */}
+          <div className="lg:absolute lg:top-36 lg:bottom-16 lg:right-0 lg:w-[48%] xl:w-[50%] overflow-hidden">
+            {/* Diagonal Clip Path Container */}
+            <div className="relative w-full h-[340px] sm:h-[420px] lg:h-full lg:[clip-path:polygon(14%_0,100%_0,100%_100%,0%_100%)]">
+              <Image
+                src="https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&q=85&w=1600"
+                alt="Luxury Fashion Showroom Craftsmanship"
+                fill
+                priority
+                className="object-cover object-center"
+              />
+
+              {/* Translucent Glass Blade / Diagonal Sheen Edge */}
+              <div className="absolute inset-y-0 left-0 w-12 sm:w-20 bg-gradient-to-r from-sky-400/35 via-sky-300/20 to-transparent pointer-events-none hidden lg:block" />
+
+              {/* Dark subtle gradient overlay on the bottom right for contrast */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent pointer-events-none" />
+
+              {/* Watermark: FASHION BEYOND BORDERS */}
+              <div className="absolute bottom-6 right-6 sm:bottom-8 sm:right-10 z-20 text-right select-none pointer-events-none">
+                <div className="text-[10px] sm:text-xs tracking-[0.35em] font-semibold text-white/90 uppercase leading-loose drop-shadow-md">
+                  F A S H I O N <br />
+                  B E Y O N D <br />
+                  B O R D E R S
+                </div>
+                <div className="w-10 h-0.5 bg-[#D4A54A] ml-auto mt-2 shadow-xs" />
+              </div>
+            </div>
           </div>
 
+          {/* Left Content Area */}
           <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="max-w-3xl">
-              {/* Eyebrow */}
-              <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-sm bg-deep-blue-card border border-deep-blue-border text-[11px] font-semibold uppercase tracking-widest text-brand-blue mb-4">
-                <Sparkles className="w-3.5 h-3.5 text-brand-blue" />
-                <span>Established 2003 · Over Two Decades of Excellence</span>
+            <div className="lg:w-[54%] xl:w-[52%] pr-0 lg:pr-6">
+              {/* Eyebrow Pill */}
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-sky-200 bg-sky-50/80 text-[11px] font-semibold uppercase tracking-wider text-sky-700 mb-5 shadow-2xs">
+                <Award className="w-3.5 h-3.5 text-sky-600 shrink-0" />
+                <span>ESTABLISHED 2003 · OVER TWO DECADES OF EXCELLENCE</span>
               </div>
 
-              {/* Title */}
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-tight font-display mb-6">
-                Where Creativity Meets Craftsmanship.
+              {/* Main Headline */}
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[54px] font-extrabold tracking-tight text-slate-900 leading-[1.08] font-display mb-5">
+                Where Creativity Meets <br />
+                <span className="text-[#0284C7]">Craftsmanship.</span>
               </h1>
 
-              {/* Quote / Subtitle */}
-              <p className="text-base sm:text-lg text-slate-light leading-relaxed mb-6 font-normal">
-                At <strong className="text-white font-semibold">Maya Exports Pvt Ltd.</strong>, creativity meets craftsmanship. We specialize in creating stylish, functional spaces that bring fashion to life. Our team blends modern design with classic aesthetics to reflect your brand’s identity—whether you’re launching a boutique or refreshing a retail space.
+              {/* Paragraph */}
+              <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl mb-8">
+                At <strong className="text-slate-900 font-semibold">Maya Exports Pvt Ltd.</strong>, creativity meets craftsmanship. We specialize in creating stylish, functional spaces that bring fashion to life. Our team blends modern design with classic aesthetics to reflect your brand’s identity—whether you’re launching a boutique or refreshing a retail space.
               </p>
 
-              <div className="flex flex-wrap items-center gap-3 pt-2">
+              {/* Two CTA Buttons */}
+              <div className="flex flex-wrap items-center gap-3.5">
                 <button
                   onClick={() => handleOpenQuote()}
-                  className="bg-brand-blue hover:bg-brand-blue-hover text-white font-semibold px-6 py-3 rounded-sm text-xs tracking-wider uppercase transition-all duration-300 flex items-center gap-2 shadow-lg hover:shadow-brand-blue/30"
+                  className="bg-[#0284C7] hover:bg-[#0369A1] active:scale-[0.98] text-white font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-lg shadow-md hover:shadow-lg transition-all flex items-center gap-2 cursor-pointer group"
                 >
-                  <span>Connect With Our Team</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-white" />
+                  <span>CONNECT WITH OUR TEAM</span>
+                  <ArrowUpRight className="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </button>
+
                 <a
                   href="https://mayaexportsltd.com/contact"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="border border-gold hover:bg-gold/10 text-gold px-5 py-3 rounded-sm text-xs font-semibold tracking-wider uppercase transition-all duration-300 flex items-center gap-2"
+                  className="border border-[#D4A54A] bg-white hover:bg-amber-50/40 active:scale-[0.98] text-[#C28B38] font-bold text-xs uppercase tracking-wider px-6 py-3.5 rounded-lg shadow-xs hover:shadow-sm transition-all flex items-center gap-2 cursor-pointer group"
                 >
-                  <span>mayaexportsltd.com/contact</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-gold" />
+                  <span>MAYAEXPORTSLTD.COM/CONTACT</span>
+                  <ArrowUpRight className="w-4 h-4 text-[#C28B38] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </a>
               </div>
             </div>
@@ -165,21 +192,21 @@ export default function AboutPage() {
         </section>
 
         {/* 2. Key Stats Strip */}
-        <section className="bg-deep-blue-dark py-8 border-b border-deep-blue-border">
+        <section className="bg-slate-50 py-8 border-b border-slate-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {stats.map((item, idx) => (
                 <div
                   key={idx}
-                  className="p-4 rounded-sm bg-deep-blue-card/60 border border-deep-blue-border"
+                  className="p-4 rounded-xl bg-white border border-slate-200/80 shadow-2xs hover:shadow-xs transition-all"
                 >
-                  <span className="block text-xl sm:text-2xl font-bold text-brand-blue font-display leading-tight">
+                  <span className="block text-xl sm:text-2xl font-bold text-[#0284C7] font-display leading-tight">
                     {item.value}
                   </span>
-                  <span className="text-xs font-semibold text-white uppercase tracking-wider mt-1 block">
+                  <span className="text-xs font-semibold text-slate-800 uppercase tracking-wider mt-1 block">
                     {item.label}
                   </span>
-                  <span className="text-[11px] text-slate-muted block mt-0.5">
+                  <span className="text-[11px] text-slate-500 block mt-0.5">
                     {item.sub}
                   </span>
                 </div>
