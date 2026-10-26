@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUpRight, Menu, X, ShieldCheck, ChevronDown, ChevronRight, Globe } from "lucide-react";
+import { ArrowUpRight, Menu, X, ShieldCheck, ChevronDown, Globe } from "lucide-react";
 import MayaLogo from "./MayaLogo";
 import {
   DropdownMenu,
@@ -13,7 +13,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { categoryToSlug } from "@/data/productCatalog";
+import { ProductsMobileMenu, ProductsNavMenu } from "@/components/ProductsNavMenu";
 
 interface NavbarProps {
   onOpenQuoteModal?: (category?: string) => void;
@@ -51,13 +51,7 @@ export default function Navbar({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [selectedRegion, setSelectedRegion] = useState("Global (EN)");
   const [productsOpen, setProductsOpen] = useState(false);
-  const [activeMainCategory, setActiveMainCategory] = useState("Garments");
-  const [activeDemographic, setActiveDemographic] = useState<string | null>(null);
   const [mobileProductsOpen, setMobileProductsOpen] = useState(false);
-  const [mobileGarmentsOpen, setMobileGarmentsOpen] = useState(true);
-  const [mobileMenOpen, setMobileMenOpen] = useState(true);
-  const [mobileFootwearOpen, setMobileFootwearOpen] = useState(false);
-  const [mobileFootwearMenOpen, setMobileFootwearMenOpen] = useState(false);
   const productsTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
   const productsContainerRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -107,88 +101,6 @@ export default function Navbar({
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const productCategories = [
-    { name: "Garments", hasSubmenu: true, desc: "Woven, knitwear, outerwear, denim & fashion lines" },
-    { name: "Footwear", hasSubmenu: true, desc: "Leather footwear, athletic sneakers, boots & casual" },
-    { name: "Home Textiles", hasSubmenu: false, desc: "Bed linens, luxury towels, curtains & furnishings" },
-    { name: "Fabrics", hasSubmenu: false, desc: "Cotton, synthetics, yarn-dyed & technical weaves" },
-    { name: "Electronics & Appliances", hasSubmenu: false, desc: "Consumer electronics, home & kitchen appliances" },
-  ];
-
-  const garmentDemographics: Record<string, string[]> = {
-    "Men": [
-      "Men's Jackets",
-      "Men's Sweat Top & Hoodies",
-      "Men's Shirts",
-      "Men's T-shirts",
-      "Men's Shorts & Lowers",
-      "Men's Jeans & Pants",
-    ],
-    "Women": [
-      "Women's Jackets & Blazers",
-      "Women's Sweat Tops & Hoodies",
-      "Women's Blouses & Shirts",
-      "Women's T-shirts & Tops",
-      "Women's Skirts & Shorts",
-      "Women's Jeans & Trousers",
-    ],
-    "Children": [
-      "Children's Jackets & Outerwear",
-      "Children's Hoodies & Sweat Tops",
-      "Children's School Shirts",
-      "Children's Graphic T-shirts",
-      "Children's Shorts & Pants",
-    ],
-    "Kids": [
-      "Kids Outerwear & Rompers",
-      "Kids Cotton T-shirts & Bodysuits",
-      "Kids Sweatshirts & Sets",
-      "Kids Soft Joggers & Leggings",
-    ],
-  };
-
-  const footwearDemographics: Record<string, string[]> = {
-    "Men": [
-      "Sports & Casual",
-      "Slippers & Sandals",
-      "Office Shoes",
-    ],
-    "Women": [
-      "Sports & Casual",
-      "Slippers & Sandals",
-      "Office Shoes",
-    ],
-    "Children": [
-      "Sports & Casual",
-      "Slippers & Sandals",
-      "Office Shoes",
-    ],
-    "Kids": [
-      "Sports & Casual",
-      "Slippers & Sandals",
-      "Office Shoes",
-    ],
-  };
-
-  const otherDivisionsInfo: Record<string, { desc: string; specs: string[] }> = {
-    "Footwear": {
-      desc: "Handcrafted leather shoes, performance athletic sneakers, casual loafers & boots.",
-      specs: ["High-durability EVA/Rubber outsoles", "Full-grain & nubuck leathers", "Direct factory MOQ: 500 pairs"],
-    },
-    "Home Textiles": {
-      desc: "400-1000TC luxury sateen bedding, hotel-grade toweling, curtains & upholstery.",
-      specs: ["GOTS certified organic cotton", "OEKO-TEX Standard 100", "Bespoke hotel & retail packaging"],
-    },
-    "Fabrics": {
-      desc: "Organic GOTS cotton, premium silk, linen blends, denim & technical performance textiles.",
-      specs: ["Automated circular & flat knits", "Continuous dyeing & finishing", "Direct mill MOQ: 1,500 meters"],
-    },
-    "Electronics & Appliances": {
-      desc: "Smart home electronics, small kitchen appliances, personal care devices & OEM/ODM hardware.",
-      specs: ["CE, RoHS & FCC certified", "Custom tooling & injection molding", "Turnkey OEM/ODM production"],
-    },
-  };
 
   const regions = [
     { code: "Global (EN)", label: "Global Edition (English)" },
@@ -253,131 +165,7 @@ export default function Navbar({
                   />
                 </button>
 
-                {/* Dropdown Mega Menu Container */}
-                <div
-                  className={`absolute top-full left-0 pt-2 transition-all duration-200 z-50 ${
-                    productsOpen
-                      ? "opacity-100 visible translate-y-0 pointer-events-auto"
-                      : "opacity-0 invisible -translate-y-1 pointer-events-none"
-                  }`}
-                >
-                  <div className="bg-deep-blue-card border border-deep-blue-border rounded-sm shadow-2xl backdrop-blur-md flex overflow-hidden transition-all duration-200">
-                    {/* Column 1: Main Export Divisions */}
-                    <div
-                      className={`w-[205px] p-2 bg-deep-blue-dark/60 shrink-0 ${
-                        activeMainCategory === "Garments" || activeMainCategory === "Footwear"
-                          ? "border-r border-deep-blue-border/70"
-                          : ""
-                      }`}
-                    >
-                      {productCategories.map((prod) => {
-                        const isSelected = activeMainCategory === prod.name;
-                        return (
-                          <div
-                            key={prod.name}
-                            onMouseEnter={() => {
-                              setActiveMainCategory(prod.name);
-                              setActiveDemographic(null);
-                            }}
-                            onClick={() => {
-                              if (!prod.hasSubmenu) {
-                                setProductsOpen(false);
-                                window.location.href = `/products/${categoryToSlug(prod.name)}`;
-                              }
-                            }}
-                            className={`w-full text-left flex items-center justify-between py-2 px-2.5 rounded-xs transition-colors cursor-pointer group ${
-                              isSelected
-                                ? "bg-deep-blue text-brand-blue font-semibold"
-                                : "text-slate-light hover:bg-deep-blue/60 hover:text-white"
-                            }`}
-                          >
-                            <span className="text-xs truncate">{prod.name}</span>
-                            {/* Chevron ONLY on Garments & Footwear as requested */}
-                            {prod.hasSubmenu && (
-                              <ChevronRight
-                                className={`w-3.5 h-3.5 transition-transform ${
-                                  isSelected ? "text-brand-blue translate-x-0.5" : "text-slate-muted opacity-60"
-                                }`}
-                              />
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-
-                    {/* Column 2 & 3: ONLY rendered for Garments & Footwear (Home Textiles, Fabrics, Electronics have NO sub-navbar) */}
-                    {(activeMainCategory === "Garments" || activeMainCategory === "Footwear") && (() => {
-                      const currentDemographics =
-                        activeMainCategory === "Garments"
-                          ? garmentDemographics
-                          : footwearDemographics;
-
-                      return (
-                        <div className="flex animate-in fade-in duration-150">
-                          {/* Column 2: Demographic Categories */}
-                          <div className="w-[140px] p-2 bg-deep-blue-card border-r border-deep-blue-border/70 shrink-0">
-                            {Object.keys(currentDemographics).map((demo) => {
-                              const isDemoActive = activeDemographic === demo;
-                              return (
-                                <div
-                                  key={demo}
-                                  onMouseEnter={() => setActiveDemographic(demo)}
-                                  onClick={() => {
-                                    if (activeDemographic !== demo) {
-                                      setActiveDemographic(demo);
-                                    }
-                                  }}
-                                  className={`w-full text-left flex items-center justify-between py-2 px-2.5 rounded-xs transition-all cursor-pointer group ${
-                                    isDemoActive
-                                      ? "bg-deep-blue text-brand-blue font-semibold border-l-2 border-brand-blue pl-2"
-                                      : "text-slate-light hover:bg-deep-blue/40 hover:text-white"
-                                  }`}
-                                >
-                                  <span className="text-xs">{demo}</span>
-                                  <ChevronRight
-                                    className={`w-3.5 h-3.5 transition-transform ${
-                                      isDemoActive
-                                        ? "text-brand-blue translate-x-1"
-                                        : "text-slate-muted opacity-50 group-hover:opacity-100"
-                                    }`}
-                                  />
-                                </div>
-                              );
-                            })}
-                          </div>
-
-                          {/* Column 3: The Drawer / Dropdown that appears whenever hovering Men (or any demographic) */}
-                          {activeDemographic ? (
-                            <div className="w-[240px] p-2 bg-deep-blue-dark/50 overflow-y-auto max-h-[300px] shrink-0 animate-in fade-in slide-in-from-left-2 duration-150">
-                              <div className="space-y-0.5">
-                                {currentDemographics[activeDemographic]?.map((item) => (
-                                  <button
-                                    key={item}
-                                    type="button"
-                                    onClick={() => {
-                                      setProductsOpen(false);
-                                      const slug =
-                                        activeMainCategory === "Footwear"
-                                          ? categoryToSlug(`${activeDemographic} ${item}`)
-                                          : categoryToSlug(item);
-                                      window.location.href = `/products/${slug}`;
-                                    }}
-                                    className="w-full text-left py-1.5 px-2 rounded-xs text-xs text-slate-light hover:text-white hover:bg-deep-blue transition-colors flex items-center justify-between group/sub cursor-pointer"
-                                  >
-                                    <span className="group-hover/sub:text-brand-blue transition-colors">
-                                      {item}
-                                    </span>
-                                    <ArrowUpRight className="w-3 h-3 text-slate-muted opacity-0 group-hover/sub:opacity-100 transition-opacity" />
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          ) : null}
-                        </div>
-                      );
-                    })()}
-                  </div>
-                </div>
+                <ProductsNavMenu open={productsOpen} onClose={() => setProductsOpen(false)} />
               </div>
 
               <Link
@@ -505,188 +293,11 @@ export default function Navbar({
               />
             </button>
 
-            {mobileProductsOpen && (
+            {mobileProductsOpen ? (
               <div className="mt-3 pl-3 space-y-2 border-l border-brand-blue/30 text-sm">
-                {/* Garments Tier */}
-                <div>
-                  <button
-                    type="button"
-                    onClick={() => setMobileGarmentsOpen(!mobileGarmentsOpen)}
-                    className="w-full flex items-center justify-between py-1 text-slate-200 hover:text-brand-blue font-semibold text-sm"
-                  >
-                    <span className="text-brand-blue">Garments</span>
-                    <ChevronDown
-                      className={`w-4 h-4 text-brand-blue transition-transform duration-200 ${
-                        mobileGarmentsOpen ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
-
-                  {mobileGarmentsOpen && (
-                    <div className="mt-2 pl-3 space-y-2 border-l border-gold/40">
-                      {/* Men */}
-                      <div>
-                        <button
-                          type="button"
-                          onClick={() => setMobileMenOpen(!mobileMenOpen)}
-                          className="w-full flex items-center justify-between py-1 text-gold hover:text-white font-medium text-xs uppercase tracking-wider"
-                        >
-                          <span>Men</span>
-                          <ChevronDown
-                            className={`w-3.5 h-3.5 text-gold transition-transform duration-200 ${
-                              mobileMenOpen ? "rotate-180" : ""
-                            }`}
-                          />
-                        </button>
-
-                        {mobileMenOpen && (
-                          <div className="mt-1 pl-2 space-y-1">
-                            {garmentDemographics["Men"]?.map((item) => (
-                              <button
-                                key={item}
-                                type="button"
-                                onClick={() => {
-                                  setMobileMenuOpen(false);
-                                  const slug = categoryToSlug(item);
-                                  window.location.href = `/products/${slug}`;
-                                }}
-                                className="w-full text-left py-1 text-xs text-slate-light hover:text-brand-blue transition-colors flex items-center justify-between"
-                              >
-                                <span>{item}</span>
-                                <ArrowUpRight className="w-3 h-3 text-slate-muted" />
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Other Garment Demographics: Women, Children, Kids */}
-                      {["Women", "Children", "Kids"].map((demo) => (
-                        <div key={demo} className="pt-1">
-                          <span className="text-xs text-slate-muted font-medium uppercase tracking-wider block mb-1">
-                            {demo}
-                          </span>
-                          <div className="pl-2 space-y-1">
-                            {garmentDemographics[demo]?.map((item) => (
-                              <button
-                                key={item}
-                                type="button"
-                                onClick={() => {
-                                  setMobileMenuOpen(false);
-                                  const slug = categoryToSlug(item);
-                                  window.location.href = `/products/${slug}`;
-                                }}
-                                className="w-full text-left py-0.5 text-xs text-slate-light hover:text-brand-blue transition-colors"
-                              >
-                                {item}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Footwear Tier (Accordion) */}
-                <div>
-                  <button
-                    type="button"
-                    onClick={() => setMobileFootwearOpen(!mobileFootwearOpen)}
-                    className="w-full flex items-center justify-between py-1 text-slate-200 hover:text-brand-blue font-semibold text-sm"
-                  >
-                    <span className="text-brand-blue">Footwear</span>
-                    <ChevronDown
-                      className={`w-4 h-4 text-brand-blue transition-transform duration-200 ${
-                        mobileFootwearOpen ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
-
-                  {mobileFootwearOpen && (
-                    <div className="mt-2 pl-3 space-y-2 border-l border-gold/40">
-                      {/* Men Footwear */}
-                      <div>
-                        <button
-                          type="button"
-                          onClick={() => setMobileFootwearMenOpen(!mobileFootwearMenOpen)}
-                          className="w-full flex items-center justify-between py-1 text-gold hover:text-white font-medium text-xs uppercase tracking-wider"
-                        >
-                          <span>Men</span>
-                          <ChevronDown
-                            className={`w-3.5 h-3.5 text-gold transition-transform duration-200 ${
-                              mobileFootwearMenOpen ? "rotate-180" : ""
-                            }`}
-                          />
-                        </button>
-
-                        {mobileFootwearMenOpen && (
-                          <div className="mt-1 pl-2 space-y-1">
-                            {footwearDemographics["Men"]?.map((item) => (
-                              <button
-                                key={item}
-                                type="button"
-                                onClick={() => {
-                                  setMobileMenuOpen(false);
-                                  const slug = categoryToSlug(`Men ${item}`);
-                                  window.location.href = `/products/${slug}`;
-                                }}
-                                className="w-full text-left py-1 text-xs text-slate-light hover:text-brand-blue transition-colors flex items-center justify-between"
-                              >
-                                <span>{item}</span>
-                                <ArrowUpRight className="w-3 h-3 text-slate-muted" />
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Women, Children & Kids Footwear */}
-                      {["Women", "Children", "Kids"].map((demo) => (
-                        <div key={demo} className="pt-1">
-                          <span className="text-xs text-slate-muted font-medium uppercase tracking-wider block mb-1">
-                            {demo}
-                          </span>
-                          <div className="pl-2 space-y-1">
-                            {footwearDemographics[demo]?.map((item) => (
-                              <button
-                                key={item}
-                                type="button"
-                                onClick={() => {
-                                  setMobileMenuOpen(false);
-                                  const slug = categoryToSlug(`${demo} ${item}`);
-                                  window.location.href = `/products/${slug}`;
-                                }}
-                                className="w-full text-left py-0.5 text-xs text-slate-light hover:text-brand-blue transition-colors"
-                              >
-                                {item}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-
-                {/* Direct Action Divisions (NO sub-navbar) */}
-                {["Home Textiles", "Fabrics", "Electronics & Appliances"].map((cat) => (
-                  <button
-                    key={cat}
-                    type="button"
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      window.location.href = `/products/${categoryToSlug(cat)}`;
-                    }}
-                    className="w-full text-left py-1.5 text-slate-300 hover:text-white flex items-center justify-between text-xs"
-                  >
-                    <span>{cat}</span>
-                    <ArrowUpRight className="w-3 h-3 text-slate-muted opacity-60" />
-                  </button>
-                ))}
+                <ProductsMobileMenu onNavigate={() => setMobileMenuOpen(false)} />
               </div>
-            )}
+            ) : null}
           </div>
           <Link
             href="/events"
@@ -708,13 +319,6 @@ export default function Navbar({
             className={getMobileLinkClass(isContact)}
           >
             Contact Us
-          </Link>
-          <Link
-            href="/admin"
-            onClick={() => setMobileMenuOpen(false)}
-            className="block text-xl font-medium text-blue-400 hover:text-blue-300 transition-colors py-2 border-b border-deep-blue-border"
-          >
-            Admin ERP Portal
           </Link>
         </div>
 

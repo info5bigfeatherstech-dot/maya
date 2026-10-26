@@ -1,70 +1,47 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import QuoteModal from "@/components/QuoteModal";
 import InfoModal from "@/components/InfoModal";
-import { CategoryCatalog, ProductItem } from "@/data/productCatalog";
+import { CatalogImage } from "@/components/CatalogImage";
+import type { CatalogCategory, CatalogProduct } from "@/lib/catalog/types";
+import { formatModelNo, splitProductCopy } from "@/lib/catalog/tree";
 import { ChevronRight, ShieldCheck, ArrowRight } from "lucide-react";
 
 interface ProductCatalogViewProps {
-  catalog: CategoryCatalog;
+  category: CatalogCategory;
+  siblings: CatalogCategory[];
+  products: CatalogProduct[];
 }
 
-export default function ProductCatalogView({ catalog }: ProductCatalogViewProps) {
+export default function ProductCatalogView({
+  category,
+  siblings,
+  products,
+}: ProductCatalogViewProps) {
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
   const [infoModalType, setInfoModalType] = useState<"event" | "career" | null>(null);
-  const [prefilledCategory, setPrefilledCategory] = useState(catalog.title);
+  const [prefilledCategory, setPrefilledCategory] = useState(category.name);
+  const pathParts = category.path.split(" / ").filter(Boolean);
 
   const handleOpenGeneralQuote = (cat?: string) => {
-    setPrefilledCategory(cat || catalog.title);
+    setPrefilledCategory(cat || category.name);
     setIsQuoteModalOpen(true);
   };
 
-  const isOtherDivision =
-    catalog.division === "Home Textiles" ||
-    catalog.division === "Fabrics" ||
-    catalog.division === "Electronics & Appliances";
-
-  // Sister categories in Men's Garments, Footwear, or Direct Divisions
-  const siblingTabs =
-    catalog.division === "Footwear"
-      ? [
-          { title: "Sports & Casual", slug: "mens-sports-and-casual" },
-          { title: "Slippers & Sandals", slug: "mens-slippers-and-sandals" },
-          { title: "Office Shoes", slug: "mens-office-shoes" },
-        ]
-      : isOtherDivision
-      ? [
-          { title: "Home Textiles", slug: "home-textiles" },
-          { title: "Fabrics", slug: "fabrics" },
-          { title: "Electronics & Appliances", slug: "electronics-and-appliances" },
-        ]
-      : [
-          { title: "Men's Jackets", slug: "mens-jackets" },
-          { title: "Men's Sweat Top & Hoodies", slug: "mens-sweat-top-hoodies" },
-          { title: "Men's Shirts", slug: "mens-shirts" },
-          { title: "Men's T-shirts", slug: "mens-t-shirts" },
-          { title: "Men's Shorts & Lowers", slug: "mens-shorts-lowers" },
-          { title: "Men's Jeans & Pants", slug: "mens-jeans-pants" },
-        ];
-
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans selection:bg-brand-blue selection:text-white">
-      {/* Global Navbar with solid dark deep-blue theme for light background page */}
       <Navbar
         solid={true}
         onOpenQuoteModal={handleOpenGeneralQuote}
         onOpenInfoModal={(type) => setInfoModalType(type)}
       />
 
-      {/* Main Content with top padding for fixed navbar */}
       <main className="flex-1 pt-24 sm:pt-28 pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Breadcrumb Navigation */}
           <nav className="flex items-center gap-1.5 text-xs text-slate-500 mb-6 flex-wrap">
             <Link href="/" className="hover:text-brand-blue transition-colors">
               Home
@@ -73,35 +50,31 @@ export default function ProductCatalogView({ catalog }: ProductCatalogViewProps)
             <Link href="/#products" className="text-slate-600 hover:text-brand-blue transition-colors">
               Products
             </Link>
-            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-            <span className="text-slate-600">{catalog.division}</span>
-            {catalog.demographic && catalog.demographic !== catalog.division && (
-              <>
+            {pathParts.map((part, index) => (
+              <React.Fragment key={`${part}-${index}`}>
                 <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-                <span className="text-slate-600">{catalog.demographic}</span>
-              </>
-            )}
-            <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-            <span className="text-slate-900 font-semibold">{catalog.title}</span>
+                <span className={index === pathParts.length - 1 ? "text-slate-900 font-semibold" : "text-slate-600"}>
+                  {part}
+                </span>
+              </React.Fragment>
+            ))}
           </nav>
 
-          {/* Page Header (Matching Image 2 serif style) */}
           <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-slate-900 tracking-tight mb-3">
-              {catalog.title}
+              {category.name}
             </h1>
             <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto">
-              {catalog.description}
+              {category.description || `Explore ${category.name} from our live export catalog.`}
             </p>
 
-            {/* Quick Sibling Category Tabs */}
-            {(catalog.demographic === "Men" || isOtherDivision) && (
+            {siblings.length > 1 && (
               <div className="flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap mt-6 pt-4 border-t border-slate-200">
-                {siblingTabs.map((tab) => {
-                  const isActive = tab.slug === catalog.slug;
+                {siblings.map((tab) => {
+                  const isActive = tab.slug === category.slug;
                   return (
                     <Link
-                      key={tab.slug}
+                      key={tab.id}
                       href={`/products/${tab.slug}`}
                       className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-all ${
                         isActive
@@ -109,7 +82,7 @@ export default function ProductCatalogView({ catalog }: ProductCatalogViewProps)
                           : "bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200"
                       }`}
                     >
-                      {tab.title}
+                      {tab.name}
                     </Link>
                   );
                 })}
@@ -117,50 +90,48 @@ export default function ProductCatalogView({ catalog }: ProductCatalogViewProps)
             )}
           </div>
 
-          {/* Product Cards Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
-            {catalog.items.map((item) => {
-              const productUrl = `/products/${catalog.slug}/${item.id}`;
-              return (
-                <div
-                  key={item.id}
-                  className="bg-white rounded-xl border border-slate-200/90 shadow-xs hover:shadow-md transition-all duration-300 p-4 sm:p-5 flex flex-col justify-between group"
-                >
-                  <Link href={productUrl} className="block group">
-                    {/* Multi-angle Product Photo Container */}
-                    <div className="relative aspect-[4/3] w-full rounded-lg overflow-hidden bg-slate-50 mb-4 border border-slate-100 flex items-center justify-center">
-                      <Image
-                        src={item.image}
-                        alt={item.title}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        className="object-contain p-2 group-hover:scale-103 transition-transform duration-300"
-                      />
-                    </div>
-
-                    {/* Centered Model Number & Subtitle */}
-                    <h3 className="text-center font-bold text-slate-900 text-sm sm:text-base mb-1 group-hover:text-brand-blue transition-colors">
-                      {item.modelNo}
-                    </h3>
-                    <p className="text-center text-xs text-slate-500 leading-relaxed mb-4 min-h-[32px]">
-                      {item.description}
-                    </p>
-                  </Link>
-
-                  {/* Explore More Action Button: Directly navigates to the dedicated Product Detail Page */}
-                  <Link
-                    href={productUrl}
-                    className="w-full py-2.5 px-4 rounded-md font-semibold text-xs text-white bg-brand-blue hover:bg-brand-blue-hover active:scale-[0.98] transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer mt-2 text-center"
+          {products.length === 0 ? (
+            <div className="max-w-xl mx-auto text-center bg-white border border-slate-200 rounded-xl p-10 text-sm text-slate-500">
+              No products in {category.name} yet.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto">
+              {products.map((item) => {
+                const productUrl = `/products/${category.slug}/${item.id}`;
+                return (
+                  <div
+                    key={item.id}
+                    className="bg-white rounded-xl border border-slate-200/90 shadow-xs hover:shadow-md transition-all duration-300 p-4 sm:p-5 flex flex-col justify-between group"
                   >
-                    <span>Explore More</span>
-                    <ArrowRight className="w-3.5 h-3.5 opacity-90" />
-                  </Link>
-                </div>
-              );
-            })}
-          </div>
+                    <Link href={productUrl} className="block group">
+                      <div className="relative aspect-[4/3] w-full rounded-lg overflow-hidden bg-slate-50 mb-4 border border-slate-100 flex items-center justify-center">
+                        <CatalogImage
+                          src={item.images[0]}
+                          alt={item.title}
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          className="object-contain p-2 group-hover:scale-103 transition-transform duration-300"
+                        />
+                      </div>
+                      <h3 className="text-center font-bold text-slate-900 text-sm sm:text-base mb-1 group-hover:text-brand-blue transition-colors">
+                        {formatModelNo(item.productCode)}
+                      </h3>
+                      <p className="text-center text-xs text-slate-500 leading-relaxed mb-4 min-h-[32px]">
+                        {splitProductCopy(item.description).paragraph}
+                      </p>
+                    </Link>
+                    <Link
+                      href={productUrl}
+                      className="w-full py-2.5 px-4 rounded-md font-semibold text-xs text-white bg-brand-blue hover:bg-brand-blue-hover active:scale-[0.98] transition-all shadow-xs flex items-center justify-center gap-1.5 cursor-pointer mt-2 text-center"
+                    >
+                      <span>Explore More</span>
+                      <ArrowRight className="w-3.5 h-3.5 opacity-90" />
+                    </Link>
+                  </div>
+                );
+              })}
+            </div>
+          )}
 
-          {/* Factory & OEM Sourcing Guarantee Banner */}
           <div className="mt-14 max-w-4xl mx-auto bg-white rounded-xl border border-slate-200 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-lg bg-brand-blue/10 flex items-center justify-center shrink-0">
@@ -174,7 +145,7 @@ export default function ProductCatalogView({ catalog }: ProductCatalogViewProps)
               </div>
             </div>
             <button
-              onClick={() => handleOpenGeneralQuote(catalog.title)}
+              onClick={() => handleOpenGeneralQuote(category.name)}
               className="w-full sm:w-auto px-6 py-2.5 rounded-md bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold uppercase tracking-wider transition-colors shrink-0 cursor-pointer"
             >
               Request Custom Quote
@@ -183,21 +154,16 @@ export default function ProductCatalogView({ catalog }: ProductCatalogViewProps)
         </div>
       </main>
 
-      {/* Global RFQ Quote Modal */}
       <QuoteModal
         isOpen={isQuoteModalOpen}
         onClose={() => setIsQuoteModalOpen(false)}
         initialCategory={prefilledCategory}
       />
-
-      {/* Global Info Modal */}
       <InfoModal
         isOpen={infoModalType !== null}
         onClose={() => setInfoModalType(null)}
         type={infoModalType || "event"}
       />
-
-      {/* Global Footer */}
       <Footer />
     </div>
   );

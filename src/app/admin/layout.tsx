@@ -2,9 +2,12 @@ import React from "react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Maya Garments & Apparel — ERP Admin Portal",
-  description:
-    "Enterprise garment product management, tech pack specifications, factory codes, FOB pricing, and ready stock inventory control.",
+  title: "Maya Exports Admin",
+  description: "Manage catalog categories and products.",
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function AdminLayout({

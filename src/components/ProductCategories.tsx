@@ -1,8 +1,11 @@
 "use client";
 
-import React from "react";
-import Image from "next/image";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
+import { CatalogImage } from "@/components/CatalogImage";
+import { fetchCategoryTreeSafe, fetchProductsByCategory } from "@/lib/catalog/api";
+import { flattenCatalog } from "@/lib/catalog/tree";
+import type { CatalogCategory, CatalogProduct } from "@/lib/catalog/types";
 import {
   Shirt,
   Home,
@@ -58,74 +61,39 @@ function FabricRollIcon({ className }: { className?: string }) {
   );
 }
 
+const categoryIcons = [Shirt, ShoeIcon, Home, FabricRollIcon, Headphones];
+
 export default function ProductCategories({
   onSelectCategory,
 }: ProductCategoriesProps) {
-  const topCategories = [
-    {
-      id: "garments",
-      title: "Garments",
-      subtitle:
-        "Woven apparel, formal suits, knitwear, casual denim, outerwear & athleisure.",
-      moq: "800 PCS / STYLE",
-      leadTime: "40-50 DAYS",
-      image:
-        "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=1000&q=85",
-      link: "/products/mens-jackets",
-      icon: Shirt,
-    },
-    {
-      id: "footwear",
-      title: "Footwear",
-      subtitle:
-        "Handcrafted leather shoes, performance athletic sneakers, casual loafers & boots.",
-      moq: "500 PAIRS / STYLE",
-      leadTime: "45-60 DAYS",
-      image:
-        "https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=1000&q=85",
-      link: "/products/mens-sports-and-casual",
-      icon: ShoeIcon,
-    },
-    {
-      id: "home-textiles",
-      title: "Home Textiles",
-      subtitle:
-        "400-1000TC, luxury sateen bedding, hotel-grade toweling, curtains & upholstery.",
-      moq: "1,000 SETS / SPEC",
-      leadTime: "35-45 DAYS",
-      image:
-        "https://images.unsplash.com/photo-1582533561751-ef6f6ab93a2e?auto=format&fit=crop&w=1000&q=85",
-      link: "/products/home-textiles",
-      icon: Home,
-    },
-  ];
+  const [roots, setRoots] = useState<CatalogCategory[]>([]);
+  const [products, setProducts] = useState<CatalogProduct[]>([]);
 
-  const bottomCategories = [
-    {
-      id: "fabrics",
-      title: "Fabrics",
-      subtitle:
-        "Cotton, linen, polyester, blended fabrics for fashion & home.",
-      moq: "1,500 METERS",
-      leadTime: "25-35 DAYS",
-      image:
-        "https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=1200&q=85",
-      link: "/products/fabrics",
-      icon: FabricRollIcon,
-    },
-    {
-      id: "electronics",
-      title: "Electronics & Appliances",
-      subtitle:
-        "Consumer electronics, audio devices, smart accessories and more.",
-      moq: "1,000 UNITS",
-      leadTime: "30-45 DAYS",
-      image:
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=1200&q=85",
-      link: "/products/electronics-and-appliances",
-      icon: Headphones,
-    },
-  ];
+  useEffect(() => {
+    Promise.all([fetchCategoryTreeSafe(), fetchProductsByCategory().catch(() => [])])
+      .then(([categories, nextProducts]) => {
+        setRoots(categories);
+        setProducts(nextProducts);
+      })
+      .catch(() => undefined);
+  }, []);
+
+  const cards = roots.map((category, index) => {
+    const ids = new Set(flattenCatalog([category]).map((item) => item.id));
+    const firstProduct = products.find((product) => ids.has(product.category.id));
+    return {
+      id: category.id,
+      title: category.name,
+      subtitle: category.description || `Explore ${category.name} for export production.`,
+      image: firstProduct?.images[0] || "",
+      link: `/products/${category.slug}`,
+      icon: categoryIcons[index % categoryIcons.length],
+      productCount: flattenCatalog([category]).reduce((sum, item) => sum + (item.productCount || 0), 0),
+      childCount: category.childCount,
+    };
+  });
+  const topCategories = cards.slice(0, 3);
+  const bottomCategories = cards.slice(3);
 
   return (
     <section
@@ -173,7 +141,12 @@ export default function ProductCategories({
 
         {/* VISUAL CARDS GRID */}
         <div className="space-y-6">
-          {/* Row 1: 3 Column Cards (Garments, Footwear, Home Textiles) */}
+          {cards.length === 0 ? (
+            <div className="bg-slate-50 border border-slate-200 rounded-2xl p-10 text-center text-sm text-slate-500">
+              Categories will appear here after they are added in admin.
+            </div>
+          ) : null}
+          {/* Row 1: 3 Column Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {topCategories.map((cat) => {
               const Icon = cat.icon;
@@ -185,10 +158,9 @@ export default function ProductCategories({
                 >
                   {/* Background Image with Hover Zoom (1.05x) */}
                   <div className="absolute inset-0 z-0 overflow-hidden bg-slate-900">
-                    <Image
+                    <CatalogImage
                       src={cat.image}
                       alt={cat.title}
-                      fill
                       sizes="(max-width: 768px) 100vw, 33vw"
                       className="object-cover transition-transform duration-700 ease-out group-hover:scale-105 opacity-90 group-hover:opacity-100"
                     />
@@ -223,8 +195,8 @@ export default function ProductCategories({
 
                       {/* Bottom Metadata Bar: MOQ & Lead Time */}
                       <div className="pt-3 border-t border-white/15 flex items-center justify-between text-[11px] font-semibold tracking-wider text-slate-300 uppercase">
-                        <span>MOQ: {cat.moq}</span>
-                        <span className="text-slate-400">LEAD: {cat.leadTime}</span>
+                        <span>{cat.productCount} PRODUCTS</span>
+                        <span className="text-slate-400">{cat.childCount} SUBS</span>
                       </div>
                     </div>
                   </div>
@@ -233,7 +205,7 @@ export default function ProductCategories({
             })}
           </div>
 
-          {/* Row 2: 2 Column Wider Cards (Fabrics, Electronics & Appliances) */}
+          {bottomCategories.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {bottomCategories.map((cat) => {
               const Icon = cat.icon;
@@ -245,10 +217,9 @@ export default function ProductCategories({
                 >
                   {/* Background Image with Hover Zoom (1.05x) */}
                   <div className="absolute inset-0 z-0 overflow-hidden bg-slate-900">
-                    <Image
+                    <CatalogImage
                       src={cat.image}
                       alt={cat.title}
-                      fill
                       sizes="(max-width: 768px) 100vw, 50vw"
                       className="object-cover transition-transform duration-700 ease-out group-hover:scale-105 opacity-90 group-hover:opacity-100"
                     />
@@ -283,8 +254,8 @@ export default function ProductCategories({
 
                       {/* Bottom Metadata Bar: MOQ & Lead Time */}
                       <div className="pt-3 border-t border-white/15 flex items-center justify-between text-[11px] font-semibold tracking-wider text-slate-300 uppercase">
-                        <span>MOQ: {cat.moq}</span>
-                        <span className="text-slate-400">LEAD: {cat.leadTime}</span>
+                        <span>{cat.productCount} PRODUCTS</span>
+                        <span className="text-slate-400">{cat.childCount} SUBS</span>
                       </div>
                     </div>
                   </div>
@@ -292,6 +263,7 @@ export default function ProductCategories({
               );
             })}
           </div>
+          ) : null}
         </div>
 
         {/* TRUST INDICATORS SECTION (Matching Reference: 4 Stat Cards in clean horizontal strip) */}
