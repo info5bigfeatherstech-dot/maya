@@ -35,6 +35,9 @@ function ContactFormSection() {
   const searchParams = useSearchParams();
   const productParam = searchParams.get("product");
   const categoryParam = searchParams.get("category");
+  const colorParam = searchParams.get("color");
+  const sizeParam = searchParams.get("size");
+  const variantParam = searchParams.get("variant");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -60,10 +63,14 @@ function ContactFormSection() {
         productInterest: isFootwear ? "Footwear" : "Garments",
         message: prev.message
           ? prev.message
-          : `Inquiry regarding ${productParam} (${categoryParam || "Export Catalog"}) for OEM/ODM bulk manufacturing. Please provide FOB export quotations, sample PPS timelines, and MOQ details.`,
+          : `Inquiry regarding ${productParam}${
+              variantParam || colorParam || sizeParam
+                ? ` — ${variantParam || [colorParam, sizeParam].filter(Boolean).join(" / ")}`
+                : ""
+            } (${categoryParam || "Export Catalog"}) for OEM/ODM bulk manufacturing. Please provide FOB export quotations, sample PPS timelines, and MOQ details.`,
       }));
     }
-  }, [productParam, categoryParam]);
+  }, [productParam, categoryParam, colorParam, sizeParam, variantParam]);
 
   const [copied, setCopied] = useState(false);
   const TARGET_EMAIL = "sophie_maya86@yahoo.com";

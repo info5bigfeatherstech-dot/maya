@@ -121,7 +121,14 @@ function listingValue(listing: CatalogListing | undefined, key: keyof CatalogLis
   return (value || "").trim();
 }
 
-export function buildProductListing(product: Pick<CatalogProduct, "description" | "attributes" | "listing">): {
+export function hasCatalogOptions(product: Pick<CatalogProduct, "options">): boolean {
+  const variants = product.options?.variants || [];
+  return variants.some((item) => !item.primary || (item.children && item.children.length > 0)) || variants.length > 1;
+}
+
+export function buildProductListing(
+  product: Pick<CatalogProduct, "description" | "attributes" | "listing" | "options">
+): {
   paragraph: string;
   specs: string[];
   metrics: { label: string; value: string }[];

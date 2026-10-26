@@ -5,9 +5,11 @@ import Link from "next/link";
 import { ImageUploader, type ImageDraft } from "./ImageUploader";
 import { InfoSectionsFields } from "./InfoSectionsFields";
 import { ErpFields } from "./ErpFields";
+import { VariantCards } from "./VariantCards";
 import { flattenCategories } from "@/lib/admin/categories";
 import { adminApi } from "@/lib/admin/api";
-import { productToErpForm, validateErpForm } from "@/lib/admin/erp";
+import { formatAdminDateTime } from "@/lib/admin/dates";
+import { productToErpForm, serialVariantSku, syncVariantsFromCatalog, validateErpForm } from "@/lib/admin/erp";
 import type { Category, Customer, Factory, Product, ProductAttribute, ProductFormValues } from "@/lib/admin/types";
 import { compactInfoSections, mergeInfoSections } from "@/lib/catalog/infoSections";
 import { Plus, Trash2 } from "lucide-react";
@@ -124,6 +126,18 @@ export function ProductForm({
 
   return (
     <form onSubmit={(event) => void handleSubmit(event)} className="space-y-5">
+      {initial?.createdAt || initial?.updatedAt ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
+          <div>
+            <span className="text-[10px] uppercase font-semibold tracking-wide text-slate-400 block">Created at</span>
+            <span className="text-slate-800 font-medium">{formatAdminDateTime(initial?.createdAt)}</span>
+          </div>
+          <div>
+            <span className="text-[10px] uppercase font-semibold tracking-wide text-slate-400 block">Updated at</span>
+            <span className="text-slate-800 font-medium">{formatAdminDateTime(initial?.updatedAt)}</span>
+          </div>
+        </div>
+      ) : null}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <label className="block space-y-1.5">
           <span className="text-xs font-semibold text-slate-600">Product code</span>
@@ -133,8 +147,26 @@ export function ProductForm({
             required
             maxLength={60}
             className="w-full h-10 px-3 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-            placeholder="MG-25725-01"
+            placeholder="MG-001"
           />
+          <span className="text-[11px] text-slate-500">
+            Family code for the whole product. Primary variant is always the next field.
+          </span>
+        </label>
+        <label className="block space-y-1.5">
+          <span className="text-xs font-semibold text-slate-600">Primary variant code</span>
+          <input
+            value={serialVariantSku(values.productCode || "MG-001", 0)}
+            readOnly
+            className="w-full h-10 px-3 text-sm rounded-lg border border-indigo-200 bg-indigo-50 font-mono text-slate-800"
+          />
+          <span className="text-[11px] text-slate-500">
+            Generated automatically as{" "}
+            <span className="font-mono font-semibold text-slate-700">
+              {serialVariantSku(values.productCode || "MG-001", 0)}
+            </span>
+            . Extra variants continue as -2, -3.
+          </span>
         </label>
         <label className="block space-y-1.5">
           <span className="text-xs font-semibold text-slate-600">Category</span>
@@ -153,7 +185,7 @@ export function ProductForm({
             ))}
           </select>
           <span className="text-[11px] text-slate-500">
-            Pick the exact menu item, for example Garments / Men / Men's Jackets.
+            Website menu category. Pick the exact item, for example Garments / Men / Men's Jackets.
           </span>
         </label>
         <label className="block space-y-1.5">
@@ -255,20 +287,40 @@ export function ProductForm({
         </div>
       </div>
 
+      <ImageUploader images={images} onChange={setImages} label="Primary variant images" />
+
       <ErpFields
-        productCode={values.productCode}
         values={values.erp}
         factories={factories}
         customers={customers}
-        onChange={(erp) => setValues((current) => ({ ...current, erp }))}
+        onChange={(patch) => {
+          setValues((current) => {
+            let erp = { ...current.erp, ...patch };
+            if (
+              "availableColorsInput" in patch ||
+              "sizeRange" in patch ||
+              "sizeRangeCustom" in patch
+            ) {
+              erp = { ...erp, ...syncVariantsFromCatalog(current.productCode, erp) };
+            }
+            return { ...current, erp };
+          });
+        }}
+        variantSlot={
+          <VariantCards
+            productCode={values.productCode}
+            values={values.erp}
+            onChange={(patch) =>
+              setValues((current) => ({ ...current, erp: { ...current.erp, ...patch } }))
+            }
+          />
+        }
       />
 
       <InfoSectionsFields
         sections={values.infoSections}
         onChange={(infoSections) => setValues((current) => ({ ...current, infoSections }))}
       />
-
-      <ImageUploader images={images} onChange={setImages} />
 
       {localError || error ? (
         <p className="text-sm text-red-600">{localError || error}</p>

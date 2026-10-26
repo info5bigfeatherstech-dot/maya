@@ -27,9 +27,30 @@ export type CatalogListing = {
   pattern?: string;
 };
 
+export type CatalogOptionAttribute = {
+  key: string;
+  value: string;
+};
+
+export type CatalogOptionVariant = {
+  code?: string;
+  title: string;
+  description: string;
+  images: string[];
+  attributes: CatalogOptionAttribute[];
+  primary?: boolean;
+  children?: CatalogOptionVariant[];
+};
+
+export type CatalogOptions = {
+  keys?: string[];
+  variants: CatalogOptionVariant[];
+};
+
 export type CatalogProduct = {
   id: string;
   productCode: string;
+  modelCode?: string;
   name: string;
   title: string;
   description: string;
@@ -43,4 +64,5 @@ export type CatalogProduct = {
   attributes: ProductAttribute[];
   infoSections?: ProductInfoSection[];
   listing?: CatalogListing;
+  options?: CatalogOptions;
 };

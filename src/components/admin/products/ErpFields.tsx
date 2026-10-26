@@ -2,14 +2,13 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Plus, RefreshCw, Trash2 } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import {
   AGE_GROUPS,
   COLLECTION_PRESETS,
-  GARMENT_CATEGORIES,
   GENDERS,
   MARKETS,
-  MAX_VARIANTS,
+  MAX_CUSTOMERS,
   MONTHS,
   PRODUCT_STATUSES,
   PRODUCT_TYPES,
@@ -17,13 +16,11 @@ import {
   REPEAT_NUMBERS,
   SEASON_PRESETS,
   SIZE_PRESETS,
-  VARIANT_STATUSES,
-  buildVariantSku,
-  generateVariantMatrix,
+  emptyCustomerLink,
   parseColors,
   yearOptions,
 } from "@/lib/admin/erp";
-import type { Customer, ErpFormValues, Factory, ProductVariant } from "@/lib/admin/types";
+import type { Customer, ErpFormValues, Factory } from "@/lib/admin/types";
 
 const YEAR_OPTIONS = yearOptions();
 const inputClass =
@@ -32,11 +29,11 @@ const labelClass = "block space-y-1.5";
 const labelText = "text-xs font-semibold text-slate-600";
 
 interface ErpFieldsProps {
-  productCode: string;
   values: ErpFormValues;
   factories: Factory[];
   customers: Customer[];
-  onChange: (values: ErpFormValues) => void;
+  onChange: (patch: Partial<ErpFormValues>) => void;
+  variantSlot?: React.ReactNode;
 }
 
 function Field({
@@ -59,7 +56,7 @@ function Field({
 
 function Section({ title, description, children }: { title: string; description: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-xl border border-slate-200 bg-slate-50/50 p-4 space-y-4">
+    <section className="rounded-xl border border-slate-200 bg-white p-4 space-y-4 shadow-sm">
       <div>
         <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
         <p className="text-[11px] text-slate-500 mt-1">{description}</p>
@@ -69,46 +66,13 @@ function Section({ title, description, children }: { title: string; description:
   );
 }
 
-export function ErpFields({ productCode, values, factories, customers, onChange }: ErpFieldsProps) {
+export function ErpFields({ values, factories, customers, onChange, variantSlot }: ErpFieldsProps) {
   const [customMarket, setCustomMarket] = useState("");
   const set = <K extends keyof ErpFormValues>(field: K, value: ErpFormValues[K]) => {
-    onChange({ ...values, [field]: value });
+    onChange({ [field]: value } as Partial<ErpFormValues>);
   };
 
-  const activeSizeRange = values.sizeRange === "Custom" ? values.sizeRangeCustom : values.sizeRange;
   const colors = parseColors(values.availableColorsInput);
-  const baseSku = values.sku.trim() || productCode.trim() || "SKU";
-
-  const updateVariant = (index: number, patch: Partial<ProductVariant>) => {
-    set(
-      "variantDetails",
-      values.variantDetails.map((row, current) => (current === index ? { ...row, ...patch } : row))
-    );
-  };
-
-  const addVariant = () => {
-    if (values.variantDetails.length >= MAX_VARIANTS) return;
-    const color = values.color.trim() || colors[0] || "Default";
-    const size = parseColors(activeSizeRange)[0] || "M";
-    set("variantDetails", [
-      ...values.variantDetails,
-      {
-        color,
-        size,
-        sku: buildVariantSku(baseSku, color, size),
-        barcode: "",
-        stockQty: 0,
-        priceAdjustment: 0,
-        status: "In Stock",
-      },
-    ]);
-  };
-
-  const generateMatrix = () => {
-    const generated = generateVariantMatrix(baseSku, colors, activeSizeRange);
-    if (generated.length === 0) return;
-    set("variantDetails", generated);
-  };
 
   const toggleMarket = (market: string) => {
     set(
@@ -128,19 +92,18 @@ export function ErpFields({ productCode, values, factories, customers, onChange 
 
   return (
     <div className="space-y-4">
-      <div>
-        <h2 className="text-sm font-semibold text-slate-900">ERP product master</h2>
+      <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+        <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500">Inventory</p>
+        <h2 className="text-sm font-semibold text-slate-900 mt-0.5">ERP product master</h2>
         <p className="text-[11px] text-slate-500 mt-1">
-          Internal inventory record. Factory prices, customer codes, SKUs, and stock stay admin-only. MOQ,
-          fabric, sizes, colors, and FOB port can appear on the public product page.
+          Internal inventory record. Fabric, colors, and sizes below apply to the whole product. Extra
+          variants come after that block so they can copy those values. Factory prices, customer codes,
+          and stock stay admin-only.
         </p>
       </div>
 
-      <Section title="1. Identification & status" description="SKU, purchase code, live status, and featured flag.">
+      <Section title="1. Identification & status" description="Purchase code and live status. The parent product code is set at the top of this form.">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label="SKU" hint="Defaults to the product code if left blank.">
-            <input value={values.sku} onChange={(event) => set("sku", event.target.value)} maxLength={60} className={inputClass} placeholder={productCode || "MG-001"} />
-          </Field>
           <Field label="Purchase code">
             <input value={values.purchaseCode} onChange={(event) => set("purchaseCode", event.target.value)} maxLength={60} className={inputClass} />
           </Field>
@@ -153,16 +116,10 @@ export function ErpFields({ productCode, values, factories, customers, onChange 
               ))}
             </select>
           </Field>
-          <Field label="Featured product">
-            <select value={values.featuredProduct} onChange={(event) => set("featuredProduct", event.target.value as ErpFormValues["featuredProduct"])} className={inputClass}>
-              <option value="No">No</option>
-              <option value="Yes">Yes</option>
-            </select>
-          </Field>
         </div>
       </Section>
 
-      <Section title="2. Classification" description="ERP classification is extra. Website category above still controls the public menu.">
+      <Section title="2. Classification" description="Website Category at the top is the public menu. These fields are extra inventory labels only.">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field label="Product type">
             <select value={values.productType} onChange={(event) => set("productType", event.target.value)} className={inputClass}>
@@ -199,19 +156,6 @@ export function ErpFields({ productCode, values, factories, customers, onChange 
                 </option>
               ))}
             </select>
-          </Field>
-          <Field label="Garment category">
-            <select value={values.garmentCategory} onChange={(event) => set("garmentCategory", event.target.value)} className={inputClass}>
-              <option value="">Select garment category</option>
-              {GARMENT_CATEGORIES.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </Field>
-          <Field label="Subcategory">
-            <input value={values.subcategory} onChange={(event) => set("subcategory", event.target.value)} maxLength={80} className={inputClass} placeholder="Maxi Dress / T-Shirt" />
           </Field>
           <Field label="Collection">
             <select value={values.collection} onChange={(event) => set("collection", event.target.value)} className={inputClass}>
@@ -307,10 +251,10 @@ export function ErpFields({ productCode, values, factories, customers, onChange 
           <Field label="Pattern">
             <input value={values.pattern} onChange={(event) => set("pattern", event.target.value)} maxLength={80} className={inputClass} placeholder="Solid / Printed / Floral" />
           </Field>
-          <Field label="Primary color">
+          <Field label="Primary color" hint="This color represents the whole product, not one extra variant.">
             <input value={values.color} onChange={(event) => set("color", event.target.value)} maxLength={40} className={inputClass} placeholder="Blue" />
           </Field>
-          <Field label="Size range">
+          <Field label="Size range" hint="Available sizing for the whole product. Extra variants can override.">
             <select value={values.sizeRange} onChange={(event) => set("sizeRange", event.target.value)} className={inputClass}>
               <option value="">Select size range</option>
               {SIZE_PRESETS.map((item) => (
@@ -327,7 +271,7 @@ export function ErpFields({ productCode, values, factories, customers, onChange 
             </Field>
           ) : null}
           <div className="md:col-span-2">
-            <Field label="Available colors" hint="Comma-separated. Used to auto-generate the variant matrix.">
+            <Field label="Available colors" hint="Comma-separated catalog colors for the whole product. Extra variants can pick from this list.">
               <input value={values.availableColorsInput} onChange={(event) => set("availableColorsInput", event.target.value)} className={inputClass} placeholder="Blue, Pink, Green" />
             </Field>
             {colors.length > 0 ? (
@@ -343,121 +287,9 @@ export function ErpFields({ productCode, values, factories, customers, onChange 
         </div>
       </Section>
 
-      <Section title="5. Variants" description="One parent product, many color × size SKUs. Maximum 200 rows.">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <Field label="Enable variants">
-            <select value={values.variant} onChange={(event) => set("variant", event.target.value as ErpFormValues["variant"])} className={`${inputClass} w-48`}>
-              <option value="No">No (single SKU)</option>
-              <option value="Yes">Yes (color × size)</option>
-            </select>
-          </Field>
-        </div>
-        {values.variant === "Yes" ? (
-          <div className="space-y-3">
-            <p className="text-[11px] text-slate-500">
-              Generate SKUs from available colors and size range, then edit stock, barcode, and price adjustment.
-            </p>
-            <div className="flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={generateMatrix}
-                className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-                Auto-generate matrix
-              </button>
-              <button
-                type="button"
-                onClick={addVariant}
-                className="inline-flex items-center gap-1 px-3 py-2 text-xs font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                Add variant
-              </button>
-            </div>
-            {values.variantDetails.length > 0 ? (
-              <div className="border border-slate-200 rounded-xl overflow-auto bg-white max-h-80">
-                <table className="w-full text-left text-xs min-w-[760px]">
-                  <thead className="bg-slate-50 text-slate-500 uppercase sticky top-0">
-                    <tr>
-                      <th className="px-3 py-2">SKU</th>
-                      <th className="px-3 py-2">Color</th>
-                      <th className="px-3 py-2">Size</th>
-                      <th className="px-3 py-2">Barcode</th>
-                      <th className="px-3 py-2">Stock</th>
-                      <th className="px-3 py-2">Price adj.</th>
-                      <th className="px-3 py-2">Status</th>
-                      <th className="px-3 py-2" />
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {values.variantDetails.map((row, index) => (
-                      <tr key={`${row.sku}-${index}`}>
-                        <td className="px-2 py-1.5">
-                          <input value={row.sku} onChange={(event) => updateVariant(index, { sku: event.target.value })} className="h-8 w-36 px-2 rounded border border-slate-200" />
-                        </td>
-                        <td className="px-2 py-1.5">
-                          <input value={row.color} onChange={(event) => updateVariant(index, { color: event.target.value })} className="h-8 w-24 px-2 rounded border border-slate-200" />
-                        </td>
-                        <td className="px-2 py-1.5">
-                          <input value={row.size} onChange={(event) => updateVariant(index, { size: event.target.value })} className="h-8 w-16 px-2 rounded border border-slate-200" />
-                        </td>
-                        <td className="px-2 py-1.5">
-                          <input value={row.barcode} onChange={(event) => updateVariant(index, { barcode: event.target.value })} className="h-8 w-28 px-2 rounded border border-slate-200" />
-                        </td>
-                        <td className="px-2 py-1.5">
-                          <input
-                            type="number"
-                            min={0}
-                            value={row.stockQty}
-                            onChange={(event) => updateVariant(index, { stockQty: Number(event.target.value) || 0 })}
-                            className="h-8 w-20 px-2 rounded border border-slate-200"
-                          />
-                        </td>
-                        <td className="px-2 py-1.5">
-                          <input
-                            type="number"
-                            value={row.priceAdjustment}
-                            onChange={(event) => updateVariant(index, { priceAdjustment: Number(event.target.value) || 0 })}
-                            className="h-8 w-20 px-2 rounded border border-slate-200"
-                          />
-                        </td>
-                        <td className="px-2 py-1.5">
-                          <select
-                            value={row.status}
-                            onChange={(event) => updateVariant(index, { status: event.target.value as ProductVariant["status"] })}
-                            className="h-8 px-2 rounded border border-slate-200 bg-white"
-                          >
-                            {VARIANT_STATUSES.map((status) => (
-                              <option key={status} value={status}>
-                                {status}
-                              </option>
-                            ))}
-                          </select>
-                        </td>
-                        <td className="px-2 py-1.5">
-                          <button
-                            type="button"
-                            onClick={() => set("variantDetails", values.variantDetails.filter((_, current) => current !== index))}
-                            className="h-8 w-8 text-slate-400 hover:text-red-600 rounded flex items-center justify-center"
-                            aria-label="Remove variant"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            ) : (
-              <p className="text-xs text-slate-500">No variants yet. Generate from colors and sizes, or add one row.</p>
-            )}
-          </div>
-        ) : null}
-      </Section>
+      {variantSlot}
 
-      <Section title="6. Factory & pricing" description="Prices, factory, and customer stay admin-only. MOQ and FOB port can show on the public product page.">
+      <Section title="5. Factory & pricing" description="Prices, factory, and customer stay admin-only. MOQ and FOB port can show on the public product page.">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field
             label="Factory"
@@ -508,7 +340,7 @@ export function ErpFields({ productCode, values, factories, customers, onChange 
         </div>
       </Section>
 
-      <Section title="7. Ready stock" description="Optional inventory snapshot for this parent style.">
+      <Section title="6. Ready stock" description="Optional inventory snapshot for this parent style.">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Field label="Ready stock available">
             <select
@@ -539,51 +371,154 @@ export function ErpFields({ productCode, values, factories, customers, onChange 
         </div>
       </Section>
 
-      <Section title="8. Customer" description="Buyer assignment. Style code is auto-generated on save if a customer is selected and the field is empty.">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field label="Customer">
-            <select value={values.customerId} onChange={(event) => set("customerId", event.target.value)} className={inputClass}>
-              <option value="">No customer</option>
-              {customers.map((customer) => (
-                <option key={customer.id} value={customer.id}>
-                  {customer.code} — {customer.name}
-                </option>
-              ))}
-            </select>
-          </Field>
-          <div className="flex items-end">
-            <Link href="/admin/customers" className="text-[11px] font-semibold text-blue-600 hover:text-blue-700 pb-2">
-              Manage customers
-            </Link>
-          </div>
-          <Field label="Customer style code" hint="Leave blank to auto-generate CYY-000 when a customer is assigned.">
-            <input value={values.customerStyleCode} onChange={(event) => set("customerStyleCode", event.target.value)} maxLength={40} className={inputClass} placeholder="C26-001" />
-          </Field>
-          <Field label="Repeat order">
-            <select value={values.repeatOrder} onChange={(event) => set("repeatOrder", event.target.value as ErpFormValues["repeatOrder"])} className={inputClass}>
-              <option value="No">No</option>
-              <option value="Yes">Yes</option>
-            </select>
-          </Field>
-          {values.repeatOrder === "Yes" ? (
-            <Field label="Repeat number">
-              <select
-                value={values.repeatOrderNumber}
-                onChange={(event) => set("repeatOrderNumber", event.target.value as ErpFormValues["repeatOrderNumber"])}
-                className={inputClass}
-              >
-                {REPEAT_NUMBERS.filter((item) => item !== "None").map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-            </Field>
-          ) : null}
+      <Section
+        title="7. Customers"
+        description="Optional. One product can be linked to several buyers. Style code and repeat order are optional and are not auto-generated."
+      >
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <Link href="/admin/customers" className="text-[11px] font-semibold text-blue-600 hover:text-blue-700">
+            Manage customers
+          </Link>
+          <button
+            type="button"
+            onClick={() => {
+              if (values.customers.length >= MAX_CUSTOMERS) return;
+              set("customers", [...values.customers, emptyCustomerLink()]);
+            }}
+            disabled={values.customers.length >= MAX_CUSTOMERS}
+            className="inline-flex items-center gap-1 px-3 py-2 text-xs font-medium text-slate-700 border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-50"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            Add customer
+          </button>
         </div>
+        {values.customers.length === 0 ? (
+          <p className="text-[11px] text-slate-500">No customers linked. This is fine — customer details are optional.</p>
+        ) : (
+          <div className="space-y-3">
+            {values.customers.map((row, index) => {
+              const taken = new Set(
+                values.customers
+                  .map((item, current) => (current === index ? "" : item.customerId))
+                  .filter(Boolean)
+              );
+              return (
+                <div key={`customer-${index}`} className="rounded-lg border border-slate-200 bg-slate-50/60 p-3 grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <Field label={`Customer ${index + 1}`}>
+                    <select
+                      value={row.customerId}
+                      onChange={(event) =>
+                        set(
+                          "customers",
+                          values.customers.map((item, current) =>
+                            current === index ? { ...item, customerId: event.target.value } : item
+                          )
+                        )
+                      }
+                      className={inputClass}
+                    >
+                      <option value="">Select customer (optional)</option>
+                      {customers.map((customer) => (
+                        <option key={customer.id} value={customer.id} disabled={taken.has(customer.id)}>
+                          {customer.code} — {customer.name}
+                        </option>
+                      ))}
+                    </select>
+                  </Field>
+                  <div className="flex items-end justify-end">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        set(
+                          "customers",
+                          values.customers.filter((_, current) => current !== index)
+                        )
+                      }
+                      className="h-10 w-10 text-slate-400 hover:text-red-600 rounded-lg flex items-center justify-center"
+                      aria-label={`Remove customer ${index + 1}`}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <Field label="Customer style code" hint="Optional. Leave blank if this buyer has no style code yet.">
+                    <input
+                      value={row.styleCode}
+                      onChange={(event) =>
+                        set(
+                          "customers",
+                          values.customers.map((item, current) =>
+                            current === index ? { ...item, styleCode: event.target.value } : item
+                          )
+                        )
+                      }
+                      maxLength={40}
+                      className={inputClass}
+                      placeholder="Optional"
+                    />
+                  </Field>
+                  <Field label="Repeat order">
+                    <select
+                      value={row.repeatOrder}
+                      onChange={(event) =>
+                        set(
+                          "customers",
+                          values.customers.map((item, current) =>
+                            current === index
+                              ? {
+                                  ...item,
+                                  repeatOrder: event.target.value as ErpFormValues["repeatOrder"],
+                                  repeatOrderNumber:
+                                    event.target.value === "Yes"
+                                      ? item.repeatOrderNumber === "None"
+                                        ? "1st"
+                                        : item.repeatOrderNumber
+                                      : "None",
+                                }
+                              : item
+                          )
+                        )
+                      }
+                      className={inputClass}
+                    >
+                      <option value="No">No</option>
+                      <option value="Yes">Yes</option>
+                    </select>
+                  </Field>
+                  {row.repeatOrder === "Yes" ? (
+                    <Field label="Repeat number">
+                      <select
+                        value={row.repeatOrderNumber}
+                        onChange={(event) =>
+                          set(
+                            "customers",
+                            values.customers.map((item, current) =>
+                              current === index
+                                ? {
+                                    ...item,
+                                    repeatOrderNumber: event.target.value as ErpFormValues["repeatOrderNumber"],
+                                  }
+                                : item
+                            )
+                          )
+                        }
+                        className={inputClass}
+                      >
+                        {REPEAT_NUMBERS.filter((item) => item !== "None").map((item) => (
+                          <option key={item} value={item}>
+                            {item}
+                          </option>
+                        ))}
+                      </select>
+                    </Field>
+                  ) : null}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </Section>
 
-      <Section title="9. Market suitability" description="Where this style is intended to sell.">
+      <Section title="8. Market suitability" description="Where this style is intended to sell.">
         <div className="flex flex-wrap gap-2">
           {MARKETS.map((market) => (
             <button

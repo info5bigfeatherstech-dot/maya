@@ -73,7 +73,7 @@ export default function AdminProductsPage() {
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search code, SKU, name or title"
+            placeholder="Search product code, name or title"
             className="h-9 w-full sm:w-64 px-3 text-sm rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
           />
           <select

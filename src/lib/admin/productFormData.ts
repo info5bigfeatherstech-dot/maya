@@ -27,5 +27,22 @@ export function buildProductFormData(
       form.append("images", image.file);
     }
   });
+  (values.erp.primarySubVariants || []).forEach((row, index) => {
+    (row.drafts || []).forEach((draft) => {
+      form.append(`primarySubImage_${index}`, draft.file);
+    });
+  });
+  if (values.erp.variant === "Yes") {
+    values.erp.variantDetails.forEach((row, index) => {
+      (row.drafts || []).forEach((draft) => {
+        form.append(`variantImage_${index}`, draft.file);
+      });
+      (row.subVariants || []).forEach((sub, subIndex) => {
+        (sub.drafts || []).forEach((draft) => {
+          form.append(`subImage_${index}_${subIndex}`, draft.file);
+        });
+      });
+    });
+  }
   return form;
 }

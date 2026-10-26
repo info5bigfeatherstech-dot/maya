@@ -11,9 +11,10 @@ interface ImageUploaderProps {
   images: ImageDraft[];
   onChange: (images: ImageDraft[]) => void;
   max?: number;
+  label?: string;
 }
 
-export function ImageUploader({ images, onChange, max = 5 }: ImageUploaderProps) {
+export function ImageUploader({ images, onChange, max = 5, label = "Images" }: ImageUploaderProps) {
   const imagesRef = useRef(images);
   imagesRef.current = images;
 
@@ -52,7 +53,7 @@ export function ImageUploader({ images, onChange, max = 5 }: ImageUploaderProps)
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold text-slate-600">Images</span>
+        <span className="text-xs font-semibold text-slate-600">{label}</span>
         <span className="text-[11px] text-slate-500">{images.length}/{max} uploaded</span>
       </div>
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">

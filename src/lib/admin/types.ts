@@ -40,14 +40,40 @@ export type NamedRef = {
 
 export type VariantStatus = "In Stock" | "Low Stock" | "Out of Stock";
 
-export type ProductVariant = {
+export type CustomerLink = {
+  customerId: string;
+  styleCode: string;
+  repeatOrder: "Yes" | "No";
+  repeatOrderNumber: "None" | "1st" | "2nd" | "3rd";
+};
+
+export type ProductSubVariant = {
+  sku: string;
+  title: string;
   color: string;
   size: string;
-  sku: string;
-  barcode: string;
+  attributes: ProductAttribute[];
+  images: string[];
+  drafts?: Array<{ kind: "new"; file: File; preview: string }>;
   stockQty: number;
   priceAdjustment: number;
   status: VariantStatus;
+};
+
+export type ProductVariant = {
+  sku: string;
+  title: string;
+  description: string;
+  attributes: ProductAttribute[];
+  images: string[];
+  drafts?: Array<{ kind: "new"; file: File; preview: string }>;
+  stockQty: number;
+  priceAdjustment: number;
+  status: VariantStatus;
+  color?: string;
+  size?: string;
+  barcode?: string;
+  subVariants?: ProductSubVariant[];
 };
 
 export type Factory = {
@@ -116,6 +142,7 @@ export type Product = {
   sizeRange?: string;
   variant?: "Yes" | "No";
   variantDetails?: ProductVariant[];
+  primarySubVariants?: ProductSubVariant[];
   factory?: NamedRef | null;
   factoryPriceEXW?: string;
   salePrice?: string;
@@ -127,6 +154,7 @@ export type Product = {
   readyStockQuantity?: string;
   readyStockQuantityUnit?: string;
   customer?: NamedRef | null;
+  customers?: Array<NamedRef & { styleCode?: string; repeatOrder?: "Yes" | "No"; repeatOrderNumber?: string }>;
   customerStyleCode?: string;
   repeatOrder?: "Yes" | "No";
   repeatOrderNumber?: "None" | "1st" | "2nd" | "3rd";
@@ -176,6 +204,7 @@ export type ErpFormValues = {
   sizeRangeCustom: string;
   variant: "Yes" | "No";
   variantDetails: ProductVariant[];
+  primarySubVariants: ProductSubVariant[];
   factoryId: string;
   factoryPriceEXW: string;
   salePrice: string;
@@ -190,6 +219,7 @@ export type ErpFormValues = {
   customerStyleCode: string;
   repeatOrder: "Yes" | "No";
   repeatOrderNumber: "None" | "1st" | "2nd" | "3rd";
+  customers: CustomerLink[];
   productStatus: "Active" | "Inactive";
   featuredProduct: "Yes" | "No";
   marketSuitability: string[];

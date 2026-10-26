@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import QuoteModal from "@/components/QuoteModal";
 import InfoModal from "@/components/InfoModal";
 import { CatalogImage } from "@/components/CatalogImage";
+import { findMatchingVariant, ProductVariantPicker } from "@/components/ProductVariantPicker";
 import type { CatalogCategory, CatalogProduct } from "@/lib/catalog/types";
 import {
   compactInfoSections,
@@ -14,7 +15,7 @@ import {
   type ProductInfoSection,
   type ProductInfoSectionKey,
 } from "@/lib/catalog/infoSections";
-import { buildProductListing, formatModelNo, splitProductCopy } from "@/lib/catalog/tree";
+import { buildProductListing, formatModelNo, hasCatalogOptions, splitProductCopy } from "@/lib/catalog/tree";
 import {
   ArrowLeft,
   ChevronRight,
@@ -37,22 +38,57 @@ interface ProductDetailViewProps {
 }
 
 export default function ProductDetailView({ product, category, related }: ProductDetailViewProps) {
-  const gallery = product.images.length > 0 ? product.images : [];
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
   const [infoModalType, setInfoModalType] = useState<"event" | "career" | null>(null);
   const infoTabs = compactInfoSections(product.infoSections);
   const [activeTab, setActiveTab] = useState<ProductInfoSectionKey>(infoTabs[0]?.key || "specs");
   const resolvedTab = infoTabs.some((tab) => tab.key === activeTab) ? activeTab : infoTabs[0]?.key;
-  const modelNo = formatModelNo(product.productCode);
   const pathParts = (product.category.path || category.path || category.name).split(" / ").filter(Boolean);
   const division = pathParts[0] || category.name;
   const demographic = pathParts[1] || "";
   const { paragraph, specs, metrics, details } = buildProductListing(product);
+  const showOptions = hasCatalogOptions(product);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [subIndex, setSubIndex] = useState(0);
+  const selectedVariant =
+    showOptions && product.options ? findMatchingVariant(product.options, selectedIndex) : null;
+  const selectedChild = selectedVariant?.children?.[subIndex] || selectedVariant?.children?.[0] || null;
+  const usingPrimary = !selectedVariant || Boolean(selectedVariant.primary);
+  const gallery =
+    selectedChild?.images?.length
+      ? selectedChild.images
+      : !usingPrimary && selectedVariant.images?.length
+        ? selectedVariant.images
+        : product.images.length > 0
+          ? product.images
+          : [];
+  const displayTitle =
+    selectedChild?.title?.trim() ||
+    (!usingPrimary && selectedVariant.title?.trim() ? selectedVariant.title : product.title);
+  const displayParagraph =
+    selectedChild?.description?.trim() ||
+    (!usingPrimary && selectedVariant.description?.trim() ? selectedVariant.description : paragraph);
+  const modelNo = formatModelNo(
+    selectedChild?.code || selectedVariant?.code || product.modelCode || product.productCode
+  );
 
-  const contactUrl = `/contact?product=${encodeURIComponent(product.productCode)}&category=${encodeURIComponent(
-    category.name
-  )}`;
+  const contactParams = new URLSearchParams({
+    product: product.productCode,
+    category: category.name,
+  });
+  const variantCode = selectedChild?.code || selectedVariant?.code || product.modelCode || "";
+  if (variantCode) contactParams.set("variant", variantCode);
+  const contactUrl = `/contact?${contactParams.toString()}`;
+  const safeImageIndex = gallery.length ? Math.min(selectedImageIndex, gallery.length - 1) : 0;
+
+  useEffect(() => {
+    setSelectedImageIndex(0);
+  }, [displayTitle, gallery[0]]);
+
+  useEffect(() => {
+    setSubIndex(0);
+  }, [selectedIndex]);
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans selection:bg-brand-blue selection:text-white">
@@ -94,15 +130,15 @@ export default function ProductDetailView({ product, category, related }: Produc
               <div className="lg:col-span-6 flex flex-col">
                 <div className="relative aspect-[4/3] w-full rounded-xl overflow-hidden bg-slate-50 border border-slate-100 mb-4 shadow-inner flex items-center justify-center">
                   <CatalogImage
-                    src={gallery[selectedImageIndex]}
-                    alt={`${product.title} - View ${selectedImageIndex + 1}`}
+                    src={gallery[safeImageIndex]}
+                    alt={`${displayTitle} - View ${safeImageIndex + 1}`}
                     priority
                     sizes="(max-width: 1024px) 100vw, 50vw"
                     className="object-contain p-4 transition-all duration-300"
                   />
                   {gallery.length > 0 ? (
                     <div className="absolute bottom-3 left-3 bg-slate-900/80 backdrop-blur-xs text-white text-[11px] font-medium px-2.5 py-1 rounded-md">
-                      Angle {selectedImageIndex + 1} of {gallery.length}
+                      Angle {safeImageIndex + 1} of {gallery.length}
                     </div>
                   ) : null}
                   <div className="absolute top-3 right-3 bg-brand-blue text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
@@ -113,7 +149,7 @@ export default function ProductDetailView({ product, category, related }: Produc
                 {gallery.length > 1 && (
                   <div className="flex items-center gap-3 overflow-x-auto pb-2 no-scrollbar">
                     {gallery.map((img, idx) => {
-                      const isSelected = selectedImageIndex === idx;
+                      const isSelected = safeImageIndex === idx;
                       return (
                         <button
                           key={`${img}-${idx}`}
@@ -165,9 +201,9 @@ export default function ProductDetailView({ product, category, related }: Produc
                   <h1 className="text-2xl sm:text-3xl font-serif font-bold text-slate-900 tracking-tight mb-2">
                     {modelNo}
                   </h1>
-                  <h2 className="text-lg font-semibold text-slate-800 mb-3">{product.title}</h2>
-                  {paragraph ? (
-                    <p className="text-sm text-slate-600 leading-relaxed mb-6">{paragraph}</p>
+                  <h2 className="text-lg font-semibold text-slate-800 mb-3">{displayTitle}</h2>
+                  {displayParagraph ? (
+                    <p className="text-sm text-slate-600 leading-relaxed mb-6">{displayParagraph}</p>
                   ) : null}
 
                   {metrics.length > 0 ? (
@@ -181,6 +217,16 @@ export default function ProductDetailView({ product, category, related }: Produc
                         </div>
                       ))}
                     </div>
+                  ) : null}
+
+                  {showOptions && product.options ? (
+                    <ProductVariantPicker
+                      options={product.options}
+                      selectedIndex={selectedIndex}
+                      subIndex={subIndex}
+                      onChange={setSelectedIndex}
+                      onSubChange={setSubIndex}
+                    />
                   ) : null}
 
                   {details.length > 0 ? (
@@ -268,7 +314,7 @@ export default function ProductDetailView({ product, category, related }: Produc
                         />
                       </div>
                       <h4 className="text-center font-bold text-slate-900 text-sm mb-1">
-                        {formatModelNo(item.productCode)}
+                        {formatModelNo(item.modelCode || item.productCode)}
                       </h4>
                       <p className="text-center text-xs text-slate-500 line-clamp-2 mb-3">
                         {splitProductCopy(item.description).paragraph}
