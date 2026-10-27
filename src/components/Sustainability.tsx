@@ -131,7 +131,7 @@ export default function Sustainability() {
                     <h4 className="text-xs uppercase font-semibold text-deep-blue tracking-wider">
                       Zero Coal · Clean Energy Transition
                     </h4>
-                    <p className="text-[11px] text-slate-body">
+                    <p className="text-[11px] text-slate-body ">
                       Rooftop photovoltaic array powers 42% of total daytime spinning & sewing demand.
                     </p>
                   </div>
@@ -151,7 +151,7 @@ export default function Sustainability() {
               Transparent ESG Stewardship Across Every Thread.
             </h2>
 
-            <div className="space-y-3 text-slate-body text-xs sm:text-sm leading-relaxed">
+            <div className="space-y-3 text-slate-body text-xs sm:text-sm leading-relaxed capitalize">
               <p>
                 International enterprise retailers face heightened legislative and consumer mandates regarding
                 supply chain transparency. Maya Exports Ltd — Fashion has invested systematically in

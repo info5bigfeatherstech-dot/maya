@@ -91,7 +91,7 @@ export default function ProductCatalogView({
           </div>
 
           {products.length === 0 ? (
-            <div className="max-w-xl mx-auto text-center bg-white border border-slate-200 rounded-xl p-10 text-sm text-slate-500">
+            <div className="max-w-xl mx-auto text-center bg-white border border-slate-200 rounded-xl p-10 text-sm text-slate-500 capitalize">
               No products in {category.name} yet.
             </div>
           ) : (

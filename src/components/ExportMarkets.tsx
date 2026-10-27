@@ -201,7 +201,7 @@ export default function ExportMarkets() {
                 World
               </h2>
 
-              <p className="text-slate-500 text-sm leading-relaxed mb-6">
+              <p className="text-slate-500 text-sm leading-relaxed mb-6 capitalize">
                 Direct export supply chain connecting our central warehousing, audited manufacturing mills, and containerized maritime freight to global destination markets.
               </p>
             </div>
@@ -274,7 +274,7 @@ export default function ExportMarkets() {
               </div>
 
               {/* Description */}
-              <p className="text-xs leading-relaxed text-slate-600 mb-3.5">
+              <p className="text-xs leading-relaxed text-slate-600 mb-3.5 capitalize">
                 {activeCategory.description}
               </p>
 
