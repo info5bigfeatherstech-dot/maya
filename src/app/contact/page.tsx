@@ -125,7 +125,7 @@ Direct Recipient: ${TARGET_EMAIL}
         <h3 className="text-xl font-bold text-deep-blue font-display">
           Send an Inquiry to Our Export Desks
         </h3>
-        <p className="text-xs text-slate-body mt-1">
+        <p className="text-xs text-slate-body mt-1 capitalize leading-relaxed">
           Your inquiry is transmitted directly to Ms. Sophie (<a href={`mailto:${TARGET_EMAIL}`} className="text-brand-blue font-semibold hover:underline">{TARGET_EMAIL}</a>) at our Production Merchandising desk. NDA executed prior to tech pack review.
         </p>
 
@@ -362,7 +362,7 @@ Direct Recipient: ${TARGET_EMAIL}
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
               placeholder="Please include target quantities, fabrication requirements, delivery season, or store layout requirements..."
-              className="w-full px-3 py-2.5 rounded-sm border border-pearl-gray bg-offwhite text-deep-blue focus:outline-none focus:border-brand-blue resize-none"
+              className="w-full px-3 py-2.5 rounded-sm border border-pearl-gray bg-offwhite text-deep-blue focus:outline-none focus:border-brand-blue resize-none capitalize"
             />
           </div>
 
@@ -456,7 +456,7 @@ export default function ContactPage() {
                   Connect With <span className="text-[#00B4D8]">Maya Exports Limited.</span>
                 </h1>
 
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-xl">
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-xl capitalize">
                   Direct access to our senior leadership and production directors in Shishi City, Fujian and our Hong Kong commercial office. Contact our team directly via Email, Telephone, or WhatsApp.
                 </p>
               </div>
@@ -469,7 +469,7 @@ export default function ContactPage() {
                     <Users className="w-5 h-5" />
                   </div>
                   <h4 className="text-white font-bold text-xs sm:text-sm">Direct Access</h4>
-                  <p className="text-[11px] sm:text-xs text-slate-400 mt-0.5 leading-snug">
+                  <p className="text-[11px] sm:text-xs text-slate-400 mt-0.5 leading-snug capitalize">
                     Senior leadership<br className="hidden sm:inline" /> &amp; production team
                   </p>
                 </div>
@@ -547,7 +547,7 @@ export default function ContactPage() {
               </div>
 
               <div className="lg:border-l lg:border-slate-200 lg:pl-8 max-w-md">
-                <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-500 leading-relaxed capitalize">
                   Get in touch with our global team for business inquiries, partnerships, and export opportunities. Our team is here to assist you.
                 </p>
               </div>
@@ -790,7 +790,7 @@ export default function ContactPage() {
                   <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-deep-blue font-display">
                     Corporate & Regional Offices
                   </h2>
-                  <p className="text-slate-body text-xs sm:text-sm mt-2 leading-relaxed">
+                  <p className="text-slate-body text-xs sm:text-sm mt-2 leading-relaxed capitalize">
                     Official coordinates for container inspections, client sampling visits, and courier shipments.
                   </p>
                 </div>

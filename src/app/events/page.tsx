@@ -94,7 +94,7 @@ export default function EventsPage() {
                     trade shows
                   </h1>
 
-                  <p className="text-slate-500 text-sm sm:text-base leading-relaxed mt-4 max-w-lg">
+                  <p className="text-slate-500 text-sm sm:text-base leading-relaxed mt-4 max-w-lg capitalize">
                     Explore our global presence at the world&apos;s leading trade shows,
                     exhibitions and industry events. Connect with our team, discover
                     new opportunities and experience our latest innovations.
@@ -447,7 +447,7 @@ export default function EventsPage() {
                             </div>
                           </div>
 
-                          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed capitalize">
                             {event.description}
                           </p>
                         </div>
@@ -461,7 +461,7 @@ export default function EventsPage() {
                             {event.highlights.map((h, hIdx) => (
                               <div key={hIdx} className="flex items-start gap-2">
                                 <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
-                                <span className="text-[11px] font-medium">{h}</span>
+                                <span className="text-[11px] font-medium capitalize">{h}</span>
                               </div>
                             ))}
                           </div>
@@ -508,7 +508,7 @@ export default function EventsPage() {
               <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 font-display">
                 Browse All International Trade Shows
               </h2>
-              <p className="text-xs sm:text-sm text-slate-500 mt-1 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-500 mt-1 leading-relaxed capitalize">
                 Filter by continent and geographic trade corridors. Schedule in-person
                 sample reviews and lock factory capacity.
               </p>
@@ -599,7 +599,7 @@ export default function EventsPage() {
                       </div>
 
                       {/* Description */}
-                      <p className="text-xs text-slate-500 leading-relaxed line-clamp-3 mb-4">
+                      <p className="text-xs text-slate-500 leading-relaxed line-clamp-3 mb-4 capitalize">
                         {item.description}
                       </p>
                     </div>

@@ -90,7 +90,7 @@ Direct Recipient: ${TARGET_EMAIL}`
           <DialogTitle className="text-xl sm:text-2xl font-bold text-white font-display">
             Request Production Capacity & Quotation
           </DialogTitle>
-          <DialogDescription className="text-xs text-slate-light">
+          <DialogDescription className="text-xs text-slate-light capitalize leading-relaxed mt-1.5">
             Direct factory communication. Strict mutual non-disclosure agreement applied.
           </DialogDescription>
         </DialogHeader>
@@ -268,14 +268,14 @@ Direct Recipient: ${TARGET_EMAIL}`
                   placeholder="Outline tech pack summary, fabric compositions (e.g. 100% GOTS organic cotton, merino blend), required certifications, or private label packaging..."
                   value={formData.notes}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  className="w-full bg-deep-blue-card border border-deep-blue-border rounded-sm p-3 text-sm text-white placeholder-slate-muted focus:outline-none focus:border-brand-blue resize-none"
+                  className="w-full bg-deep-blue-card border border-deep-blue-border rounded-sm p-3 text-sm text-white placeholder-slate-muted focus:outline-none focus:border-brand-blue resize-none capitalize"
                 />
               </div>
 
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-deep-blue-border">
                 <div className="flex items-center gap-2 text-[11px] text-slate-light">
                   <ShieldCheck className="w-4 h-4 text-brand-blue" />
-                  <span>Strict NDA executed prior to tech pack review.</span>
+                  <span className="capitalize">Strict NDA executed prior to tech pack review.</span>
                 </div>
 
                 <div className="flex items-center gap-3 w-full sm:w-auto">

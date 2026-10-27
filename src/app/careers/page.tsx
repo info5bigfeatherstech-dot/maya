@@ -93,11 +93,11 @@ export default function CareersPage() {
                 </span>
               </h1>
 
-              <p className="text-base sm:text-lg text-slate-light leading-relaxed max-w-3xl mx-auto mb-4 font-medium">
+              <p className="text-base sm:text-lg text-slate-light leading-relaxed max-w-3xl mx-auto mb-4 font-medium capitalize">
                 We’re more than a workplace — We’re a family of Innovators, Creators, and Collaborators.
               </p>
 
-              <p className="text-xs sm:text-sm text-slate-muted leading-relaxed max-w-2xl mx-auto mb-10">
+              <p className="text-xs sm:text-sm text-slate-muted leading-relaxed max-w-2xl mx-auto mb-10 capitalize">
                 With a strong presence in the Global Fashion and Garment Export Industry, we are always on the lookout for passionate professionals ready to make an impact.
               </p>
 
@@ -165,7 +165,7 @@ export default function CareersPage() {
                   </h2>
                 </div>
 
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed capitalize">
                   At Maya Exports Ltd., you are never just a cog in the wheel. Whether working on outerwear silhouettes for top US department stores, engineering ergonomic athletic footwear, or coordinating international ocean cargo from Xiamen Port — every role has direct visibility, accountability, and high-growth potential.
                 </p>
 
@@ -177,7 +177,7 @@ export default function CareersPage() {
                         Global Footprint
                       </h4>
                     </div>
-                    <p className="text-[11px] text-slate-500 leading-relaxed">
+                    <p className="text-[11px] text-slate-500 leading-relaxed capitalize">
                       Cross-border coordination with offices in Shishi City (Fujian), Hong Kong, and international retail clients.
                     </p>
                   </div>
@@ -189,7 +189,7 @@ export default function CareersPage() {
                         Merit-Based Growth
                       </h4>
                     </div>
-                    <p className="text-[11px] text-slate-500 leading-relaxed">
+                    <p className="text-[11px] text-slate-500 leading-relaxed capitalize">
                       Fast-track promotion pathways and leadership responsibilities based on performance and creative impact.
                     </p>
                   </div>
@@ -201,7 +201,7 @@ export default function CareersPage() {
                         Modern Tech Stack
                       </h4>
                     </div>
-                    <p className="text-[11px] text-slate-500 leading-relaxed">
+                    <p className="text-[11px] text-slate-500 leading-relaxed capitalize">
                       Automated pattern grading, 3D CLO visualization, computerized cutting, and in-house photo cycloramas.
                     </p>
                   </div>
@@ -213,7 +213,7 @@ export default function CareersPage() {
                         Family Culture
                       </h4>
                     </div>
-                    <p className="text-[11px] text-slate-500 leading-relaxed">
+                    <p className="text-[11px] text-slate-500 leading-relaxed capitalize">
                       Comprehensive health support, continuous mentorship from senior directors, and team celebrations.
                     </p>
                   </div>
@@ -233,7 +233,7 @@ export default function CareersPage() {
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-deep-blue font-display">
                 Current Openings & Role Details
               </h2>
-              <p className="text-xs sm:text-sm text-slate-body mt-2 leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-body mt-2 leading-relaxed capitalize">
                 Review our open roles across all departments below. Each position includes daily operational responsibilities and candidate qualifications. Click any role to submit your application directly.
               </p>
             </div>
@@ -274,7 +274,7 @@ export default function CareersPage() {
                     <h3 className="text-xl sm:text-2xl font-bold text-deep-blue font-display group-hover:text-brand-blue transition-colors mb-2.5">
                       {job.title}
                     </h3>
-                    <p className="text-xs sm:text-sm text-slate-body leading-relaxed max-w-4xl">
+                    <p className="text-xs sm:text-sm text-slate-body leading-relaxed max-w-4xl capitalize">
                       {job.shortDesc}
                     </p>
                   </div>
@@ -289,7 +289,7 @@ export default function CareersPage() {
                       </span>
                       <ul className="space-y-2">
                         {job.responsibilities.map((resp, rIdx) => (
-                          <li key={rIdx} className="flex items-start gap-2.5 text-xs text-slate-600 leading-relaxed">
+                          <li key={rIdx} className="flex items-start gap-2.5 text-xs text-slate-600 leading-relaxed capitalize">
                             <span className="w-1.5 h-1.5 rounded-full bg-brand-blue mt-1.5 shrink-0" />
                             <span>{resp}</span>
                           </li>
@@ -305,7 +305,7 @@ export default function CareersPage() {
                       </span>
                       <ul className="space-y-2">
                         {job.requirements.map((req, qIdx) => (
-                          <li key={qIdx} className="flex items-start gap-2.5 text-xs text-slate-600 leading-relaxed">
+                          <li key={qIdx} className="flex items-start gap-2.5 text-xs text-slate-600 leading-relaxed capitalize">
                             <span className="w-1.5 h-1.5 rounded-full bg-gold mt-1.5 shrink-0" />
                             <span>{req}</span>
                           </li>
@@ -493,7 +493,7 @@ export default function CareersPage() {
               Don’t see a position that fits? We still want to hear from you!
             </h2>
 
-            <p className="text-xs sm:text-sm text-slate-light max-w-2xl mx-auto leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-light max-w-2xl mx-auto leading-relaxed capitalize">
               We are constantly expanding our global manufacturing operations, creative teams, and regional sales desks. Send us your CV and an introduction to be kept in our priority talent network.
             </p>
 

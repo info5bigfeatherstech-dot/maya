@@ -117,7 +117,7 @@ export default function QualityControl() {
                           {cp.title}
                         </h4>
                       </div>
-                      <p className="text-xs text-slate-600 leading-relaxed pl-12.5">
+                      <p className="text-xs text-slate-600 leading-relaxed pl-12.5 capitalize">
                         {cp.desc}
                       </p>
                     </div>
