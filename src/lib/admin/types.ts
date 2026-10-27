@@ -142,6 +142,7 @@ export type Product = {
   sizeRange?: string;
   variant?: "Yes" | "No";
   variantDetails?: ProductVariant[];
+  primaryAttributes?: ProductAttribute[];
   primarySubVariants?: ProductSubVariant[];
   factory?: NamedRef | null;
   factoryPriceEXW?: string;
@@ -175,7 +176,32 @@ export type ProductImportFailure = {
   row: number;
   productCode: string;
   familyCode: string;
+  source: "sheet" | "images";
   reason: string;
+};
+
+export type ProductImportPreviewRow = {
+  row: number;
+  productCode: string;
+  familyCode: string;
+  name: string;
+  title: string;
+  categoryPath: string;
+  attributes: string;
+  ok: boolean;
+  issues: string[];
+};
+
+export type ProductImportPreview = {
+  rows: ProductImportPreviewRow[];
+  issues: ProductImportFailure[];
+  errorCsv: string;
+  summary: {
+    rows: number;
+    families: number;
+    ok: number;
+    failed: number;
+  };
 };
 
 export type ProductImportResult = {
@@ -183,6 +209,7 @@ export type ProductImportResult = {
   failed: ProductImportFailure[];
   skippedFolders: Array<{ folder: string; reason: string }>;
   warnings: string[];
+  errorCsv: string;
   summary: {
     families: number;
     rows: number;
@@ -225,6 +252,7 @@ export type ErpFormValues = {
   sizeRangeCustom: string;
   variant: "Yes" | "No";
   variantDetails: ProductVariant[];
+  primaryAttributes: ProductAttribute[];
   primarySubVariants: ProductSubVariant[];
   factoryId: string;
   factoryPriceEXW: string;

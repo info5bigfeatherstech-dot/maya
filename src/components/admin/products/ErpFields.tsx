@@ -251,10 +251,10 @@ export function ErpFields({ values, factories, customers, onChange, variantSlot 
           <Field label="Pattern">
             <input value={values.pattern} onChange={(event) => set("pattern", event.target.value)} maxLength={80} className={inputClass} placeholder="Solid / Printed / Floral" />
           </Field>
-          <Field label="Primary color" hint="This color represents the whole product, not one extra variant.">
+          <Field label="Primary color" hint="Listing fact for the public page. Variant color lives in Catalog variants below.">
             <input value={values.color} onChange={(event) => set("color", event.target.value)} maxLength={40} className={inputClass} placeholder="Blue" />
           </Field>
-          <Field label="Size range" hint="Available sizing for the whole product. Extra variants can override.">
+          <Field label="Size range" hint="Public available sizing. This does not auto-create variants.">
             <select value={values.sizeRange} onChange={(event) => set("sizeRange", event.target.value)} className={inputClass}>
               <option value="">Select size range</option>
               {SIZE_PRESETS.map((item) => (
@@ -271,7 +271,7 @@ export function ErpFields({ values, factories, customers, onChange, variantSlot 
             </Field>
           ) : null}
           <div className="md:col-span-2">
-            <Field label="Available colors" hint="Comma-separated catalog colors for the whole product. Extra variants can pick from this list.">
+            <Field label="Available colors" hint="Comma-separated listing colorways for the public page. This does not auto-create variants.">
               <input value={values.availableColorsInput} onChange={(event) => set("availableColorsInput", event.target.value)} className={inputClass} placeholder="Blue, Pink, Green" />
             </Field>
             {colors.length > 0 ? (

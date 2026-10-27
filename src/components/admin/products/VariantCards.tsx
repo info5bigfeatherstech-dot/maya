@@ -7,16 +7,14 @@ import {
   MAX_VARIANT_FIELDS,
   MAX_VARIANTS,
   VARIANT_STATUSES,
-  catalogColorList,
-  catalogColorSuggestions,
-  catalogSizeList,
+  applyParentAttributes,
   emptySubVariant,
   emptyVariant,
   extraVariantSku,
   serialVariantSku,
   subVariantSku,
 } from "@/lib/admin/erp";
-import type { ErpFormValues, ProductSubVariant, ProductVariant } from "@/lib/admin/types";
+import type { ErpFormValues, ProductAttribute, ProductSubVariant, ProductVariant } from "@/lib/admin/types";
 import { ImageUploader, type ImageDraft } from "./ImageUploader";
 
 const inputClass =
@@ -31,21 +29,82 @@ interface VariantCardsProps {
   onChange: (patch: Partial<ErpFormValues>) => void;
 }
 
+function AttributeEditor({
+  rows,
+  onChange,
+  hint,
+  error,
+}: {
+  rows: ProductAttribute[];
+  onChange: (rows: ProductAttribute[]) => void;
+  hint?: string;
+  error?: string;
+}) {
+  const list = rows.length ? rows : [{ key: "", value: "" }];
+  const update = (index: number, patch: Partial<ProductAttribute>) => {
+    onChange(list.map((row, current) => (current === index ? { ...row, ...patch } : row)));
+  };
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between gap-2">
+        <span className={labelText}>Attributes</span>
+        <button
+          type="button"
+          onClick={() => {
+            if (list.length >= MAX_VARIANT_FIELDS) return;
+            onChange([...list, { key: "", value: "" }]);
+          }}
+          disabled={list.length >= MAX_VARIANT_FIELDS}
+          className="inline-flex items-center gap-1 text-[11px] font-medium text-indigo-600 hover:text-indigo-700 disabled:opacity-50"
+        >
+          <Plus className="w-3 h-3" />
+          Add field
+        </button>
+      </div>
+      {hint ? <p className="text-[11px] text-slate-500">{hint}</p> : null}
+      {error ? <p className="text-[11px] text-red-600">{error}</p> : null}
+      {list.map((item, index) => (
+        <div key={`attr-${index}`} className="grid grid-cols-[1fr_1fr_auto] gap-2">
+          <input
+            value={item.key}
+            onChange={(event) => update(index, { key: event.target.value })}
+            maxLength={80}
+            className={inputClass}
+            placeholder="Field name — Color, Size, Plating, Fit"
+          />
+          <input
+            value={item.value}
+            onChange={(event) => update(index, { value: event.target.value })}
+            maxLength={200}
+            className={inputClass}
+            placeholder="Value, or XS, SM, L for sub-variants"
+          />
+          <button
+            type="button"
+            onClick={() =>
+              onChange(list.length > 1 ? list.filter((_, current) => current !== index) : [{ key: "", value: "" }])
+            }
+            className="h-10 w-10 text-slate-400 hover:text-red-600 rounded-lg flex items-center justify-center"
+            aria-label="Remove field"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function SubVariantEditor({
   parentSku,
-  parentColor,
   parentLabel,
   rows,
-  colorOptions,
-  sizeOptions,
   onChange,
 }: {
   parentSku: string;
-  parentColor: string;
   parentLabel: string;
   rows: ProductSubVariant[];
-  colorOptions: string[];
-  sizeOptions: string[];
   onChange: (rows: ProductSubVariant[]) => void;
 }) {
   const stamp = (next: ProductSubVariant[]) =>
@@ -61,23 +120,15 @@ function SubVariantEditor({
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-wider text-indigo-600">Sub-variants</p>
           <p className="text-[11px] text-slate-500 mt-0.5">
-            Example: {parentLabel || "this variant"} in different sizes keeps the same photos. Upload images
-            only when this sub-variant looks different, such as another color.
+            Comma lists on the parent (Size=XS, SM, L) fill these automatically. They reuse {parentLabel} images
+            unless you upload replacements.
           </p>
         </div>
         <button
           type="button"
           onClick={() => {
             if (rows.length >= MAX_SUB_VARIANTS) return;
-            onChange(
-              stamp([
-                ...rows,
-                emptySubVariant(parentSku, rows.length, {
-                  color: parentColor,
-                  size: sizeOptions[rows.length] || "",
-                }),
-              ])
-            );
+            onChange(stamp([...rows, emptySubVariant(parentSku, rows.length)]));
           }}
           disabled={rows.length >= MAX_SUB_VARIANTS}
           className="inline-flex items-center gap-1 px-2.5 py-1.5 text-[11px] font-medium text-indigo-700 border border-indigo-200 bg-white rounded-lg hover:bg-indigo-50 disabled:opacity-50"
@@ -88,7 +139,7 @@ function SubVariantEditor({
       </div>
 
       {rows.length === 0 ? (
-        <p className="text-[11px] text-slate-500">No sub-variants yet. Size values from above are added automatically.</p>
+        <p className="text-[11px] text-slate-500">No sub-variants yet.</p>
       ) : (
         rows.map((row, index) => (
           <div key={`sub-${parentSku}-${index}`} className="rounded-lg border border-indigo-100 bg-white p-3 space-y-3">
@@ -106,40 +157,21 @@ function SubVariantEditor({
                 <Trash2 className="w-3.5 h-3.5" />
               </button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <label className="block space-y-1">
-                <span className={labelText}>Color</span>
-                <input
-                  list={`${parentSku}-sub-colors-${index}`}
-                  value={row.color}
-                  onChange={(event) => update(index, { color: event.target.value })}
-                  maxLength={40}
-                  className={inputClass}
-                  placeholder={parentColor || "Color"}
-                />
-                <datalist id={`${parentSku}-sub-colors-${index}`}>
-                  {colorOptions.map((color) => (
-                    <option key={color} value={color} />
-                  ))}
-                </datalist>
-              </label>
-              <label className="block space-y-1">
-                <span className={labelText}>Size</span>
-                <input
-                  list={`${parentSku}-sub-sizes-${index}`}
-                  value={row.size}
-                  onChange={(event) => update(index, { size: event.target.value })}
-                  maxLength={120}
-                  className={inputClass}
-                  placeholder="Size"
-                />
-                <datalist id={`${parentSku}-sub-sizes-${index}`}>
-                  {sizeOptions.map((size) => (
-                    <option key={size} value={size} />
-                  ))}
-                </datalist>
-              </label>
-            </div>
+            <label className="block space-y-1">
+              <span className={labelText}>Title</span>
+              <input
+                value={row.title}
+                onChange={(event) => update(index, { title: event.target.value })}
+                maxLength={160}
+                className={inputClass}
+                placeholder="Optional label"
+              />
+            </label>
+            <AttributeEditor
+              rows={row.attributes}
+              onChange={(attributes) => update(index, { attributes })}
+              hint="Any fields for this option. Leave images empty to inherit the parent."
+            />
             <ImageUploader
               label="Images (optional)"
               images={[
@@ -153,69 +185,6 @@ function SubVariantEditor({
                 })
               }
             />
-            <p className="text-[11px] text-slate-500 -mt-1">
-              Leave empty to reuse {parentLabel || "parent"} images. If you upload here, this sub-variant uses
-              its own photos.
-            </p>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className={labelText}>Extra fields</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (row.attributes.length >= MAX_VARIANT_FIELDS) return;
-                    update(index, { attributes: [...row.attributes, { key: "", value: "" }] });
-                  }}
-                  disabled={row.attributes.length >= MAX_VARIANT_FIELDS}
-                  className="inline-flex items-center gap-1 text-[11px] font-medium text-indigo-600 disabled:opacity-50"
-                >
-                  <Plus className="w-3 h-3" />
-                  Add field
-                </button>
-              </div>
-              {row.attributes.map((item, fieldIndex) => (
-                <div key={`sub-field-${index}-${fieldIndex}`} className="grid grid-cols-[1fr_1fr_auto] gap-2">
-                  <input
-                    value={item.key}
-                    onChange={(event) =>
-                      update(index, {
-                        attributes: row.attributes.map((entry, current) =>
-                          current === fieldIndex ? { ...entry, key: event.target.value } : entry
-                        ),
-                      })
-                    }
-                    maxLength={80}
-                    className={inputClass}
-                    placeholder="Field name"
-                  />
-                  <input
-                    value={item.value}
-                    onChange={(event) =>
-                      update(index, {
-                        attributes: row.attributes.map((entry, current) =>
-                          current === fieldIndex ? { ...entry, value: event.target.value } : entry
-                        ),
-                      })
-                    }
-                    maxLength={200}
-                    className={inputClass}
-                    placeholder="Value"
-                  />
-                  <button
-                    type="button"
-                    onClick={() =>
-                      update(index, {
-                        attributes: row.attributes.filter((_, current) => current !== fieldIndex),
-                      })
-                    }
-                    className="h-10 w-10 text-slate-400 hover:text-red-600 rounded-lg flex items-center justify-center"
-                    aria-label="Remove field"
-                  >
-                    <Trash2 className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              ))}
-            </div>
           </div>
         ))
       )}
@@ -226,10 +195,6 @@ function SubVariantEditor({
 export function VariantCards({ productCode, values, onChange }: VariantCardsProps) {
   const codeBase = productCode.trim() || "MG-001";
   const primaryCode = serialVariantSku(codeBase, 0);
-  const colors = catalogColorList(values);
-  const sizes = catalogSizeList(values);
-  const colorOptions = catalogColorSuggestions(values);
-  const colorParents = colors.length > 0;
 
   const stamp = (rows: ProductVariant[]) =>
     rows.map((row, index) => ({ ...row, sku: extraVariantSku(codeBase, index) }));
@@ -242,21 +207,33 @@ export function VariantCards({ productCode, values, onChange }: VariantCardsProp
     setDetails(values.variantDetails.map((row, current) => (current === index ? { ...row, ...patch } : row)));
   };
 
+  const setPrimaryAttributes = (attributes: ProductAttribute[]) => {
+    const applied = applyParentAttributes(attributes, values.primarySubVariants, primaryCode, values.color);
+    onChange({
+      primaryAttributes: applied.attributes,
+      color: applied.color,
+      primarySubVariants: applied.subVariants,
+    });
+  };
+
+  const setExtraAttributes = (index: number, attributes: ProductAttribute[]) => {
+    const row = values.variantDetails[index];
+    if (!row) return;
+    const applied = applyParentAttributes(attributes, row.subVariants, extraVariantSku(codeBase, index), row.color);
+    updateVariant(index, {
+      attributes: applied.attributes,
+      color: applied.color,
+      size: applied.size,
+      subVariants: applied.subVariants,
+    });
+  };
+
   const addExtra = () => {
     if (values.variantDetails.length >= MAX_VARIANTS) return;
     const nextIndex = values.variantDetails.length;
-    const next = emptyVariant(codeBase, nextIndex, {
-      color: colorParents ? colors[nextIndex + 1] || "" : "",
-      size: colorParents ? "" : sizes[nextIndex + 1] || "",
-    });
-    if (colorParents && sizes.length) {
-      next.subVariants = sizes.map((size, subIndex) =>
-        emptySubVariant(next.sku, subIndex, { color: next.color, size })
-      );
-    }
     onChange({
       variant: "Yes",
-      variantDetails: stamp([...values.variantDetails, next]),
+      variantDetails: stamp([...values.variantDetails, emptyVariant(codeBase, nextIndex)]),
     });
   };
 
@@ -268,18 +245,22 @@ export function VariantCards({ productCode, values, onChange }: VariantCardsProp
     onChange({ variant: next });
   };
 
+  const primaryApplied = applyParentAttributes(
+    values.primaryAttributes || [],
+    values.primarySubVariants,
+    primaryCode,
+    values.color
+  );
+
   return (
     <section className="rounded-xl border-2 border-indigo-200 bg-indigo-50/50 p-4 space-y-4">
       <div>
         <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-indigo-600">Catalog variants</p>
         <h3 className="text-sm font-semibold text-slate-900 mt-0.5">Primary, extra, and sub-variants</h3>
         <p className="text-[11px] text-slate-600 mt-1">
-          Available colors and size range above fill variants in order: first value goes to{" "}
-          <span className="font-mono font-semibold">{primaryCode}</span>, next to{" "}
-          <span className="font-mono">{extraVariantSku(codeBase, 0)}</span>, then{" "}
-          <span className="font-mono">{extraVariantSku(codeBase, 1)}</span>. If both colors and
-          sizes are set, each color is a variant and each size becomes a sub-variant that reuses that color’s
-          images unless you upload new ones.
+          Attributes can be anything — Color, Size, Plating, Fit, Pack. Put commas in one value to create
+          sub-variants that share this variant’s images. Available colors and size range above stay listing facts
+          for the public page; they do not auto-build variants.
         </p>
       </div>
 
@@ -289,44 +270,19 @@ export function VariantCards({ productCode, values, onChange }: VariantCardsProp
           <span className={labelText}>Primary variant code</span>
           <input value={primaryCode} readOnly className={`${inputClass} font-mono bg-indigo-50 text-slate-800`} />
         </label>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <label className="block space-y-1.5">
-            <span className={labelText}>Color</span>
-            <input
-              list="primary-variant-colors"
-              value={values.color}
-              onChange={(event) => onChange({ color: event.target.value })}
-              maxLength={40}
-              className={inputClass}
-              placeholder={colors[0] || "First available color"}
-            />
-            <datalist id="primary-variant-colors">
-              {colorOptions.map((color) => (
-                <option key={color} value={color} />
-              ))}
-            </datalist>
-          </label>
-          <label className="block space-y-1.5">
-            <span className={labelText}>Size</span>
-            <input
-              value={colorParents ? "" : sizes[0] || ""}
-              readOnly={colorParents || Boolean(sizes[0])}
-              onChange={() => undefined}
-              className={`${inputClass} ${colorParents || sizes[0] ? "bg-indigo-50 text-slate-800" : ""}`}
-              placeholder={colorParents ? "Sizes are sub-variants below" : "First size from the range above"}
-            />
-          </label>
-        </div>
         <p className="text-[11px] text-slate-500">
           Title, description, and images at the top of this form belong to {primaryCode}.
         </p>
+        <AttributeEditor
+          rows={values.primaryAttributes || []}
+          onChange={setPrimaryAttributes}
+          error={primaryApplied.spreadingError}
+          hint="Example: Color = Red and Size = XS, SM, L. Only one field may list multiple values."
+        />
         <SubVariantEditor
           parentSku={primaryCode}
-          parentColor={values.color || colors[0] || ""}
           parentLabel={primaryCode}
           rows={values.primarySubVariants || []}
-          colorOptions={colorOptions}
-          sizeOptions={sizes}
           onChange={(primarySubVariants) => onChange({ primarySubVariants })}
         />
       </div>
@@ -358,6 +314,7 @@ export function VariantCards({ productCode, values, onChange }: VariantCardsProp
         <div className="space-y-4">
           {values.variantDetails.map((row, index) => {
             const code = extraVariantSku(codeBase, index);
+            const applied = applyParentAttributes(row.attributes || [], row.subVariants, code, row.color || "");
             return (
               <div
                 key={`variant-${index}`}
@@ -419,115 +376,20 @@ export function VariantCards({ productCode, values, onChange }: VariantCardsProp
                   }
                 />
                 <p className="text-[11px] text-slate-500 -mt-2">
-                  Size sub-variants reuse these images unless a sub-variant uploads its own.
+                  Sub-variants reuse these images unless a sub-variant uploads its own.
                 </p>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <label className="block space-y-1.5">
-                    <span className={labelText}>Color</span>
-                    <input
-                      list={`variant-colors-${index}`}
-                      value={row.color || ""}
-                      onChange={(event) => updateVariant(index, { color: event.target.value })}
-                      maxLength={40}
-                      className={inputClass}
-                      placeholder={colors[index + 1] || "From available colors"}
-                    />
-                    <datalist id={`variant-colors-${index}`}>
-                      {colorOptions.map((color) => (
-                        <option key={color} value={color} />
-                      ))}
-                    </datalist>
-                  </label>
-                  <label className="block space-y-1.5">
-                    <span className={labelText}>Size</span>
-                    <input
-                      list={`variant-sizes-${index}`}
-                      value={row.size || ""}
-                      onChange={(event) => updateVariant(index, { size: event.target.value })}
-                      maxLength={120}
-                      className={inputClass}
-                      placeholder={colorParents ? "Optional — sizes can sit in sub-variants" : sizes[index + 1] || "From size range"}
-                    />
-                    <datalist id={`variant-sizes-${index}`}>
-                      {sizes.map((size) => (
-                        <option key={size} value={size} />
-                      ))}
-                    </datalist>
-                  </label>
-                </div>
-
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className={labelText}>Extra fields</span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        if (row.attributes.length >= MAX_VARIANT_FIELDS) return;
-                        updateVariant(index, { attributes: [...row.attributes, { key: "", value: "" }] });
-                      }}
-                      disabled={row.attributes.length >= MAX_VARIANT_FIELDS}
-                      className="inline-flex items-center gap-1 text-[11px] font-medium text-indigo-600 hover:text-indigo-700 disabled:opacity-50"
-                    >
-                      <Plus className="w-3 h-3" />
-                      Add field
-                    </button>
-                  </div>
-                  <p className="text-[11px] text-slate-500">
-                    Optional labels besides color and size — Fit, Material, Pack, and so on. You can add
-                    different fields on each variant.
-                  </p>
-                  {row.attributes.map((item, fieldIndex) => (
-                    <div key={`field-${index}-${fieldIndex}`} className="grid grid-cols-[1fr_1fr_auto] gap-2">
-                      <input
-                        value={item.key}
-                        onChange={(event) =>
-                          updateVariant(index, {
-                            attributes: row.attributes.map((entry, current) =>
-                              current === fieldIndex ? { ...entry, key: event.target.value } : entry
-                            ),
-                          })
-                        }
-                        maxLength={80}
-                        className={inputClass}
-                        placeholder="Field name"
-                      />
-                      <input
-                        value={item.value}
-                        onChange={(event) =>
-                          updateVariant(index, {
-                            attributes: row.attributes.map((entry, current) =>
-                              current === fieldIndex ? { ...entry, value: event.target.value } : entry
-                            ),
-                          })
-                        }
-                        maxLength={200}
-                        className={inputClass}
-                        placeholder="Value"
-                      />
-                      <button
-                        type="button"
-                        onClick={() =>
-                          updateVariant(index, {
-                            attributes: row.attributes.filter((_, current) => current !== fieldIndex),
-                          })
-                        }
-                        className="h-10 w-10 text-slate-400 hover:text-red-600 rounded-lg flex items-center justify-center"
-                        aria-label="Remove field"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
+                <AttributeEditor
+                  rows={row.attributes || []}
+                  onChange={(attributes) => setExtraAttributes(index, attributes)}
+                  error={applied.spreadingError}
+                  hint="Same rules as primary. Example: Color = Black; Size = XS, SM"
+                />
 
                 <SubVariantEditor
                   parentSku={code}
-                  parentColor={row.color || ""}
-                  parentLabel={row.color || code}
+                  parentLabel={row.title || code}
                   rows={row.subVariants || []}
-                  colorOptions={colorOptions}
-                  sizeOptions={sizes}
                   onChange={(subVariants) => updateVariant(index, { subVariants })}
                 />
 

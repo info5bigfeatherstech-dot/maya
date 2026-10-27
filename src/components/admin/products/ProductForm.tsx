@@ -9,7 +9,7 @@ import { VariantCards } from "./VariantCards";
 import { flattenCategories } from "@/lib/admin/categories";
 import { adminApi } from "@/lib/admin/api";
 import { formatAdminDateTime } from "@/lib/admin/dates";
-import { productToErpForm, serialVariantSku, syncVariantsFromCatalog, validateErpForm } from "@/lib/admin/erp";
+import { productToErpForm, serialVariantSku, validateErpForm } from "@/lib/admin/erp";
 import type { Category, Customer, Factory, Product, ProductAttribute, ProductFormValues } from "@/lib/admin/types";
 import { compactInfoSections, mergeInfoSections } from "@/lib/catalog/infoSections";
 import { Plus, Trash2 } from "lucide-react";
@@ -294,17 +294,7 @@ export function ProductForm({
         factories={factories}
         customers={customers}
         onChange={(patch) => {
-          setValues((current) => {
-            let erp = { ...current.erp, ...patch };
-            if (
-              "availableColorsInput" in patch ||
-              "sizeRange" in patch ||
-              "sizeRangeCustom" in patch
-            ) {
-              erp = { ...erp, ...syncVariantsFromCatalog(current.productCode, erp) };
-            }
-            return { ...current, erp };
-          });
+          setValues((current) => ({ ...current, erp: { ...current.erp, ...patch } }));
         }}
         variantSlot={
           <VariantCards

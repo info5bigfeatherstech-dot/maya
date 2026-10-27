@@ -8,6 +8,7 @@ import type {
   Factory,
   FactoryPayload,
   Product,
+  ProductImportPreview,
   ProductImportResult,
 } from "./types";
 
@@ -130,6 +131,10 @@ export const adminApi = {
 
   deleteProduct(id: string) {
     return request<{ id: string }>(`/products/${id}`, { method: "DELETE" });
+  },
+
+  previewImport(form: FormData) {
+    return request<ProductImportPreview>("/products/import/preview", { method: "POST", body: form });
   },
 
   importProducts(form: FormData) {
