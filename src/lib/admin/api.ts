@@ -8,6 +8,7 @@ import type {
   Factory,
   FactoryPayload,
   Product,
+  ProductImportResult,
 } from "./types";
 
 export const API_BASE =
@@ -129,6 +130,41 @@ export const adminApi = {
 
   deleteProduct(id: string) {
     return request<{ id: string }>(`/products/${id}`, { method: "DELETE" });
+  },
+
+  importProducts(form: FormData) {
+    return request<ProductImportResult>("/products/import", { method: "POST", body: form });
+  },
+
+  async downloadImportTemplate() {
+    const token = getAdminToken();
+    const headers = new Headers();
+    if (token) headers.set("Authorization", `Bearer ${token}`);
+
+    let response: Response;
+    try {
+      response = await fetch(`${API_BASE}/products/import/template`, {
+        headers,
+        credentials: "include",
+      });
+    } catch {
+      throw new AdminApiError("Cannot reach the admin API. Start the backend on port 5000.", 0);
+    }
+
+    if (!response.ok) {
+      if (response.status === 401) clearAdminToken();
+      throw new AdminApiError("Unable to download the import template", response.status);
+    }
+
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "maya-exports-product-import.csv";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
   },
 
   listFactories() {

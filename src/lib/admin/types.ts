@@ -171,6 +171,27 @@ export type ApiSuccess<T> = {
   data: T;
 };
 
+export type ProductImportFailure = {
+  row: number;
+  productCode: string;
+  familyCode: string;
+  reason: string;
+};
+
+export type ProductImportResult = {
+  created: Product[];
+  failed: ProductImportFailure[];
+  skippedFolders: Array<{ folder: string; reason: string }>;
+  warnings: string[];
+  summary: {
+    families: number;
+    rows: number;
+    created: number;
+    failed: number;
+    imagesQueued: number;
+  };
+};
+
 export type CategoryPayload = {
   name: string;
   description?: string;

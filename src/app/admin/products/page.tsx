@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Plus, Upload } from "lucide-react";
 import { AdminShell } from "@/components/admin/layout/AdminShell";
 import { ProductTable } from "@/components/admin/products/ProductTable";
 import { flattenCategories } from "@/lib/admin/categories";
@@ -60,13 +60,22 @@ export default function AdminProductsPage() {
               Public catalog uses website category. Inactive products stay admin-only. Expand a row to see variants.
             </p>
           </div>
-          <Link
-            href="/admin/products/new"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg"
-          >
-            <Plus className="w-3.5 h-3.5" />
-            Add product
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/admin/products/import"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 rounded-lg"
+            >
+              <Upload className="w-3.5 h-3.5" />
+              Bulk import
+            </Link>
+            <Link
+              href="/admin/products/new"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg"
+            >
+              <Plus className="w-3.5 h-3.5" />
+              Add product
+            </Link>
+          </div>
         </div>
 
         <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-wrap gap-3">
