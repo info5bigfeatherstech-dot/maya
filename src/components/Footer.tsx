@@ -92,7 +92,7 @@ export default function Footer() {
               <MayaLogo size="md" variant="dark" />
             </Link>
 
-            <p className="text-slate-400 text-xs leading-relaxed max-w-sm">
+            <p className="text-slate-400 text-xs leading-relaxed max-w-sm capitalize">
               Maya Exports Ltd — Fashion is a premier vertical OEM/ODM apparel and textile exporter.
               Engineering bespoke garments for international fashion houses and enterprise retail
               groups across the UK, Europe, North America, the Middle East, and Australia.
@@ -258,7 +258,7 @@ export default function Footer() {
               <span className="text-cyan-400">Your Inbox.</span>
             </h3>
 
-            <p className="text-xs text-slate-400 leading-relaxed">
+            <p className="text-xs text-slate-400 leading-relaxed capitalize">
               Get the latest updates on trade shows, new collections and business opportunities.
             </p>
 

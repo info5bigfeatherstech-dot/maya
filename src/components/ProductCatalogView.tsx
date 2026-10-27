@@ -64,7 +64,7 @@ export default function ProductCatalogView({
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-serif font-bold text-slate-900 tracking-tight mb-3">
               {category.name}
             </h1>
-            <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto capitalize">
               {category.description || `Explore ${category.name} from our live export catalog.`}
             </p>
 
@@ -139,7 +139,7 @@ export default function ProductCatalogView({
               </div>
               <div>
                 <h4 className="text-sm font-bold text-slate-900">Direct Mill & Factory Contract Manufacturing</h4>
-                <p className="text-xs text-slate-600 mt-0.5">
+                <p className="text-xs text-slate-600 mt-0.5 capitalize">
                   BSCI audited, ISO 9001 certified facilities. Custom tech packs, lab-dips, and branded packaging supported.
                 </p>
               </div>

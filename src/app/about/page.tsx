@@ -163,7 +163,7 @@ export default function AboutPage() {
               </h1>
 
               {/* Paragraph */}
-              <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl mb-8">
+              <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-xl mb-8 capitalize">
                 At <strong className="text-slate-900 font-semibold">Maya Exports Pvt Ltd.</strong>, creativity meets craftsmanship. We specialize in creating stylish, functional spaces that bring fashion to life. Our team blends modern design with classic aesthetics to reflect your brand’s identity—whether you’re launching a boutique or refreshing a retail space.
               </p>
 
@@ -250,13 +250,13 @@ export default function AboutPage() {
                 </h2>
 
                 <div className="space-y-4 text-slate-600 text-xs sm:text-sm leading-relaxed">
-                  <p>
+                  <p className="capitalize">
                     <strong className="text-slate-900 font-semibold">Maya Exports Limited</strong> started in 2003 with an ambitious yet humble foundation: to connect premier fashion manufacturing with global retail buyers through steadfast integrity, uncompromising craftsmanship, and reliable international logistics.
                   </p>
-                  <p className="border-l-2 border-brand-blue pl-4 py-1 italic text-slate-800 text-sm sm:text-base font-medium">
+                  <p className="border-l-2 border-brand-blue pl-4 py-1 italic text-slate-800 text-sm sm:text-base font-medium capitalize">
                     &ldquo;From local roots to global reach, we bridge markets with excellence in imports and exports. Our story is built on trust, quality, and a passion for connecting businesses worldwide.&rdquo;
                   </p>
-                  <p>
+                  <p className="capitalize">
                     Over more than two decades of evolution, our operations expanded from regional fabric trading into a multi-continental supply chain powerhouse. Today, Maya Exports provides end-to-end import and export solutions, bespoke fashion private-label manufacturing, and architectural retail spatial transformations for clients in the United Kingdom, Europe, North America, the Middle East, and Australia.
                   </p>
                 </div>
@@ -266,14 +266,14 @@ export default function AboutPage() {
                     <CheckCircle2 className="w-4 h-4 text-brand-blue shrink-0 mt-0.5" />
                     <div>
                       <span className="font-semibold text-slate-900 block">Trust & Quality First</span>
-                      <span className="text-slate-500">Rigorous inspection protocols at every milestone.</span>
+                      <span className="text-slate-500 capitalize">Rigorous inspection protocols at every milestone.</span>
                     </div>
                   </div>
                   <div className="flex items-start gap-2.5 p-3 rounded-sm bg-slate-50 border border-slate-200/70">
                     <CheckCircle2 className="w-4 h-4 text-brand-blue shrink-0 mt-0.5" />
                     <div>
                       <span className="font-semibold text-slate-900 block">Global Trade Connectivity</span>
-                      <span className="text-slate-500">Export corridors connecting over 45+ nations.</span>
+                      <span className="text-slate-500 capitalize">Export corridors connecting over 45+ nations.</span>
                     </div>
                   </div>
                 </div>
@@ -292,7 +292,7 @@ export default function AboutPage() {
               <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white font-display">
                 Two Pillars Driving Our Global Reputation.
               </h2>
-              <p className="text-slate-light mt-3 text-xs sm:text-sm leading-relaxed">
+              <p className="text-slate-light mt-3 text-xs sm:text-sm leading-relaxed capitalize">
                 Whether creating an iconic clothing store destination or dispatching ocean containers across international waters, Maya Exports delivers perfection at every touchpoint.
               </p>
             </div>
@@ -330,7 +330,7 @@ export default function AboutPage() {
                         />
                       </div>
 
-                      <p className="text-xs sm:text-sm text-slate-light leading-relaxed mb-5">
+                      <p className="text-xs sm:text-sm text-slate-light leading-relaxed mb-5 capitalize">
                         {pillar.desc}
                       </p>
 
@@ -369,7 +369,7 @@ export default function AboutPage() {
               <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-deep-blue font-display">
                 Building Excellence Since 2003.
               </h2>
-              <p className="text-slate-body mt-3 text-xs sm:text-sm leading-relaxed">
+              <p className="text-slate-body mt-3 text-xs sm:text-sm leading-relaxed capitalize">
                 A chronological look at how Maya Exports evolved from local trading roots into an international design and export leader.
               </p>
             </div>
@@ -404,7 +404,7 @@ export default function AboutPage() {
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white font-display leading-tight mb-4">
               Transform Your Clothing Store Into a Destination Where Style Meets Story.
             </h2>
-            <p className="text-xs sm:text-sm text-slate-light max-w-xl mx-auto leading-relaxed mb-8">
+            <p className="text-xs sm:text-sm text-slate-light max-w-xl mx-auto leading-relaxed mb-8 capitalize">
               From layout planning to visual merchandising, we focus on every detail that enhances customer experience and maximizes product visibility.
             </p>
 
