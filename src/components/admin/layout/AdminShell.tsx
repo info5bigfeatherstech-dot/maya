@@ -2,41 +2,47 @@
 
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { Loader2 } from "lucide-react";
 import { AdminHeader } from "./AdminHeader";
 import { AdminSidebar } from "./AdminSidebar";
 import { adminApi, AdminApiError } from "@/lib/admin/api";
 import type { AdminUser } from "@/lib/admin/types";
 
-export function AdminShell({ children }: { children: React.ReactNode }) {
+interface AdminShellProps {
+  children: React.ReactNode;
+}
+
+export function AdminShell({ children }: AdminShellProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [admin, setAdmin] = useState<AdminUser | null>(null);
-  const [ready, setReady] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    let cancelled = false;
+    let isCancelled = false;
 
     adminApi
       .me()
       .then((data) => {
-        if (!cancelled) {
+        if (!isCancelled) {
           setAdmin(data.admin);
-          setReady(true);
+          setLoading(false);
         }
       })
       .catch((error) => {
-        if (cancelled) return;
-        if (error instanceof AdminApiError && (error.status === 401 || error.status === 0)) {
-          const next = pathname && pathname !== "/admin/login" ? `?next=${encodeURIComponent(pathname)}` : "";
-          router.replace(`/admin/login${next}`);
-          return;
-        }
-        router.replace("/admin/login");
+        if (isCancelled) return;
+        // Intercept 401 unauthorized or session check failure and redirect to login
+        const targetNext =
+          pathname && pathname !== "/admin/login"
+            ? `?next=${encodeURIComponent(pathname)}`
+            : "";
+
+        router.replace(`/admin/login${targetNext}`);
       });
 
     return () => {
-      cancelled = true;
+      isCancelled = true;
     };
   }, [pathname, router]);
 
@@ -44,10 +50,11 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
     setMobileOpen(false);
   }, [pathname]);
 
-  if (!ready || !admin) {
+  if (loading || !admin) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC] text-slate-500 text-sm">
-        Checking admin session...
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#F8FAFC] text-slate-500 gap-3">
+        <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+        <p className="text-sm font-medium">Checking admin session...</p>
       </div>
     );
   }

@@ -1,4 +1,4 @@
-import { clearAdminToken, getAdminToken } from "./auth";
+import { clearAdminToken, getAdminToken, setAdminToken } from "./auth";
 import type {
   AdminUser,
   Category,
@@ -21,6 +21,51 @@ import type {
 export const API_BASE =
   process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, "") || "http://localhost:5000/api";
 
+const LEGACY_STORAGE_KEY = "maya_admin_token";
+
+/**
+ * Clears any fallback/legacy tokens stored in client-side storage.
+ */
+export function clearLegacyStorage(): void {
+  if (typeof window === "undefined") return;
+  try {
+    sessionStorage.removeItem(LEGACY_STORAGE_KEY);
+    localStorage.removeItem(LEGACY_STORAGE_KEY);
+  } catch {
+    // Ignore storage errors in restricted contexts
+  }
+  clearAdminToken();
+}
+
+/**
+ * Retrieves the fallback token from localStorage, sessionStorage, or auth helper.
+ */
+export function getLegacyStorageToken(): string | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const token =
+      localStorage.getItem(LEGACY_STORAGE_KEY) ||
+      sessionStorage.getItem(LEGACY_STORAGE_KEY) ||
+      getAdminToken();
+    return token || null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Sets fallback token in localStorage and auth helper.
+ */
+export function setLegacyStorageToken(token: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(LEGACY_STORAGE_KEY, token);
+    setAdminToken(token);
+  } catch {
+    // Ignore storage errors
+  }
+}
+
 export class AdminApiError extends Error {
   status: number;
 
@@ -32,10 +77,11 @@ export class AdminApiError extends Error {
 }
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const token = getAdminToken();
+  const token = getLegacyStorageToken();
   const headers = new Headers(options.headers);
 
-  if (token) {
+  // Fallback to Authorization: Bearer <token> if available and not explicitly set
+  if (token && !headers.has("Authorization")) {
     headers.set("Authorization", `Bearer ${token}`);
   }
 
@@ -51,8 +97,12 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
       headers,
       credentials: "include",
     });
-  } catch {
-    throw new AdminApiError("Cannot reach the admin API. Start the backend on port 5000.", 0);
+  } catch (err) {
+    if (err instanceof AdminApiError) throw err;
+    throw new AdminApiError(
+      "Cannot reach the admin API. Please ensure the backend server is running on port 5000.",
+      0
+    );
   }
 
   const payload = (await response.json().catch(() => ({}))) as {
@@ -63,33 +113,53 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 
   if (!response.ok) {
     if (response.status === 401) {
-      clearAdminToken();
+      clearLegacyStorage();
     }
-    throw new AdminApiError(payload.message || "Request failed", response.status);
+    const message = payload.message || response.statusText || "Request failed";
+    throw new AdminApiError(message, response.status);
   }
 
-  return (payload.data ?? payload) as T;
+  return (payload.data !== undefined ? payload.data : (payload as unknown as T)) as T;
 }
 
 export const adminApi = {
+  /**
+   * Authenticate admin with email and password.
+   * Cookie is set automatically via Set-Cookie header with credentials: "include".
+   */
   async login(email: string, password: string) {
-    const data = await request<{ admin: AdminUser }>("/auth/login", {
+    const data = await request<{ admin: AdminUser; token?: string }>("/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
     });
+
+    if (data && typeof data === "object" && "token" in data && typeof data.token === "string") {
+      setLegacyStorageToken(data.token);
+    }
+
     return data;
   },
 
+  /**
+   * Log out active session and clear client-side storage.
+   */
   async logout() {
     try {
-      await request("/auth/logout", { method: "POST" });
+      await request<{ success: boolean; message: string }>("/auth/logout", {
+        method: "POST",
+      });
     } finally {
-      clearAdminToken();
+      clearLegacyStorage();
     }
   },
 
+  /**
+   * Validate current session and retrieve active admin details.
+   */
   me() {
-    return request<{ admin: AdminUser }>("/auth/me");
+    return request<{ admin: AdminUser }>("/auth/me", {
+      method: "GET",
+    });
   },
 
   listCategories() {
@@ -148,7 +218,7 @@ export const adminApi = {
   },
 
   async downloadImportTemplate() {
-    const token = getAdminToken();
+    const token = getLegacyStorageToken();
     const headers = new Headers();
     if (token) headers.set("Authorization", `Bearer ${token}`);
 
@@ -163,7 +233,7 @@ export const adminApi = {
     }
 
     if (!response.ok) {
-      if (response.status === 401) clearAdminToken();
+      if (response.status === 401) clearLegacyStorage();
       throw new AdminApiError("Unable to download the import template", response.status);
     }
 

@@ -1,18 +1,31 @@
 const TOKEN_KEY = "maya_admin_token";
 
-function clearLegacyBrowserTokens() {
+export function clearLegacyBrowserTokens(): void {
   if (typeof window === "undefined") return;
-  sessionStorage.removeItem(TOKEN_KEY);
-  localStorage.removeItem(TOKEN_KEY);
+  try {
+    sessionStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(TOKEN_KEY);
+  } catch {
+    // Ignore in storage-restricted contexts
+  }
 }
 
 export function getAdminToken(): string {
-  clearLegacyBrowserTokens();
-  return "";
+  if (typeof window === "undefined") return "";
+  try {
+    return localStorage.getItem(TOKEN_KEY) || sessionStorage.getItem(TOKEN_KEY) || "";
+  } catch {
+    return "";
+  }
 }
 
-export function setAdminToken(_token: string): void {
-  clearLegacyBrowserTokens();
+export function setAdminToken(token: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(TOKEN_KEY, token);
+  } catch {
+    // Ignore
+  }
 }
 
 export function clearAdminToken(): void {
