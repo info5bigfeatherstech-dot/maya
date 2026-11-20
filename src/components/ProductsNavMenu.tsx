@@ -205,9 +205,15 @@ export function ProductsNavMenu({ open, onClose }: ProductsNavMenuProps) {
               <div className="w-[240px] p-2 bg-deep-blue-dark/50 overflow-y-auto max-h-[300px] shrink-0 animate-in fade-in slide-in-from-left-2 duration-150">
                 <div className="space-y-0.5">
                   {currentDemographics[activeDemographic]?.map((item) => {
+                    const demoPrefix =
+                      activeDemographic === "Men"
+                        ? "mens"
+                        : activeDemographic === "Women"
+                          ? "womens"
+                          : activeDemographic.toLowerCase();
                     const slug =
                       activeMainCategory === "Footwear"
-                        ? categoryToSlug(`${activeDemographic} ${item}`)
+                        ? categoryToSlug(`${demoPrefix} ${item}`)
                         : categoryToSlug(item);
                     return (
                       <Link
@@ -362,7 +368,7 @@ export function ProductsMobileMenu({ onNavigate }: { onNavigate: () => void }) {
                   {footwearDemographics.Men.map((item) => (
                     <Link
                       key={item}
-                      href={`/products/${categoryToSlug(`Men ${item}`)}`}
+                      href={`/products/${categoryToSlug(`mens ${item}`)}`}
                       onClick={onNavigate}
                       className="w-full text-left py-1 text-xs text-slate-light hover:text-brand-blue transition-colors flex items-center justify-between"
                     >
@@ -382,7 +388,7 @@ export function ProductsMobileMenu({ onNavigate }: { onNavigate: () => void }) {
                   {footwearDemographics[demo]?.map((item) => (
                     <Link
                       key={item}
-                      href={`/products/${categoryToSlug(`${demo} ${item}`)}`}
+                      href={`/products/${categoryToSlug(`${demo === "Women" ? "womens" : demo.toLowerCase()} ${item}`)}`}
                       onClick={onNavigate}
                       className="w-full text-left py-0.5 text-xs text-slate-light hover:text-brand-blue transition-colors"
                     >

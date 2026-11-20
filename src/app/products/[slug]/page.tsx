@@ -13,11 +13,27 @@ interface PageProps {
 }
 
 async function resolveCategory(slug: string, tree: CatalogCategory[]) {
-  try {
-    return await fetchCategoryBySlug(slug);
-  } catch {
-    return findCategoryBySlug(tree, slug);
+  const norm = slug.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+  const candidates = [slug];
+  if (norm !== slug) candidates.push(norm);
+  if (norm.startsWith("men-")) candidates.push("mens-" + norm.slice(4));
+  if (norm.startsWith("mens-")) candidates.push("men-" + norm.slice(5));
+  if (norm.startsWith("women-")) candidates.push("womens-" + norm.slice(6));
+  if (norm.startsWith("womens-")) candidates.push("women-" + norm.slice(7));
+  if (norm.startsWith("kid-")) candidates.push("kids-" + norm.slice(4));
+  if (norm.startsWith("kids-")) candidates.push("kid-" + norm.slice(5));
+  if (norm.startsWith("children-")) candidates.push("childrens-" + norm.slice(9));
+  if (norm.startsWith("childrens-")) candidates.push("children-" + norm.slice(10));
+
+  for (const candidate of candidates) {
+    try {
+      const found = await fetchCategoryBySlug(candidate);
+      if (found) return found;
+    } catch {
+      // try next candidate
+    }
   }
+  return findCategoryBySlug(tree, slug);
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

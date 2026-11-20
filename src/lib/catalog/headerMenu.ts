@@ -147,23 +147,39 @@ export function mergeHeaderMenu(liveTree: CatalogCategory[]): HeaderMenuNode[] {
   return mergeLevel(FIXED_PRODUCT_MENU, liveTree);
 }
 
+function slugCandidates(slug: string): Set<string> {
+  const norm = categoryToSlug(slug);
+  const set = new Set<string>([slug, norm]);
+  if (norm.startsWith("men-")) set.add("mens-" + norm.slice(4));
+  if (norm.startsWith("mens-")) set.add("men-" + norm.slice(5));
+  if (norm.startsWith("women-")) set.add("womens-" + norm.slice(6));
+  if (norm.startsWith("womens-")) set.add("women-" + norm.slice(7));
+  if (norm.startsWith("kid-")) set.add("kids-" + norm.slice(4));
+  if (norm.startsWith("kids-")) set.add("kid-" + norm.slice(5));
+  if (norm.startsWith("children-")) set.add("childrens-" + norm.slice(9));
+  if (norm.startsWith("childrens-")) set.add("children-" + norm.slice(10));
+  return set;
+}
+
 export function findFixedMenuBySlug(
   slug: string,
   nodes: HeaderMenuNode[] = FIXED_PRODUCT_MENU
 ): HeaderMenuNode | null {
+  const candidates = slugCandidates(slug);
   const stack = [...nodes];
   while (stack.length > 0) {
     const node = stack.shift();
     if (!node) continue;
-    if (node.slug === slug) return node;
+    if (candidates.has(node.slug)) return node;
     stack.push(...node.children);
   }
   return null;
 }
 
 export function findFixedSiblings(slug: string): HeaderMenuNode[] {
+  const candidates = slugCandidates(slug);
   const visit = (nodes: HeaderMenuNode[]): HeaderMenuNode[] | null => {
-    if (nodes.some((node) => node.slug === slug)) return nodes;
+    if (nodes.some((node) => candidates.has(node.slug))) return nodes;
     for (const node of nodes) {
       const found = visit(node.children);
       if (found) return found;

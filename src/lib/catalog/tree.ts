@@ -25,9 +25,22 @@ export function findCategoryBySlug(
   slug: string
 ): CatalogCategory | null {
   const normalized = toSlug(slug);
+  const variants = new Set<string>([slug, normalized]);
+  if (normalized.startsWith("men-")) variants.add("mens-" + normalized.slice(4));
+  if (normalized.startsWith("mens-")) variants.add("men-" + normalized.slice(5));
+  if (normalized.startsWith("women-")) variants.add("womens-" + normalized.slice(6));
+  if (normalized.startsWith("womens-")) variants.add("women-" + normalized.slice(7));
+  if (normalized.startsWith("kid-")) variants.add("kids-" + normalized.slice(4));
+  if (normalized.startsWith("kids-")) variants.add("kid-" + normalized.slice(5));
+  if (normalized.startsWith("children-")) variants.add("childrens-" + normalized.slice(9));
+  if (normalized.startsWith("childrens-")) variants.add("children-" + normalized.slice(10));
+
   return (
     flattenCatalog(categories).find(
-      (category) => category.slug === slug || category.slug === normalized || toSlug(category.name) === normalized
+      (category) =>
+        variants.has(category.slug) ||
+        variants.has(toSlug(category.slug)) ||
+        variants.has(toSlug(category.name))
     ) || null
   );
 }

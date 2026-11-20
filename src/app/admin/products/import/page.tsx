@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { Download, FileSpreadsheet, FileArchive, Loader2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ArrowRight, CheckCircle2, Download, FileArchive, FileSpreadsheet, Loader2 } from "lucide-react";
 import { AdminBackLink } from "@/components/admin/layout/AdminBackLink";
 import { AdminShell } from "@/components/admin/layout/AdminShell";
 import { adminApi, AdminApiError } from "@/lib/admin/api";
@@ -23,6 +24,7 @@ function downloadCsv(filename: string, content: string) {
 }
 
 export default function ImportProductsPage() {
+  const router = useRouter();
   const [sheet, setSheet] = useState<File | null>(null);
   const [zip, setZip] = useState<File | null>(null);
   const [preview, setPreview] = useState<ProductImportPreview | null>(null);
@@ -31,6 +33,20 @@ export default function ImportProductsPage() {
   const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<ProductImportResult | null>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [countdown, setCountdown] = useState(3);
+
+  useEffect(() => {
+    if (!showSuccessModal) return;
+    if (countdown <= 0) {
+      router.push("/admin/products");
+      return;
+    }
+    const timer = setInterval(() => {
+      setCountdown((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [showSuccessModal, countdown, router]);
 
   const handleSheet = async (file: File | null) => {
     setSheet(file);
@@ -101,6 +117,10 @@ export default function ImportProductsPage() {
     try {
       const imported = await adminApi.importProducts(form);
       setResult(imported);
+      if (imported.summary.created > 0) {
+        setCountdown(3);
+        setShowSuccessModal(true);
+      }
     } catch (err) {
       setError(err instanceof AdminApiError ? err.message : "Unable to import products");
     } finally {
@@ -342,6 +362,53 @@ export default function ImportProductsPage() {
                 ))}
               </ul>
             ) : null}
+          </div>
+        ) : null}
+
+        {/* Success Popup Modal */}
+        {showSuccessModal && result ? (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
+            <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-md w-full p-6 text-center space-y-5 animate-in zoom-in-95 duration-200">
+              <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto border-2 border-emerald-100 shadow-sm">
+                <CheckCircle2 className="w-9 h-9" />
+              </div>
+
+              <div className="space-y-1.5">
+                <h3 className="text-xl font-bold text-slate-900">
+                  Your bulk listing is done!
+                </h3>
+                <p className="text-sm text-slate-600">
+                  Successfully imported{" "}
+                  <span className="font-semibold text-emerald-600">
+                    {result.summary.created}
+                  </span>{" "}
+                  product{result.summary.created === 1 ? "" : "s"} with images into your catalog.
+                </p>
+              </div>
+
+              <div className="bg-slate-50 border border-slate-200/60 rounded-xl p-3 text-xs text-slate-600">
+                Redirecting to Products page in{" "}
+                <span className="font-bold text-slate-900 tabular-nums">{countdown}s</span>...
+              </div>
+
+              <div className="flex items-center gap-2 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setShowSuccessModal(false)}
+                  className="flex-1 px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 rounded-lg transition-colors border border-slate-200 cursor-pointer"
+                >
+                  Stay on Report
+                </button>
+                <button
+                  type="button"
+                  onClick={() => router.push("/admin/products")}
+                  className="flex-1 inline-flex items-center justify-center gap-1.5 px-4 py-2.5 text-xs font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors shadow-xs cursor-pointer"
+                >
+                  <span>Go to Products</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
           </div>
         ) : null}
       </div>
