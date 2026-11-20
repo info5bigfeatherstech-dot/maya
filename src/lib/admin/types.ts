@@ -284,3 +284,111 @@ export type ProductFormValues = {
   infoSections: ProductInfoSection[];
   erp: ErpFormValues;
 };
+
+// ==========================================
+// Dashboard Analytics Types
+// ==========================================
+
+export type DashboardSummary = {
+  totalProducts: number;
+  activeProducts: number;
+  inactiveProducts: number;
+  totalCategories: number;
+  readyStockProducts: number;
+  readyStockTotalUnits: number;
+  totalFactories: number;
+  totalCustomers: number;
+  newProductsThisMonth: number;
+};
+
+export type DashboardCategoryRoot = {
+  categoryId: string;
+  name: string;
+  slug: string;
+  count: number;
+  percentage: number;
+  demographics: Array<{ name: string; count: number }>;
+};
+
+export type DashboardCategoryDistribution = {
+  totalProducts: number;
+  byRootCategory: DashboardCategoryRoot[];
+};
+
+export type DashboardMarketDistribution = {
+  market: string;
+  count: number;
+  percentage: number;
+};
+
+export type DashboardBuyerTier = {
+  tier: string;
+  count: number;
+};
+
+export type DashboardRepeatOrderStats = {
+  repeatStyles: number;
+  nonRepeatStyles: number;
+  percentage: number;
+  byOrderNumber: Array<{
+    repeatOrderNumber: string;
+    styles: number;
+  }>;
+};
+
+export type DashboardMarketAndBuyer = {
+  totalProducts: number;
+  marketDistribution: DashboardMarketDistribution[];
+  buyerTiers: DashboardBuyerTier[];
+  repeatOrderStats: DashboardRepeatOrderStats;
+};
+
+export type DashboardFactoryWorkloadItem = {
+  factoryId: string;
+  factoryCode: string;
+  factoryName: string;
+  country: string;
+  assignedStylesCount: number;
+  readyStockStylesCount: number;
+};
+
+export type DashboardInventoryUrgentItem = {
+  productCode: string;
+  title: string;
+  color: string;
+  readyStockQuantity: number;
+  quantityUnit: string;
+  variantStatus: string;
+};
+
+export type DashboardInventoryAlerts = {
+  totalReadyStockItems: number;
+  lowStockCount: number;
+  lowStockThreshold: number;
+  urgentItems: DashboardInventoryUrgentItem[];
+};
+
+export type DashboardRecentStyle = {
+  id: string;
+  productCode: string;
+  title: string;
+  categoryName: string;
+  status: string;
+  updatedAt: string;
+};
+
+export type DashboardLastBulkImport = {
+  fileName: string;
+  importedAt: string;
+  importedBy?: string;
+  rows: number;
+  families: number;
+  ok: number;
+  failed: number;
+} | null;
+
+export type DashboardRecentActivity = {
+  recentStyles: DashboardRecentStyle[];
+  lastBulkImport: DashboardLastBulkImport;
+};
+

@@ -5,6 +5,12 @@ import type {
   CategoryPayload,
   Customer,
   CustomerPayload,
+  DashboardCategoryDistribution,
+  DashboardFactoryWorkloadItem,
+  DashboardInventoryAlerts,
+  DashboardMarketAndBuyer,
+  DashboardRecentActivity,
+  DashboardSummary,
   Factory,
   FactoryPayload,
   Product,
@@ -214,5 +220,38 @@ export const adminApi = {
 
   deleteCustomer(id: string) {
     return request<{ id: string }>(`/customers/${id}`, { method: "DELETE" });
+  },
+
+  getDashboardSummary() {
+    return request<DashboardSummary>("/admin/dashboard/summary");
+  },
+
+  getCategoryDistribution(params?: { range?: string; season?: string }) {
+    const query = new URLSearchParams();
+    if (params?.range) query.set("range", params.range);
+    if (params?.season) query.set("season", params.season);
+    const suffix = query.toString() ? `?${query.toString()}` : "";
+    return request<DashboardCategoryDistribution>(`/admin/dashboard/category-distribution${suffix}`);
+  },
+
+  getMarketAndBuyerAnalytics(params?: { range?: string; season?: string }) {
+    const query = new URLSearchParams();
+    if (params?.range) query.set("range", params.range);
+    if (params?.season) query.set("season", params.season);
+    const suffix = query.toString() ? `?${query.toString()}` : "";
+    return request<DashboardMarketAndBuyer>(`/admin/dashboard/market-and-buyer-analytics${suffix}`);
+  },
+
+  getFactoryWorkload() {
+    return request<DashboardFactoryWorkloadItem[]>("/admin/dashboard/factory-workload");
+  },
+
+  getInventoryAlerts(threshold?: number) {
+    const suffix = typeof threshold === "number" ? `?threshold=${threshold}` : "";
+    return request<DashboardInventoryAlerts>(`/admin/dashboard/inventory-alerts${suffix}`);
+  },
+
+  getRecentActivity() {
+    return request<DashboardRecentActivity>("/admin/dashboard/recent-activity");
   },
 };
